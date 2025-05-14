@@ -1,0 +1,1 @@
+D:\AndroidStudioProjects\cleaning_app\build\app\intermediates\cxx\RelWithDebInfo\146k3a4x\obj\x86_64
