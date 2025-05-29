@@ -1,120 +1,64 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class Booking extends StatelessWidget {
-  String selectedLocation = "Semua Aktivitas"; // Default selected value
-  List<String> locations = [
-    "Semua Aktivitas",
-    "Transaksi",
-    "Utilize's GO",
-  ];
+import '../../controller/booking.dart';
 
-  String selectedValue = "Semua Aktivitas";
-
-  final List<Map<String, dynamic>> items = [
-    {
-      "label": "Semua Aktivitas",
-      "icon": Icons.receipt_long, // Example icon
-    },
-    {
-      "label": "Transaksi",
-      "icon": Icons.sync_alt,
-    },
-    {
-      "label": "Utilize’s GO",
-      "icon": Icons.electric_bolt,
-    },
-  ];
-
-  String selectedActivity = "Rumah";
-
+class Booking extends GetView<BookingController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text("Booking"),
+      ),
       body: SafeArea(
           child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // DropdownButton<String>(
-            //   value: selectedLocation,
-            //   icon: Icon(Icons.keyboard_arrow_down, color: Colors.black),
-            //   underline: SizedBox(),
-            //   onChanged: (String? newValue) {
-            //     // setState(() {
-            //     //   selectedLocation = newValue!;
-            //     // });
-            //   },
-            //   items: locations.map<DropdownMenuItem<String>>((String location) {
-            //     return DropdownMenuItem<String>(
-            //       value: location,
-            //       child: Row(
-            //         children: [
-            //           Icon(Icons.list_alt_outlined),
-            //           Text(
-            //             location,
-            //             style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-            //           ),
-            //         ],
-            //       ),
-            //     );
-            //   }).toList(),
-            // ),
-            PopupMenuButton<String>(
-              onSelected: (String value) {
-                // setState(() {
-                //   selectedValue = value;
-                // });
-              },
-              color: Colors.white,
-              itemBuilder: (BuildContext context) {
-                return items.map((item) {
-                  return PopupMenuItem<String>(
-                    value: item["label"],
-                    child: Row(
-                      children: [
-                        Icon(item["icon"], color: Colors.black54),
-                        SizedBox(width: 10),
-                        Expanded(child: Text(item["label"])),
-                        
-                        Radio(
-                            value: "Rumah",
-                            groupValue: selectedActivity,
-                            onChanged: (value) {
-
-                            })
-                      ],
-                    ),
-                  );
-                }).toList();
-              },
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    selectedValue,
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w500),
-                  ),
-                  Icon(Icons.keyboard_arrow_down),
-                ],
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    ListTile(
-                      title: Text("Aktivitas 1"),
-                      subtitle: Text("2 Hari lalu"),
-                      leading: CircleAvatar(),
-                    ),
-                  ],
+            padding: const EdgeInsets.symmetric(horizontal: 15),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Obx(() {
+                    return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: List.generate(
+                          3,
+                              (index) {
+                            return GestureDetector(
+                              onTap: () {
+                                controller.selectedIndex.value = index;
+                              },
+                              child: Container(
+                                width: 100,
+                                padding: EdgeInsets.all(5),
+                                decoration: BoxDecoration(
+                                    color: index ==
+                                        controller.selectedIndex.value
+                                        ? Colors.blue
+                                        : Colors.white,
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(width: 1,
+                                      color: index ==
+                                          controller.selectedIndex.value
+                                          ? Colors.blue
+                                          : Colors.black,)),
+                                child: Center(
+                                  child: Text(controller.status[index],
+                                    style: TextStyle(color: index ==
+                                        controller.selectedIndex.value
+                                        ? Colors.white
+                                        : Colors.black,),),
+                                ),
+                              ),
+                            );
+                          },
+                        ));
+                  }),
                 ),
-              ),
-            )
-          ],
-        ),
-      )),
+                Divider()
+              ],
+            ),
+          )),
     );
   }
 }

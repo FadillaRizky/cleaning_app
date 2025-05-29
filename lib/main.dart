@@ -1,15 +1,18 @@
 import 'package:cleaning_app/controller/home.dart';
 import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/view/booking_success.dart';
+import 'package:cleaning_app/view/info_saldo.dart';
 import 'package:cleaning_app/view/introduction.dart';
+import 'package:cleaning_app/view/isi_saldo.dart';
 import 'package:cleaning_app/view/login.dart';
 import 'package:cleaning_app/view/menu.dart';
 import 'package:cleaning_app/view/menu/detail_daily_cleaning.dart';
-import 'package:cleaning_app/view/menu/detail_package.dart';
+import 'package:cleaning_app/view/menu/detail_category.dart';
 import 'package:cleaning_app/view/menu/editprofile.dart';
 import 'package:cleaning_app/view/menu/home.dart';
 import 'package:cleaning_app/view/menu/invoice.dart';
 import 'package:cleaning_app/view/menu/pembayaran.dart';
+import 'package:cleaning_app/view/menu/pemesanan.dart';
 import 'package:cleaning_app/view/menu/profile.dart';
 import 'package:cleaning_app/view/register.dart';
 import 'package:cleaning_app/view/register_verify.dart';
@@ -26,6 +29,7 @@ import 'controller/register.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'view/menu/detail_category_deep.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -70,6 +74,7 @@ class MyApp extends StatelessWidget {
       fallbackLocale: const Locale('en', 'US'),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+        iconTheme: IconThemeData(color: Colors.white,),
         fontFamily: 'Inter',
         textTheme: const TextTheme(
           displayLarge: TextStyle(
@@ -115,14 +120,24 @@ class MyApp extends StatelessWidget {
           binding: HomeBindings(),
         ),
         GetPage(
-          name: '/detail-package',
-          page: () =>  DetailPackage.fromArguments(),
+          name: '/detail-category-daily',
+          page: () =>  DetailCategory.fromArguments(),
+          binding: DetailPackageBindings(),
+        ),
+        GetPage(
+          name: '/detail-category-deep',
+          page: () =>  DetailCategoryDeep.fromArguments(),
           binding: DetailPackageBindings(),
         ),
         GetPage(
           name: '/detail-daily',
           page: () =>  DetailDailyCleaning.fromArguments(),
           binding: DetailDailyBindings(),
+        ),
+        GetPage(
+          name: '/pemesanan',
+          page: () =>  Pemesanan(),
+          binding: PemesananBindings()
         ),
         GetPage(
           name: '/pembayaran',
@@ -135,6 +150,22 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/invoice',
           page: () =>  InvoicePage(),
+        ),
+        GetPage(
+          name: '/isi-saldo',
+          page: () =>  IsiSaldo(),
+        ),
+        GetPage(
+          name: '/upload-bukti-topup',
+          page: () =>  UploadBuktiTopup(),
+        ),
+        GetPage(
+          name: '/topup-success',
+          page: () =>  TopupSuccess(),
+        ),
+        GetPage(
+          name: '/info-saldo',
+          page: () =>  InfoSaldo(),
         ),
       ],
     );

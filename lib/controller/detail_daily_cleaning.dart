@@ -7,17 +7,28 @@ import 'package:intl/intl.dart';
 import '../api.dart';
 
 class DetailDailyController extends GetxController {
-  var selectedDuration = ''.obs;
+
   var dateController = TextEditingController();
   var timeController = TextEditingController();
 
+  ///Property
+  var picName = ''.obs;
+  var propertyAddress = ''.obs;
+  var selectedProperty = 0.obs;
+
+
+  var selectedDiscount = ''.obs;
+  var selectedDuration = ''.obs;
+
   Future<Map<String, dynamic>> getDetailPackage(String id) async{
-    final data1 = await Api.getDetailPackage(id);
-    final data2 = await Api.getDurationPackage(id);
+    final dataDetail = await Api.getDetailPackage(id);
+    final dataDuration = await Api.getDurationPackage(id);
+    // final dataProperty = await Api.getAddress();
     return {
-      'data1': data1,
-      'data2': data2,
+      'data_detail': dataDetail,
+      'data_duration': dataDuration,
     };
+
   }
 
 

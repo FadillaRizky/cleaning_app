@@ -35,8 +35,8 @@ class Menu extends StatelessWidget {
           PersistentTabConfig(
             screen: Home(),
             item: ItemConfig(
-              icon: Icon(Icons.chat),
-              title: "Chat",
+              icon: Icon(Icons.notifications),
+              title: "Notification",
             ),
           ),
           PersistentTabConfig(

@@ -1,9 +1,11 @@
 import 'package:cleaning_app/controller/detail_daily_cleaning.dart';
 import 'package:cleaning_app/controller/home.dart';
 import 'package:cleaning_app/controller/package.dart';
+import 'package:cleaning_app/controller/pemesanan.dart';
 import 'package:cleaning_app/controller/register.dart';
 import 'package:get/get.dart';
 
+import 'controller/booking.dart';
 import 'controller/login.dart';
 import 'controller/profile.dart';
 
@@ -27,6 +29,7 @@ class HomeBindings extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => HomeController());
+    Get.lazyPut(() => BookingController());
   }
 }
 
@@ -47,5 +50,12 @@ class DetailDailyBindings extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => DetailDailyController(), fenix: true);
+  }
+}
+
+class PemesananBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => PemesananController(), fenix: true);
   }
 }

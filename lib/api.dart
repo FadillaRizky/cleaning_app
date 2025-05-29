@@ -5,10 +5,15 @@ import 'dart:io';
 import 'package:cleaning_app/model/DetailPackageResponse.dart';
 import 'package:cleaning_app/model/DetailUserResponse.dart';
 import 'package:cleaning_app/model/DurationPackageResponse.dart';
+import 'package:cleaning_app/model/GetSaldoResponse.dart';
 import 'package:cleaning_app/model/ListCategoryPackageResponse.dart';
+import 'package:cleaning_app/model/ObjectPackageResponse.dart';
+import 'package:cleaning_app/model/OrderPackageResponse.dart';
+import 'package:cleaning_app/model/PropertyAddressResponse.dart';
 import 'package:cleaning_app/model/RefreshTokenResponse.dart';
 import 'package:cleaning_app/model/RegisterResponse.dart';
 import 'package:cleaning_app/model/UpdatePhotoProfileResponse.dart';
+import 'package:cleaning_app/model/UploadBuktiTopupResponse.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -170,9 +175,9 @@ class Api {
     }
   }
 
-  static Future<ListPackageResponse> getPackageList() async {
+  static Future<ListPackageResponse> getPackageList(String category) async {
     try {
-      final url = "$baseUrl/packages";
+      final url = "$baseUrl/packages?category=$category";
 
       final response = await safeApiCall(() async {
         final token = await storage.read('token');
@@ -197,6 +202,36 @@ class Api {
     } catch (e) {
       print('Error Get List Package: $e');
       throw 'Terjadi kesalahan saat mengambil data List Package.';
+    }
+  }
+
+  static Future<ObjectPackageResponse> getObjectPackage(String pack_id) async {
+    try {
+      final url = "$baseUrl/packages/objects?pack_id=$pack_id";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ).timeout(const Duration(seconds: 10));
+      });
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return ObjectPackageResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal request Object Package: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Object Package: $e');
+      throw 'Terjadi kesalahan saat mengambil data Object Package.';
     }
   }
 
@@ -232,7 +267,7 @@ class Api {
 
   static Future<DurationPackageResponse> getDurationPackage(String id) async {
     try {
-      final url = "$baseUrl/packages/hours?pack_id=$id";
+      final url = "$baseUrl/packages/hours/$id";
 
       final response = await safeApiCall(() async {
         final token = await storage.read('token');
@@ -247,6 +282,7 @@ class Api {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        print("Duration package response: $data");
         return DurationPackageResponse.fromJson(data);
       } else {
         final errorData = jsonDecode(response.body);
@@ -257,6 +293,36 @@ class Api {
     } catch (e) {
       print('Error Get Duration Package: $e');
       throw 'Terjadi kesalahan saat mengambil data Duration Package.';
+    }
+  }
+
+  static Future<PropertyAddressResponse> getAddress() async {
+    try {
+      final url = "$baseUrl/client/properties";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ).timeout(const Duration(seconds: 10));
+      });
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return PropertyAddressResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal request Address: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Address Package: $e');
+      throw 'Terjadi kesalahan saat mengambil data Address Package.';
     }
   }
 
@@ -351,6 +417,101 @@ print("---");
     } catch (e) {
       print('Error Get Detail User: $e');
       throw 'Terjadi kesalahan saat mengambil data Detail User.';
+    }
+  }
+
+  static Future<UploadBuktiTopupResponse> uploadBuktiTopup(String date, String nominal,
+      File documentFile) async {
+    try {
+      final token = await storage.read('token');
+      var url = "$baseUrl/client/topup";
+      var request = await http.MultipartRequest('post', Uri.parse(url));
+      request.headers["Content-type"] = 'application/json';
+      request.headers["Authorization"] = 'Bearer $token';
+
+      request.fields['topup_date'] = date;
+      request.fields['topup_nominal'] = nominal;
+      request.files.add(await http.MultipartFile.fromPath(
+        'topup_receipt',
+        documentFile.path,
+      ));
+      print('File path: ${documentFile.path}');
+      print('File exists: ${await documentFile.exists()}');
+
+      var response = await request.send();
+      var responseJson = await http.Response.fromStream(response);
+      print('Status code: ${response.statusCode}');
+      print('Response body: ${responseJson.body}');
+      if (response.statusCode == 200) {
+        return UploadBuktiTopupResponse.fromJson(
+            jsonDecode(responseJson.body));
+      } else {
+        throw "Unable to upload Image";
+      }
+    } catch (e) {
+      print(e);
+      throw Exception("Failed to upload document: $e");
+    }
+  }
+
+  static Future<GetSaldoResponse> getSaldo() async {
+    try {
+      final url = "$baseUrl/client/balance";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ).timeout(const Duration(seconds: 10));
+      });
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return GetSaldoResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Get Saldo: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Saldo: $e');
+      throw 'Terjadi kesalahan saat mengambil data Get Saldo.';
+    }
+  }
+
+  static Future<OrderPackageResponse> orderPackage(Map<String,dynamic> data) async {
+    try {
+      final url = "$baseUrl/orders/store";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.post(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(data)
+        ).timeout(const Duration(seconds: 10));
+      });
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return OrderPackageResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Order package: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Order package: $e');
+      throw 'Terjadi kesalahan saat Order package.';
     }
   }
 

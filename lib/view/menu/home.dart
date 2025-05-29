@@ -2,8 +2,10 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleaning_app/controller/home.dart';
 import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/view/menu/tambah_alamat.dart';
+import 'package:cleaning_app/widget/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -137,7 +139,7 @@ class Home extends GetView<HomeController> {
     return Scaffold(
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
           child: RefreshIndicator(
             onRefresh: controller.refreshPackage,
             child: SingleChildScrollView(
@@ -153,8 +155,8 @@ class Home extends GetView<HomeController> {
                       }, child: Obx(() {
                         return ClipOval(
                           child: SizedBox(
-                            width: 70,
-                            height: 70,
+                            width: 60,
+                            height: 60,
                             child: CachedNetworkImage(
                               imageUrl: profileController.urlAvatar.value,
                               fit: BoxFit.cover,
@@ -169,49 +171,55 @@ class Home extends GetView<HomeController> {
                           ),
                         );
                       })),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Obx(() {
-                            return Text(
-                              "Selamat Pagi ‘${profileController.username}’ !",
-                              style: const TextStyle(
-                                  color: Colors.blue,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w600),
-                            );
-                          }),
-                          const Text("“Buat rumah Anda jadi lebih berkilau.”",
-                              style: TextStyle(
-                                  fontSize: 13, fontWeight: FontWeight.w500)),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.center,
-                          //   children: [
-                          //     const Icon(Icons.location_on, color: Colors.blue),
-                          //     // Location icon
-                          //     const SizedBox(width: 5),
-                          //     GestureDetector(
-                          //         onTap: () {
-                          //           showAddressDialog(context);
-                          //         },
-                          //         child: const Text("Tangerang")),
-                          //     const Icon(Icons.keyboard_arrow_down,
-                          //         color: Colors.black)
-                          //   ],
-                          // ),
-                          // const SizedBox(
-                          //   height: 10,
-                          // )
-                        ],
+                      SizedBox(
+                        width: 10,
                       ),
-                      const Icon(Icons.notifications_none)
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Obx(() {
+                                      return Text(
+                                        "Selamat Pagi ‘${profileController.username}’ !",
+                                        style: const TextStyle(
+                                            color: Colors.blue,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w600),
+                                      );
+                                    }),
+                                    const Text(
+                                        "“Buat rumah Anda jadi lebih berkilau.”",
+                                        style: TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w500)),
+                                  ],
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                const Icon(
+                                  Icons.notifications_none,
+                                  color: Colors.black,
+                                ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            saldoSection(controller: controller,)
+                          ],
+                        ),
+                      )
                     ],
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 10,
                   ),
                   // SizedBox(
                   //   height: 40,
@@ -234,60 +242,62 @@ class Home extends GetView<HomeController> {
                   //   ),
                   // ),
                   SizedBox(
-                    height: 50,
-                    child: Autocomplete<String>(
-                      optionsBuilder: (TextEditingValue textEditingValue) {
-                        if (textEditingValue.text == '') {
-                          return const Iterable<String>.empty();
-                        }
-                        return controller.options
-                            .map((e) => e['category_name'] as String)
-                            .where((String option) {
-                          return option.toLowerCase().contains(
-                            textEditingValue.text.toLowerCase(),
-                          );
-                        });
-                      },
-                      onSelected: (String selection) {
-                        print('You selected: $selection');
+                      height: 50,
+                      child: Autocomplete<String>(
+                        optionsBuilder: (TextEditingValue textEditingValue) {
+                          if (textEditingValue.text == '') {
+                            return const Iterable<String>.empty();
+                          }
+                          return controller.options
+                              .map((e) => e['category_name'] as String)
+                              .where((String option) {
+                            return option.toLowerCase().contains(
+                                  textEditingValue.text.toLowerCase(),
+                                );
+                          });
+                        },
+                        onSelected: (String selection) {
+                          print('You selected: $selection');
 
-                        // Kalau mau dapet pack_id berdasarkan nama terpilih:
-                        var selected = controller.options.firstWhere(
-                              (e) => e['category_name'] == selection,
-                          orElse: () => {},
-                        );
-                        print('Selected ID: ${selected['id']}');
-                        Get.toNamed(
-                          '/detail-package',
-                          arguments: {
-                            'id': selected['id'].toString(),
-                            'title': selection ?? "",
-                          },
-                        );
-                      },
-                      fieldViewBuilder:
-                          (context, textEditingController, focusNode, onFieldSubmitted) {
-                        return TextField(
-                          controller: textEditingController,
-                          focusNode: focusNode,
-                          decoration: InputDecoration(
-                            labelText: 'Cari Layanan Kebersihan',
-                            filled: true,
-                            fillColor: Color(0xfff4f4f4),
-                            enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: Colors.black12)),
-                            focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                borderSide: BorderSide(color: Colors.black12)),
-                            prefixIcon: Icon(Icons.search),
-                            floatingLabelBehavior: FloatingLabelBehavior.never,
-                            contentPadding: EdgeInsets.symmetric(vertical: 0),
-                          ),
-                        );
-                      },
-                    )
-                  ),
+                          // Kalau mau dapet pack_id berdasarkan nama terpilih:
+                          var selected = controller.options.firstWhere(
+                            (e) => e['category_name'] == selection,
+                            orElse: () => {},
+                          );
+                          print('Selected ID: ${selected['id']}');
+                          Get.toNamed(
+                            '/detail-package',
+                            arguments: {
+                              'id': selected['id'].toString(),
+                              'title': selection ?? "",
+                            },
+                          );
+                        },
+                        fieldViewBuilder: (context, textEditingController,
+                            focusNode, onFieldSubmitted) {
+                          return TextField(
+                            controller: textEditingController,
+                            focusNode: focusNode,
+                            decoration: InputDecoration(
+                              labelText: 'Cari Layanan Kebersihan',
+                              filled: true,
+                              fillColor: Color(0xfff4f4f4),
+                              enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide:
+                                      BorderSide(color: Colors.black12)),
+                              focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  borderSide:
+                                      BorderSide(color: Colors.black12)),
+                              prefixIcon: Icon(Icons.search),
+                              floatingLabelBehavior:
+                                  FloatingLabelBehavior.never,
+                              contentPadding: EdgeInsets.symmetric(vertical: 0),
+                            ),
+                          );
+                        },
+                      )),
                   CarouselSlider.builder(
                     carouselController: _carouselController,
                     itemCount: 2,
@@ -390,9 +400,9 @@ class Home extends GetView<HomeController> {
                         }
                         controller.options.value = snapshot.data!.data!
                             .map((e) => {
-                          'category_id': e.id ?? 0,
-                          'category_name': e.categoryName ?? "",
-                        })
+                                  'category_id': e.id ?? 0,
+                                  'category_name': e.categoryName ?? "",
+                                })
                             .toList();
                         return gridPackageList(snapshot);
                       }),
@@ -456,16 +466,40 @@ class Home extends GetView<HomeController> {
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () {
-            print(snapshot.data!.data![index].id.toString());
+            print(snapshot.data!.data![index].categoryName);
             Get.toNamed(
-              '/detail-package',
+              '/detail-category-daily',
               arguments: {
                 'id': snapshot.data!.data![index].id.toString(),
                 'title': snapshot.data!.data![index].categoryName ?? "",
                 'img_url': snapshot.data!.data![index].categoryImage,
-                'description': snapshot.data!.data![index].categoryDescription ?? "",
+                'description':
+                snapshot.data!.data![index].categoryDescription ?? "",
               },
             );
+            // if (snapshot.data!.data![index].categoryName == "Deep Cleaning") {
+            //   Get.toNamed(
+            //     '/detail-category-deep',
+            //     arguments: {
+            //       'id': snapshot.data!.data![index].id.toString(),
+            //       'title': snapshot.data!.data![index].categoryName ?? "",
+            //       'img_url': snapshot.data!.data![index].categoryImage,
+            //       'description':
+            //           snapshot.data!.data![index].categoryDescription ?? "",
+            //     },
+            //   );
+            // } else {
+            //   Get.toNamed(
+            //     '/detail-category-daily',
+            //     arguments: {
+            //       'id': snapshot.data!.data![index].id.toString(),
+            //       'title': snapshot.data!.data![index].categoryName ?? "",
+            //       'img_url': snapshot.data!.data![index].categoryImage,
+            //       'description':
+            //           snapshot.data!.data![index].categoryDescription ?? "",
+            //     },
+            //   );
+            // }
           },
           child: ServiceItem(
             name: snapshot.data!.data![index].categoryName!,
@@ -473,6 +507,70 @@ class Home extends GetView<HomeController> {
           ),
         );
       },
+    );
+  }
+}
+
+class saldoSection extends StatelessWidget {
+  final HomeController controller;
+  const saldoSection({
+    super.key, required this.controller,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 15),
+      decoration: BoxDecoration(
+        color: Colors.blue,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              SvgPicture.asset(
+                '././assets/icon/icon_wallet.svg',
+                height: 18,
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Obx(() {
+                if (controller.isLoading.value) {
+                  return CircularProgressIndicator();
+                }
+                return Text(
+                 Utils.formatCurrency(int.parse(controller.amountSaldo.value)),
+                  style: TextStyle(color: Colors.white),
+                );
+              }),
+              SizedBox(
+                width: 10,
+              ),
+              GestureDetector(
+                  onTap: () {
+                    Get.toNamed('/isi-saldo');
+                  },
+                  child: Icon(
+                    Icons.add_circle,
+                    size: 22,
+                  )),
+            ],
+          ),
+          Row(
+            children: [
+              Icon(
+                Icons.star,
+                size: 22,
+                color: Colors.yellow,
+              ),
+              Text("1556 Point", style: TextStyle(color: Colors.white))
+            ],
+          )
+        ],
+      ),
     );
   }
 }

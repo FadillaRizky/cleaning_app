@@ -101,7 +101,7 @@ class ProfilePage extends StatelessWidget {
                                       profileController.getDetailUser();
                                     }
                                   },
-                                  icon: Icon(Icons.edit))
+                                  icon: Icon(Icons.edit,color:Colors.black))
                             ],
                           ),
                           SizedBox(
@@ -156,9 +156,9 @@ class ProfilePage extends StatelessWidget {
               SizedBox(
                 height: 20,
               ),
-              buildTileMenu(Icon(Icons.check_box_outlined),
+              buildTileMenu(Icon(Icons.check_box_outlined,color: Colors.black),
                   "Berlangganan Prepaid Lebih Hemat Hingga 20%"),
-              buildTileMenu(Icon(Icons.person_outlined), "Member Silver",
+              buildTileMenu(Icon(Icons.person_outlined,color: Colors.black), "Member Silver",
                   subtitle: "Transaksi 35x lagi untuk naik ke Gold"),
               SizedBox(
                 height: 10,
@@ -167,13 +167,13 @@ class ProfilePage extends StatelessWidget {
                 width: 350,
                 child: Row(
                   children: [
-                    buildCardTile(Icon(Icons.airplane_ticket_outlined),
+                    buildCardTile(Icon(Icons.airplane_ticket_outlined,color: Colors.black,),
                         "Kupon Hadiah", "1 Voucher"),
                     SizedBox(
                       width: 10,
                     ),
                     buildCardTile(
-                        Icon(Icons.person_add_alt), "Undang Teman", "0 Teman"),
+                        Icon(Icons.person_add_alt,color: Colors.black), "Undang Teman", "0 Teman"),
                   ],
                 ),
               ),

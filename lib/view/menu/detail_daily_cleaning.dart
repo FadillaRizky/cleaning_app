@@ -1,15 +1,19 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleaning_app/controller/detail_daily_cleaning.dart';
+import 'package:cleaning_app/controller/package.dart';
 import 'package:cleaning_app/model/DetailPackageResponse.dart';
 import 'package:cleaning_app/model/DurationPackageResponse.dart';
+import 'package:cleaning_app/model/PropertyAddressResponse.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
+import 'package:readmore/readmore.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
-class DetailDailyCleaning extends GetView<DetailDailyController> {
+import '../../widget/utils.dart';
+
+class DetailDailyCleaning extends GetView<PackageController> {
   final String id;
   final String title;
 
@@ -53,16 +57,25 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
             } else if (!snapshot.hasData) {
               return const Text('No detail packages found.');
             }
-            final detail = snapshot.data!['data1'] as DetailPackageResponse;
-            final duration = snapshot.data!['data2'] as DurationPackageResponse;
-            return detailPackage(detail,duration, context);
+            final detail =
+                snapshot.data!['data_detail'] as DetailPackageResponse;
+            final duration =
+                snapshot.data!['data_duration'] as DurationPackageResponse;
+            // final property =
+            //     snapshot.data!['data_property'] as PropertyAddressResponse;
+            return detailPackage(detail, duration, context);
           }),
     );
   }
 
   Widget detailPackage(
-      DetailPackageResponse detail, DurationPackageResponse duration ,BuildContext context) {
-    // print("total duration : ${duration.data!.length}");
+      DetailPackageResponse detail,
+      DurationPackageResponse duration,
+      // PropertyAddressResponse property,
+      BuildContext context) {
+    // controller.picName.value = property.data!.first.picName!;
+    // controller.propertyAddress.value = property.data!.first.propertyAddress!;
+    // controller.selectedProperty.value = property.data!.first.id!.toInt();
     return Column(
       children: [
         Expanded(
@@ -92,38 +105,159 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
                         style: TextStyle(
                             fontSize: 20, fontWeight: FontWeight.bold),
                       ),
-                      Text(
+                      ReadMoreText(
                         detail.data!.pack!.packObjectDescription!,
-                        style: TextStyle(fontWeight: FontWeight.w500),
+                        trimLines: 10,
+                        colorClickableText: Colors.blue,
+                        trimMode: TrimMode.Line,
+                        trimCollapsedText: 'Read more',
+                        trimExpandedText: 'Read less',
+                        style: TextStyle(fontSize: 15),
+                        moreStyle: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.blue),
+                        lessStyle: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.blue),
                       ),
                       SizedBox(
                         height: 10,
                       ),
-                      Text(
-                        "Pilih Alamat",
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
-                      ),
-                      ListTile(
-                        contentPadding: EdgeInsets.only(left: 5, right: 0),
-                        leading: Icon(Icons.home),
-                        title: Text(
-                          "Sarah Novianti",
-                          style: TextStyle(fontSize: 15),
-                        ),
-                        subtitle: Text(
-                          "Jl. Cenderawasih Tangerang Banten",
-                          style: TextStyle(fontSize: 13),
-                        ),
-                        trailing: TextButton(
-                          style: ButtonStyle(
-                            overlayColor:
-                                MaterialStateProperty.all(Colors.transparent),
-                          ),
-                          onPressed: () {},
-                          child: Text("Ubah"),
-                        ),
-                      ),
+                      // Text(
+                      //   "Pilih Alamat",
+                      //   style: TextStyle(
+                      //       fontSize: 17, fontWeight: FontWeight.bold),
+                      // ),
+                      // Obx(() {
+                      //   return ListTile(
+                      //     contentPadding: EdgeInsets.only(left: 5, right: 0),
+                      //     leading: Icon(Icons.home),
+                      //     title: Text(
+                      //       controller.picName.value,
+                      //       style: TextStyle(fontSize: 15),
+                      //     ),
+                      //     subtitle: Text(
+                      //       controller.propertyAddress.value,
+                      //       style: TextStyle(fontSize: 13),
+                      //     ),
+                      //     trailing: TextButton(
+                      //       style: ButtonStyle(
+                      //         overlayColor:
+                      //             MaterialStateProperty.all(Colors.transparent),
+                      //       ),
+                      //       onPressed: () {
+                      //         showDialog(
+                      //           context: context,
+                      //           builder: (BuildContext context) {
+                      //             return Dialog(
+                      //               shape: RoundedRectangleBorder(
+                      //                 borderRadius: BorderRadius.circular(
+                      //                     10.0), // Sudut membulat
+                      //               ),
+                      //               child: Padding(
+                      //                 padding: const EdgeInsets.all(15),
+                      //                 child: Column(
+                      //                   mainAxisSize: MainAxisSize.min,
+                      //                   children: [
+                      //                     // Title for the dialog
+                      //                     Row(
+                      //                       children: [
+                      //                         Text(
+                      //                           'Pilih Alamat',
+                      //                           style: TextStyle(fontSize: 18),
+                      //                         ),
+                      //                       ],
+                      //                     ),
+                      //
+                      //                     SizedBox(height: 10),
+                      //
+                      //                     // ListView.builder for displaying the addresses
+                      //                     SizedBox(
+                      //                       height: 200,
+                      //                       // Set the height of the list view
+                      //                       child: ListView.builder(
+                      //                         itemCount: property.data!.length,
+                      //                         itemBuilder: (context, index) {
+                      //                           return Obx(() {
+                      //                             return ListTile(
+                      //                               contentPadding:
+                      //                                   EdgeInsets.only(
+                      //                                       left: 5, right: 0),
+                      //                               leading: Icon(Icons.home),
+                      //                               title: Text(
+                      //                                 property.data![index]
+                      //                                     .picName!,
+                      //                                 style: TextStyle(
+                      //                                     fontSize: 13),
+                      //                               ),
+                      //                               subtitle: Text(
+                      //                                 property.data![index]
+                      //                                     .propertyAddress!,
+                      //                                 style: TextStyle(
+                      //                                     fontSize: 12),
+                      //                               ),
+                      //                               trailing: Radio(
+                      //                                   value: property
+                      //                                       .data![index].id,
+                      //                                   groupValue: controller
+                      //                                       .selectedProperty
+                      //                                       .value,
+                      //                                   onChanged: (value) {
+                      //                                     controller
+                      //                                             .selectedProperty
+                      //                                             .value =
+                      //                                         value!.toInt();
+                      //                                     controller.picName
+                      //                                             .value =
+                      //                                         property
+                      //                                             .data![index]
+                      //                                             .picName!;
+                      //                                     controller
+                      //                                             .propertyAddress
+                      //                                             .value =
+                      //                                         property
+                      //                                             .data![index]
+                      //                                             .propertyAddress!;
+                      //                                   }),
+                      //                             );
+                      //                           });
+                      //                         },
+                      //                       ),
+                      //                     ),
+                      //
+                      //                     // Button to close the dialog
+                      //                     SizedBox(height: 20),
+                      //                     SizedBox(
+                      //                         width: double.infinity,
+                      //                         child: ElevatedButton(
+                      //                             style: ElevatedButton.styleFrom(
+                      //                                 backgroundColor:
+                      //                                     Colors.blue,
+                      //                                 foregroundColor:
+                      //                                     Colors.white,
+                      //                                 shape:
+                      //                                     RoundedRectangleBorder(
+                      //                                         borderRadius:
+                      //                                             BorderRadius
+                      //                                                 .circular(
+                      //                                                     10))),
+                      //                             onPressed: () {
+                      //                               Navigator.pop(context);
+                      //                             },
+                      //                             child: Text("Simpan")))
+                      //                   ],
+                      //                 ),
+                      //               ),
+                      //             );
+                      //           },
+                      //         );
+                      //       },
+                      //       child: Text("Ubah"),
+                      //     ),
+                      //   );
+                      // }),
                       Divider(),
                       Text(
                         "Durasi Pengerjaan",
@@ -133,163 +267,135 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
                       ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: 1,
+                        itemCount: duration.data!.length,
                         itemBuilder: (context, index) {
                           // print("duration.data!.length");/
                           // print(duration.data!.length);
                           return selectDuration(
                             controller: controller,
-                            title: duration.data![index].packHour.toString(),
-                            normalPrice: duration.data![index].packPriceDisc.toString(),
-                            realPrice: duration.data![index].packPrice.toString(),
+                            title: duration.data![index].packHour!.toInt(),
+                            normalPrice:
+                                duration.data![index].packPrice!.toInt(),
+                            realPrice:
+                                duration.data![index].packPriceDisc!.toInt(),
                           );
                         },
                       ),
-                      // selectDuration(
-                      //   controller: controller,
-                      //   title: "2 Jam",
-                      //   normalPrice: "125.000",
-                      //   realPrice: "100.000",
-                      // ),
-                      // selectDuration(
-                      //   controller: controller,
-                      //   title: "3 Jam",
-                      //   normalPrice: "175.000",
-                      //   realPrice: "150.000",
-                      // ),
-                      // selectDuration(
-                      //   controller: controller,
-                      //   title: "4 Jam",
-                      //   normalPrice: "225.000",
-                      //   realPrice: "200.000",
-                      // ),
-                      // selectDuration(
-                      //   controller: controller,
-                      //   title: "5 Jam",
-                      //   normalPrice: "260.000",
-                      //   realPrice: "250.000",
-                      // ),
-                      // selectDuration(
-                      //   controller: controller,
-                      //   title: "6 Jam",
-                      //   normalPrice: "350.000",
-                      //   realPrice: "300.000",
-                      // ),
                       Divider(),
-                      Text(
-                        "Pilih Waktu Layanan",
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Tanggal",
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      TextField(
-                        controller: controller.dateController,
-                        decoration: InputDecoration(
-                          hintText: "Pilih Tanggal",
-                          hintStyle: TextStyle(
-                            color: Colors.grey,
-                          ),
-                          suffixIcon: Icon(
-                            Icons.calendar_month_rounded,
-                            color: Colors.grey,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 1),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          filled: true,
-                          fillColor: Color(0xfff7f9fc),
-                        ),
-                        readOnly: true,
-                        onTap: () {
-                          controller.selectDate(context);
-                        },
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text(
-                        "Waktu",
-                        style: TextStyle(fontWeight: FontWeight.w600),
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      TextField(
-                        controller: controller.timeController,
-                        decoration: InputDecoration(
-                          hintText: "Pilih Waktu",
-                          hintStyle: TextStyle(
-                            color: Colors.grey,
-                          ),
-                          suffixIcon: Icon(
-                            Icons.access_time_outlined,
-                            color: Colors.grey,
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 1),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          disabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.shade300),
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          filled: true,
-                          fillColor: Color(0xfff7f9fc),
-                        ),
-                        readOnly: true,
-                        onTap: () {
-                          // controller.selectTime(context);
-                          Navigator.push(
-                              context,
-                              showPicker(
-                                context: context,
-                                value: Time(hour: 11, minute: 30, second: 20),
-                                sunrise: TimeOfDay(hour: 6, minute: 0),
-                                // optional
-                                sunset: TimeOfDay(hour: 18, minute: 0),
-                                // optional
-                                is24HrFormat: true,
-                                duskSpanInMinutes: 120,
-                                // optional
-                                minHour: 8,
-                                maxHour: 18,
-                                onChange: (time) {
-                                  String formattedTime =
-                                      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-                                  controller.timeController.text =
-                                      formattedTime;
-                                },
-                              ));
-                        },
-                      ),
-                      SizedBox(
-                        height: 5,
-                      ),
-                      Divider(),
+                      // Text(
+                      //   "Pilih Waktu Layanan",
+                      //   style: TextStyle(
+                      //       fontSize: 17, fontWeight: FontWeight.bold),
+                      // ),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                      // Text(
+                      //   "Tanggal",
+                      //   style: TextStyle(fontWeight: FontWeight.w600),
+                      // ),
+                      // SizedBox(
+                      //   height: 5,
+                      // ),
+                      // TextField(
+                      //   controller: controller.dateController,
+                      //   decoration: InputDecoration(
+                      //     hintText: "Pilih Tanggal",
+                      //     hintStyle: TextStyle(
+                      //       color: Colors.grey,
+                      //     ),
+                      //     suffixIcon: Icon(
+                      //       Icons.calendar_month_rounded,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderSide:
+                      //           BorderSide(color: Colors.grey, width: 1),
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(color: Colors.grey.shade300),
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //     disabledBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(color: Colors.grey.shade300),
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //     filled: true,
+                      //     fillColor: Color(0xfff7f9fc),
+                      //   ),
+                      //   readOnly: true,
+                      //   onTap: () {
+                      //     controller.selectDate(context);
+                      //   },
+                      // ),
+                      // SizedBox(
+                      //   height: 10,
+                      // ),
+                      // Text(
+                      //   "Waktu",
+                      //   style: TextStyle(fontWeight: FontWeight.w600),
+                      // ),
+                      // SizedBox(
+                      //   height: 5,
+                      // ),
+                      // TextField(
+                      //   controller: controller.timeController,
+                      //   decoration: InputDecoration(
+                      //     hintText: "Pilih Waktu",
+                      //     hintStyle: TextStyle(
+                      //       color: Colors.grey,
+                      //     ),
+                      //     suffixIcon: Icon(
+                      //       Icons.access_time_outlined,
+                      //       color: Colors.grey,
+                      //     ),
+                      //     focusedBorder: OutlineInputBorder(
+                      //       borderSide:
+                      //           BorderSide(color: Colors.grey, width: 1),
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //     enabledBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(color: Colors.grey.shade300),
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //     disabledBorder: OutlineInputBorder(
+                      //       borderSide: BorderSide(color: Colors.grey.shade300),
+                      //       borderRadius: BorderRadius.circular(10),
+                      //     ),
+                      //     filled: true,
+                      //     fillColor: Color(0xfff7f9fc),
+                      //   ),
+                      //   readOnly: true,
+                      //   onTap: () {
+                      //     // controller.selectTime(context);
+                      //     Navigator.push(
+                      //         context,
+                      //         showPicker(
+                      //           context: context,
+                      //           value: Time(hour: 11, minute: 30, second: 20),
+                      //           sunrise: TimeOfDay(hour: 6, minute: 0),
+                      //           // optional
+                      //           sunset: TimeOfDay(hour: 18, minute: 0),
+                      //           // optional
+                      //           is24HrFormat: true,
+                      //           duskSpanInMinutes: 120,
+                      //           // optional
+                      //           minHour: 8,
+                      //           maxHour: 18,
+                      //           onChange: (time) {
+                      //             String formattedTime =
+                      //                 '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+                      //             controller.timeController.text =
+                      //                 formattedTime;
+                      //           },
+                      //         ));
+                      //   },
+                      // ),
+                      // SizedBox(
+                      //   height: 5,
+                      // ),
+                      // Divider(),
                       Text(
                         "Informasi Layanan",
                         style: TextStyle(
@@ -303,6 +409,8 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
                           cardLayanan(
                             path: '././assets/icon/estimasi_pengerjaan.svg',
                             title: 'Estimasi Pengerjaan',
+                            description:
+                                detail.data!.pack!.packProcedureDescription!,
                           ),
                           SizedBox(
                             width: 10,
@@ -310,6 +418,7 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
                           cardLayanan(
                             path: '././assets/icon/detail_pengerjaan.svg',
                             title: 'Detail Pengerjaan',
+                            description: detail.data!.pack!.packJobDescription!,
                           ),
                           SizedBox(
                             width: 10,
@@ -317,6 +426,8 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
                           cardLayanan(
                             path: '././assets/icon/peralatan.svg',
                             title: 'Peralatan',
+                            description:
+                                detail.data!.pack!.packObjectDescription!,
                           ),
                         ],
                       )
@@ -337,7 +448,7 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
             child: Obx(() {
               return Column(
                 children: [
-                  controller.selectedDuration.value != ""
+                  controller.selectedPriceDuration.value != ""
                       ? Column(
                           children: [
                             Obx(() {
@@ -352,7 +463,7 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
                                         color: Colors.grey),
                                   ),
                                   Text(
-                                      "Rp ${controller.selectedDuration.value}",
+                                      "Rp ${controller.selectedDiscount.value}",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold)),
@@ -383,7 +494,11 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
                                       fontWeight: FontWeight.w600,
                                       color: Colors.grey),
                                 ),
-                                Text("-Rp 100.000",
+                                Text(
+                                    Utils.formatCurrency(int.parse(
+                                            controller.selectedPriceDuration.value) -
+                                        int.parse(
+                                            controller.selectedDiscount.value)),
                                     style: TextStyle(
                                         fontSize: 14,
                                         fontWeight: FontWeight.bold,
@@ -397,7 +512,10 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
                                   "Total",
                                   style: TextStyle(fontWeight: FontWeight.w600),
                                 ),
-                                Text("Rp 302.000",
+                                Text(
+                                    Utils.formatCurrency(int.parse(
+                                            controller.selectedPriceDuration.value) +
+                                        2000),
                                     style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold)),
@@ -413,7 +531,7 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: controller.selectedDuration.value != ""
+                        backgroundColor: controller.selectedPriceDuration.value != ""
                             ? Colors.blue
                             : Colors.grey,
                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -422,172 +540,11 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
                           side: BorderSide.none,
                         ),
                       ),
-                      onPressed: controller.selectedDuration.value != ""
+                      onPressed: controller.selectedPriceDuration.value != ""
                           ? () {
-                              Get.toNamed("/pembayaran");
-                              // showModalBottomSheet(
-                              //   context: context,
-                              //   isScrollControlled: true,
-                              //   backgroundColor:
-                              //       Colors.transparent, // make the background transparent
-                              //   builder: (context) {
-                              //     return Container(
-                              //       decoration: BoxDecoration(
-                              //         color: Colors.white,
-                              //         borderRadius: BorderRadius.only(
-                              //           topLeft: Radius.circular(20),
-                              //           topRight: Radius.circular(20),
-                              //         ),
-                              //       ),
-                              //       child: Padding(
-                              //         padding: const EdgeInsets.all(16.0),
-                              //         child: Column(
-                              //           mainAxisSize: MainAxisSize.min,
-                              //           crossAxisAlignment: CrossAxisAlignment.start,
-                              //           children: [
-                              //             Row(
-                              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //               children: [
-                              //                 Text(
-                              //                   'Daily Cleaning',
-                              //                   style: TextStyle(
-                              //                       fontSize: 18,
-                              //                       fontWeight: FontWeight.bold),
-                              //                 ),
-                              //                 GestureDetector(
-                              //                     onTap: () {
-                              //                       Navigator.pop(context);
-                              //                     },
-                              //                     child: Icon(Icons.close))
-                              //               ],
-                              //             ),
-                              //             SizedBox(
-                              //               height: 20,
-                              //             ),
-                              //             Text(
-                              //               "Peralatan",
-                              //               style: TextStyle(fontWeight: FontWeight.bold),
-                              //             ),
-                              //             ListTile(
-                              //               contentPadding: EdgeInsets.zero,
-                              //               leading: Radio(
-                              //                   value: true,
-                              //                   groupValue: () {},
-                              //                   onChanged: (t) {}),
-                              //               title: Text("Dengan Alat"),
-                              //               subtitle: Text(
-                              //                   "Peralatan dan perlengkapan untuk pembersihan dibawa oleh mitra."),
-                              //             ),
-                              //             ListTile(
-                              //               contentPadding: EdgeInsets.zero,
-                              //               leading: Radio(
-                              //                   value: true,
-                              //                   groupValue: () {},
-                              //                   onChanged: (t) {}),
-                              //               title: Text("Tanpa Alat"),
-                              //               subtitle: Text(
-                              //                   "Peralatan dan perlengkapan untuk pembersihan hunian umum disediakan oleh pelanggan."),
-                              //             ),
-                              //             SizedBox(
-                              //               height: 20,
-                              //             ),
-                              //             Row(
-                              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //               children: [
-                              //                 Text(
-                              //                   "Durasi Pengerjaan (Jam)",
-                              //                   style: TextStyle(fontWeight: FontWeight.bold),
-                              //                 ),
-                              //                 Row(
-                              //                   children: [
-                              //                     GestureDetector(
-                              //                       onTap: () {},
-                              //                       child: Container(
-                              //                         width: 30,
-                              //                         height: 30,
-                              //                         decoration: BoxDecoration(
-                              //                             borderRadius: BorderRadius.only(
-                              //                                 topLeft: Radius.circular(5),
-                              //                                 bottomLeft: Radius.circular(5)),
-                              //                             border: Border(
-                              //                                 top: BorderSide(width: 0.5),
-                              //                                 left: BorderSide(width: 0.5),
-                              //                                 bottom:
-                              //                                     BorderSide(width: 0.5))),
-                              //                         child: Center(child: Text("-")),
-                              //                       ),
-                              //                     ),
-                              //                     Container(
-                              //                       width: 30,
-                              //                       height: 30,
-                              //                       decoration: BoxDecoration(
-                              //                           border: Border.all(width: 0.5)),
-                              //                       child: Center(child: Text("2")),
-                              //                     ),
-                              //                     Container(
-                              //                       width: 30,
-                              //                       height: 30,
-                              //                       decoration: BoxDecoration(
-                              //                           borderRadius: BorderRadius.only(
-                              //                               topRight: Radius.circular(5),
-                              //                               bottomRight: Radius.circular(5)),
-                              //                           border: Border(
-                              //                               top: BorderSide(width: 0.5),
-                              //                               right: BorderSide(width: 0.5),
-                              //                               bottom: BorderSide(width: 0.5))),
-                              //                       child: Center(child: Text("+")),
-                              //                     ),
-                              //                   ],
-                              //                 )
-                              //               ],
-                              //             ),
-                              //             SizedBox(
-                              //               height: 10,
-                              //             ),
-                              //             Row(
-                              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              //               children: [
-                              //                 Text(
-                              //                   "Diskon 10%",
-                              //                   style: TextStyle(
-                              //                       fontStyle: FontStyle.italic,
-                              //                       color: Colors.blue),
-                              //                 ),
-                              //                 Text("Rp 330.000",
-                              //                     style: TextStyle(
-                              //                         fontSize: 16,
-                              //                         fontWeight: FontWeight.bold)),
-                              //               ],
-                              //             ),
-                              //             SizedBox(
-                              //               height: 20,
-                              //             ),
-                              //             SizedBox(
-                              //               width: double.infinity,
-                              //               child: ElevatedButton(
-                              //                   style: ElevatedButton.styleFrom(
-                              //                     backgroundColor: Colors.blue,
-                              //                     padding: const EdgeInsets.symmetric(
-                              //                         vertical: 12),
-                              //                     shape: RoundedRectangleBorder(
-                              //                       borderRadius: BorderRadius.circular(10),
-                              //                       side: BorderSide.none,
-                              //                     ),
-                              //                   ),
-                              //                   onPressed: () {
-                              //                     Navigator.pop(context);
-                              //                   },
-                              //                   child: Text("Lanjutkan",
-                              //                       style: TextStyle(
-                              //                         color: Colors.white,
-                              //                       ))),
-                              //             )
-                              //           ],
-                              //         ),
-                              //       ),
-                              //     );
-                              //   },
-                              // );
+                        controller.selectedPackageName.value = detail.data!.pack!.packName!;
+                        controller.selectedPackageImg.value = detail.data!.pack!.packBannerPath ?? "";
+                        Get.toNamed("/pemesanan");
                             }
                           : null,
                       child: Text(
@@ -617,42 +574,83 @@ class DetailDailyCleaning extends GetView<DetailDailyController> {
 class cardLayanan extends StatelessWidget {
   final String path;
   final String title;
+  final String description;
 
   const cardLayanan({
     super.key,
     required this.path,
     required this.title,
+    required this.description,
   });
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: Container(
-          padding: EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: Colors.blue,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              SvgPicture.asset(
-                path,
-                fit: BoxFit.contain,
-                height: 40,
-              ),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
+      child: GestureDetector(
+        onTap: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10.0), // Sudut membulat
                 ),
-              )
-            ],
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: SizedBox(
+                    height: 350,
+                    width: double.infinity,
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                          Text(title,maxLines: 2,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold),),
+                          GestureDetector(
+                              onTap: (){
+                                Get.back();
+                              },
+                              child: Icon(Icons.close,color: Colors.black,))
+                        ],),
+                        Divider(),
+                        Expanded(
+                            child:
+                                SingleChildScrollView(child: Text(description)))
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+        child: AspectRatio(
+          aspectRatio: 1,
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                SvgPicture.asset(
+                  path,
+                  fit: BoxFit.contain,
+                  height: 40,
+                ),
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -661,9 +659,9 @@ class cardLayanan extends StatelessWidget {
 }
 
 class selectDuration extends StatelessWidget {
-  final String title;
-  final String normalPrice;
-  final String realPrice;
+  final int title;
+  final int normalPrice;
+  final int realPrice;
 
   const selectDuration({
     super.key,
@@ -673,7 +671,7 @@ class selectDuration extends StatelessWidget {
     required this.realPrice,
   });
 
-  final DetailDailyController controller;
+  final PackageController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -688,7 +686,7 @@ class selectDuration extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                "Rp $normalPrice",
+                Utils.formatCurrency(normalPrice).toString(),
                 style: TextStyle(
                   color: Colors.grey,
                   fontSize: 12,
@@ -696,14 +694,16 @@ class selectDuration extends StatelessWidget {
                 ),
               ),
               SizedBox(width: 8),
-              Text("Rp $realPrice",
+              Text(Utils.formatCurrency(realPrice).toString(),
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
             ],
           ),
-          value: realPrice,
-          groupValue: controller.selectedDuration.value,
+          value: realPrice.toString(),
+          groupValue: controller.selectedPriceDuration.value,
           onChanged: (value) {
-            controller.selectedDuration.value = value!;
+            controller.selectedPriceDuration.value = value!;
+            controller.selectedDiscount.value = normalPrice.toString();
+            controller.selectedDuration.value = title.toString();
           });
     });
   }
