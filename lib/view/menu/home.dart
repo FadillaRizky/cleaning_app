@@ -2,9 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleaning_app/controller/home.dart';
 import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/view/menu/tambah_alamat.dart';
+import 'package:cleaning_app/widget/cached_image.dart';
 import 'package:cleaning_app/widget/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -13,440 +15,331 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import '../../model/ListCategoryPackageResponse.dart';
 
 class Home extends GetView<HomeController> {
-  String selectedLocation = "Tangerang"; // Default selected value
-  List<String> locations = ["Tangerang", "Jakarta", "Bandung", "Surabaya"];
   final CarouselSliderController _carouselController =
       CarouselSliderController();
 
   final ProfileController profileController = Get.find<ProfileController>();
 
-  void showAddressDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        String selectedAddress =
-            "Rumah"; // Example state variable for selection
-
-        return Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-            child: Column(
-              // mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Header
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
-                      "Alamat Kamu",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-
-                // Add Address Button
-                TextButton.icon(
-                  onPressed: () {
-                    Get.to(const TambahAlamat());
-                  },
-                  icon: const Icon(Icons.add),
-                  label: const Text("Tambah Alamat"),
-                ),
-
-                const Divider(),
-
-                // Address List
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        ListTile(
-                          leading: const Icon(Icons.home),
-                          title: Row(
-                            children: [
-                              const Text("Rumah",
-                                  style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                              const SizedBox(width: 8),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: const Text(
-                                  "Alamat Utama",
-                                  style: TextStyle(
-                                      fontSize: 8, color: Colors.black54),
-                                ),
-                              ),
-                            ],
-                          ),
-                          subtitle: const Text(
-                              "Tangerang\nJl. Cedrawasih\nTangerang, Banten\nIndonesia"),
-                          trailing: Radio<String>(
-                            value: "Rumah",
-                            groupValue: selectedAddress,
-                            onChanged: (value) {
-                              selectedAddress = value!;
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                const SizedBox(height: 50),
-
-                // Confirm Button
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black87,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                      padding: const EdgeInsets.symmetric(vertical: 15),
-                    ),
-                    onPressed: () {
-                      // Handle selection
-                      Navigator.pop(context);
-                    },
-                    child: const Text("Pilih Alamat",
-                        style: TextStyle(color: Colors.white)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-          child: RefreshIndicator(
-            onRefresh: controller.refreshPackage,
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      GestureDetector(onTap: () {
-                        Get.toNamed('/profile');
-                      }, child: Obx(() {
-                        return ClipOval(
-                          child: SizedBox(
-                            width: 60,
-                            height: 60,
-                            child: CachedNetworkImage(
-                              imageUrl: profileController.urlAvatar.value,
-                              fit: BoxFit.cover,
-                              placeholder: (context, url) =>
-                                  const CircularProgressIndicator(),
-                              errorWidget: (context, url, error) => const Icon(
-                                Icons.person,
-                                size: 60,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          ),
-                        );
-                      })),
-                      SizedBox(
-                        width: 10,
+        child: GetBuilder<HomeController>(
+          builder: (context) {
+            return RefreshIndicator(
+              onRefresh: controller.refreshPackage,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)
                       ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          GestureDetector(onTap: ()async {
+                            var result =
+                                await Get.toNamed("/edit-profile");
+                            if (result == 'refresh') {
+                              profileController.getDetailUser();
+                            }
+                          }, child: Obx(() {
+                            return ClipOval(
+                              child: CachedImage(imgUrl: profileController.urlAvatar.value, height: 60, width: 60),
+                            );
+                          })),
+                          SizedBox(
+                            width: 10,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Obx(() {
-                                      return Text(
-                                        "Selamat Pagi ‘${profileController.username}’ !",
-                                        style: const TextStyle(
-                                            color: Colors.blue,
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600),
-                                      );
-                                    }),
-                                    const Text(
-                                        "“Buat rumah Anda jadi lebih berkilau.”",
-                                        style: TextStyle(
-                                            fontSize: 13,
-                                            fontWeight: FontWeight.w500)),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Obx(() {
+                                          return Text(
+                                            "Selamat Pagi ‘${profileController.username}’ !",
+                                            style: const TextStyle(
+                                                color: Colors.blue,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600),
+                                          );
+                                        }),
+                                        const Text(
+                                            "“Buat rumah Anda jadi lebih berkilau.”",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.w500)),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    const Icon(
+                                      Icons.notifications_none,
+                                      color: Colors.black,
+                                    ),
                                   ],
                                 ),
                                 SizedBox(
-                                  width: 10,
+                                  height: 5,
                                 ),
-                                const Icon(
-                                  Icons.notifications_none,
-                                  color: Colors.black,
+                                saldoSection(controller: controller,)
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15),
+                      child: Column(
+                        children: [
+                          SizedBox(
+                              height: 50,
+                              child: Autocomplete<String>(
+                                optionsBuilder: (TextEditingValue textEditingValue) {
+                                  if (textEditingValue.text == '') {
+                                    return const Iterable<String>.empty();
+                                  }
+                                  return controller.options
+                                      .map((e) => e['category_name'] as String)
+                                      .where((String option) {
+                                    return option.toLowerCase().contains(
+                                          textEditingValue.text.toLowerCase(),
+                                        );
+                                  });
+                                },
+                                onSelected: (String selection) {
+                                  print('You selected: $selection');
+
+                                  // Kalau mau dapet pack_id berdasarkan nama terpilih:
+                                  var selected = controller.options.firstWhere(
+                                    (e) => e['category_name'] == selection,
+                                    orElse: () => {},
+                                  );
+                                  print('Selected ID: ${selected['id']}');
+                                  Get.toNamed(
+                                    '/detail-package',
+                                    arguments: {
+                                      'id': selected['id'].toString(),
+                                      'title': selection ?? "",
+                                    },
+                                  );
+                                },
+                                fieldViewBuilder: (context, textEditingController,
+                                    focusNode, onFieldSubmitted) {
+                                  return TextField(
+                                    controller: textEditingController,
+                                    focusNode: focusNode,
+                                    decoration: InputDecoration(
+                                      labelText: 'Cari Layanan Kebersihan',
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          borderSide:
+                                              BorderSide(color: Colors.black12)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          borderSide:
+                                              BorderSide(color: Colors.black12)),
+                                      prefixIcon: Icon(Icons.search),
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.never,
+                                      contentPadding: EdgeInsets.symmetric(vertical: 0),
+                                    ),
+                                  );
+                                },
+                              )),
+                          CarouselSlider.builder(
+                            carouselController: _carouselController,
+                            itemCount: 2,
+                            itemBuilder: (context, index, realIndex) {
+                              return Image.asset("assets/promo.png");
+                            },
+                            options: CarouselOptions(
+                              viewportFraction: 1,
+                              enlargeCenterPage: false,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 3),
+                              onPageChanged: (index, reason) {
+                                controller.currentIndex.value = index;
+                              },
+                            ),
+                          ),
+                          Obx(() {
+                            return Container(
+                              child: Center(
+                                child: AnimatedSmoothIndicator(
+                                  activeIndex: controller.currentIndex.value,
+                                  count: 2,
+                                  effect: const WormEffect(dotHeight: 10, dotWidth: 10),
+                                ),
+                              ),
+                            );
+                          }),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      "  DISCOVER SERVICES",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    TextButton(
+                                        onPressed: () {},
+                                        child: const Text(
+                                          "Hide All",
+                                          style: TextStyle(
+                                            decoration: TextDecoration.underline,
+                                            decorationColor: Colors.blue,
+                                            color: Colors.blue, // Text color
+                                          ),
+                                        ))
+                                  ],
+                                ),
+                                FutureBuilder(
+                                    future: controller.futurePackageList,
+                                    builder: (context,
+                                        AsyncSnapshot<ListCategoryPackageResponse> snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return Skeletonizer(
+                                          child: GridView.builder(
+                                            shrinkWrap: true,
+                                            physics: const NeverScrollableScrollPhysics(),
+                                            gridDelegate:
+                                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 4, // 3 columns
+                                              childAspectRatio: 1, // Adjust item height
+                                              crossAxisSpacing: 15,
+                                              mainAxisSpacing: 15,
+                                            ),
+                                            itemCount: 4,
+                                            itemBuilder: (context, index) {
+                                              return Column(
+                                                children: [
+                                                  Container(
+                                                    width: 42,
+                                                    height: 42,
+                                                    decoration: const BoxDecoration(
+                                                      color: Colors.black12,
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                  ),
+                                                  const SizedBox(height: 5),
+                                                  const Text(
+                                                    "Service",
+                                                    textAlign: TextAlign.center,
+                                                    maxLines: 2,
+                                                    style: TextStyle(
+                                                        fontSize: 12,
+                                                        fontWeight: FontWeight.w500,
+                                                        overflow: TextOverflow.ellipsis),
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          ),
+                                        ); // loading state
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else if (!snapshot.hasData ||
+                                          snapshot.data!.data!.isEmpty) {
+                                        return const Text('No packages found.');
+                                      }
+                                      controller.options.value = snapshot.data!.data!
+                                          .map((e) => {
+                                                'category_id': e.id ?? 0,
+                                                'category_name': e.categoryName ?? "",
+                                              })
+                                          .toList();
+                                      return gridPackageList(snapshot);
+                                    }),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 15,
+                          ),
+                          Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    const Text(
+                                      "BEST SELLER SERVICES",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    TextButton(
+                                        onPressed: () {},
+                                        child: const Text(
+                                          "Hide All",
+                                          style: TextStyle(
+                                            decoration: TextDecoration.underline,
+                                            decorationColor: Colors.blue,
+                                            color: Colors.blue, // Text color
+                                          ),
+                                        ))
+                                  ],
+                                ),
+                                GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2, // 3 columns
+                                    childAspectRatio: 1.5, // Adjust item height
+                                    crossAxisSpacing: 10,
+                                    mainAxisSpacing: 10,
+                                  ),
+                                  itemCount: 4,
+                                  itemBuilder: (context, index) {
+                                    return const ServiceCard(
+                                      title: "Soon",
+                                      imageUrl: "assets/promo.png",
+                                    );
+                                  },
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            saldoSection(controller: controller,)
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  // SizedBox(
-                  //   height: 40,
-                  //   child: SearchBar(
-                  //     controller: TextEditingController(),
-                  //     // onChanged: controller.updateSearchQuery,
-                  //     leading: const Icon(Icons.search),
-                  //     elevation: const WidgetStatePropertyAll(0),
-                  //     backgroundColor:
-                  //         const WidgetStatePropertyAll(Color(0xfff4f4f4)),
-                  //     hintText: 'Cari Layanan Kebersihan',
-                  //     hintStyle: WidgetStatePropertyAll(
-                  //       TextStyle(color: Colors.grey[500], fontSize: 14),
-                  //     ),
-                  //     shape: WidgetStatePropertyAll(
-                  //       RoundedRectangleBorder(
-                  //           borderRadius: BorderRadius.circular(10),
-                  //           side: const BorderSide(color: Colors.black12)),
-                  //     ),
-                  //   ),
-                  // ),
-                  SizedBox(
-                      height: 50,
-                      child: Autocomplete<String>(
-                        optionsBuilder: (TextEditingValue textEditingValue) {
-                          if (textEditingValue.text == '') {
-                            return const Iterable<String>.empty();
-                          }
-                          return controller.options
-                              .map((e) => e['category_name'] as String)
-                              .where((String option) {
-                            return option.toLowerCase().contains(
-                                  textEditingValue.text.toLowerCase(),
-                                );
-                          });
-                        },
-                        onSelected: (String selection) {
-                          print('You selected: $selection');
-
-                          // Kalau mau dapet pack_id berdasarkan nama terpilih:
-                          var selected = controller.options.firstWhere(
-                            (e) => e['category_name'] == selection,
-                            orElse: () => {},
-                          );
-                          print('Selected ID: ${selected['id']}');
-                          Get.toNamed(
-                            '/detail-package',
-                            arguments: {
-                              'id': selected['id'].toString(),
-                              'title': selection ?? "",
-                            },
-                          );
-                        },
-                        fieldViewBuilder: (context, textEditingController,
-                            focusNode, onFieldSubmitted) {
-                          return TextField(
-                            controller: textEditingController,
-                            focusNode: focusNode,
-                            decoration: InputDecoration(
-                              labelText: 'Cari Layanan Kebersihan',
-                              filled: true,
-                              fillColor: Color(0xfff4f4f4),
-                              enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide:
-                                      BorderSide(color: Colors.black12)),
-                              focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  borderSide:
-                                      BorderSide(color: Colors.black12)),
-                              prefixIcon: Icon(Icons.search),
-                              floatingLabelBehavior:
-                                  FloatingLabelBehavior.never,
-                              contentPadding: EdgeInsets.symmetric(vertical: 0),
-                            ),
-                          );
-                        },
-                      )),
-                  CarouselSlider.builder(
-                    carouselController: _carouselController,
-                    itemCount: 2,
-                    itemBuilder: (context, index, realIndex) {
-                      return Image.asset("assets/promo.png");
-                    },
-                    options: CarouselOptions(
-                      viewportFraction: 1,
-                      enlargeCenterPage: false,
-                      autoPlay: true,
-                      autoPlayInterval: const Duration(seconds: 3),
-                      onPageChanged: (index, reason) {
-                        controller.currentIndex.value = index;
-                      },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  Obx(() {
-                    return Container(
-                      margin: const EdgeInsets.only(top: 10),
-                      child: Center(
-                        child: AnimatedSmoothIndicator(
-                          activeIndex: controller.currentIndex.value,
-                          count: 2,
-                          effect: const WormEffect(dotHeight: 10, dotWidth: 10),
-                        ),
-                      ),
-                    );
-                  }),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "DISCOVER SERVICES",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "Hide All",
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              decorationColor: Colors.blue,
-                              color: Colors.blue, // Text color
-                            ),
-                          ))
-                    ],
-                  ),
-                  FutureBuilder(
-                      future: controller.futurePackageList,
-                      builder: (context,
-                          AsyncSnapshot<ListCategoryPackageResponse> snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Skeletonizer(
-                            child: GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 4, // 3 columns
-                                childAspectRatio: 1, // Adjust item height
-                                crossAxisSpacing: 15,
-                                mainAxisSpacing: 15,
-                              ),
-                              itemCount: 4,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    Container(
-                                      width: 42,
-                                      height: 42,
-                                      decoration: const BoxDecoration(
-                                        color: Colors.black12,
-                                        shape: BoxShape.circle,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    const Text(
-                                      "Service",
-                                      textAlign: TextAlign.center,
-                                      maxLines: 2,
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          overflow: TextOverflow.ellipsis),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                          ); // loading state
-                        } else if (snapshot.hasError) {
-                          return Text('Error: ${snapshot.error}');
-                        } else if (!snapshot.hasData ||
-                            snapshot.data!.data!.isEmpty) {
-                          return const Text('No packages found.');
-                        }
-                        controller.options.value = snapshot.data!.data!
-                            .map((e) => {
-                                  'category_id': e.id ?? 0,
-                                  'category_name': e.categoryName ?? "",
-                                })
-                            .toList();
-                        return gridPackageList(snapshot);
-                      }),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "BEST SELLER SERVICES",
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "Hide All",
-                            style: TextStyle(
-                              decoration: TextDecoration.underline,
-                              decorationColor: Colors.blue,
-                              color: Colors.blue, // Text color
-                            ),
-                          ))
-                    ],
-                  ),
-                  GridView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2, // 3 columns
-                      childAspectRatio: 1.5, // Adjust item height
-                      crossAxisSpacing: 15,
-                      mainAxisSpacing: 15,
-                    ),
-                    itemCount: 4,
-                    itemBuilder: (context, index) {
-                      return const ServiceCard(
-                        title: "Soon",
-                        imageUrl: "assets/promo.png",
-                      );
-                    },
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-          ),
+            );
+          }
         ),
       ),
     );
@@ -467,43 +360,24 @@ class Home extends GetView<HomeController> {
         return GestureDetector(
           onTap: () {
             print(snapshot.data!.data![index].categoryName);
-            Get.toNamed(
-              '/detail-category-daily',
-              arguments: {
-                'id': snapshot.data!.data![index].id.toString(),
-                'title': snapshot.data!.data![index].categoryName ?? "",
-                'img_url': snapshot.data!.data![index].categoryImage,
-                'description':
-                snapshot.data!.data![index].categoryDescription ?? "",
-              },
-            );
-            // if (snapshot.data!.data![index].categoryName == "Deep Cleaning") {
-            //   Get.toNamed(
-            //     '/detail-category-deep',
-            //     arguments: {
-            //       'id': snapshot.data!.data![index].id.toString(),
-            //       'title': snapshot.data!.data![index].categoryName ?? "",
-            //       'img_url': snapshot.data!.data![index].categoryImage,
-            //       'description':
-            //           snapshot.data!.data![index].categoryDescription ?? "",
-            //     },
-            //   );
-            // } else {
-            //   Get.toNamed(
-            //     '/detail-category-daily',
-            //     arguments: {
-            //       'id': snapshot.data!.data![index].id.toString(),
-            //       'title': snapshot.data!.data![index].categoryName ?? "",
-            //       'img_url': snapshot.data!.data![index].categoryImage,
-            //       'description':
-            //           snapshot.data!.data![index].categoryDescription ?? "",
-            //     },
-            //   );
-            // }
+            if (snapshot.data!.data![index].status == "active") {
+              Get.toNamed(
+                '/detail-category-daily',
+                arguments: {
+                  'id': snapshot.data!.data![index].id.toString(),
+                  'title': snapshot.data!.data![index].categoryName ?? "",
+                  'img_url': [snapshot.data!.data![index].bannerImg1 ?? "",snapshot.data!.data![index].bannerImg2 ?? "",snapshot.data!.data![index].bannerImg3 ?? ""],
+                  'description':
+                  snapshot.data!.data![index].categoryDescription ?? "",
+                },
+              );
+            }  else{
+              EasyLoading.showInfo("Coming Soon");
+            }
           },
           child: ServiceItem(
             name: snapshot.data!.data![index].categoryName!,
-            imagePath: "assets/intro1.png",
+            imagePath: snapshot.data!.data![index].categoryImage!,
           ),
         );
       },
@@ -530,24 +404,44 @@ class saldoSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              SvgPicture.asset(
-                '././assets/icon/icon_wallet.svg',
-                height: 18,
+              GestureDetector(
+                onTap: (){
+                  Get.toNamed("/info-saldo");
+                },
+                child: SvgPicture.asset(
+                  '././assets/icon/icon_wallet.svg',
+                  height: 18,
+                ),
               ),
               SizedBox(
                 width: 10,
               ),
               Obx(() {
                 if (controller.isLoading.value) {
-                  return CircularProgressIndicator();
+                  return SizedBox(
+                    height: 13,
+                    width: 13,
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                  );
                 }
-                return Text(
-                 Utils.formatCurrency(int.parse(controller.amountSaldo.value)),
-                  style: TextStyle(color: Colors.white),
+
+                String saldoString = controller.amountSaldo.value;
+                int saldoInt = int.tryParse(saldoString) ?? 0;
+
+                return SizedBox(
+                  width: 100,
+                  child: Text(
+                    saldoInt != 0
+                    ? Utils.formatCurrency(saldoInt)
+                    : "Rp. -",
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.white),
+                  ),
                 );
               }),
               SizedBox(
-                width: 10,
+                width: 5,
               ),
               GestureDetector(
                   onTap: () {
@@ -566,7 +460,7 @@ class saldoSection extends StatelessWidget {
                 size: 22,
                 color: Colors.yellow,
               ),
-              Text("1556 Point", style: TextStyle(color: Colors.white))
+              Text("1500 Point", style: TextStyle(color: Colors.white))
             ],
           )
         ],
@@ -591,11 +485,11 @@ class ServiceItem extends StatelessWidget {
             shape: BoxShape.circle,
             border: Border.all(color: Colors.blue, width: 2), // Blue border
           ),
-          child: CircleAvatar(
-            radius: 22, // Adjust size
-            backgroundImage: AssetImage(imagePath),
+          child: ClipOval(
+            child: CachedImage(imgUrl: imagePath, height: 50, width: 50, iconHeight: 40,)
           ),
         ),
+
         const SizedBox(height: 5),
         Text(
           name,

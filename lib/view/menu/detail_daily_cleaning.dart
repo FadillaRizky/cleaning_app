@@ -463,7 +463,7 @@ class DetailDailyCleaning extends GetView<PackageController> {
                                         color: Colors.grey),
                                   ),
                                   Text(
-                                      "Rp ${controller.selectedDiscount.value}",
+                                      Utils.formatCurrency(int.parse(controller.selectedDiscount.value)),
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold)),

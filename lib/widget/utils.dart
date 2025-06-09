@@ -10,6 +10,16 @@ class Utils{
       decimalDigits: decimalDigits,
     ).format(amount);
   }
+  static String addHoursToTime(String time, String date, String hoursToAdd) {
+    DateTime parsed = DateTime.parse("$date $time");
+    DateTime updated = parsed.add(Duration(hours: int.parse(hoursToAdd)));
+    return "${updated.hour.toString().padLeft(2, '0')}:${updated.minute.toString().padLeft(2, '0')}";
+  }
+
+  static String formatTanggal(String dateString) {
+    DateTime date = DateTime.parse(dateString);
+    return DateFormat("d MMMM yyyy", "id_ID").format(date);
+  }
 
 }
 

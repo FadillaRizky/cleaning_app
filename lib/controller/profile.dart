@@ -12,16 +12,18 @@ class ProfileController extends GetxController {
   final firstNameController = TextEditingController();
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
-  final bornPlaceController = TextEditingController();
-  final bodController = TextEditingController();
-  final religionController = TextEditingController();
   final ktpAddressController = TextEditingController();
+  // final bornPlaceController = TextEditingController();
+  // final bodController = TextEditingController();
+  // final religionController = TextEditingController();
 
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
 
   final RxString username = ''.obs;
   final RxString urlAvatar = ''.obs;
+
+  var percentageData = 0.0.obs;
 
   @override
   void onInit() {
@@ -33,9 +35,9 @@ class ProfileController extends GetxController {
     firstNameController.dispose();
     lastNameController.dispose();
     emailController.dispose();
-    bornPlaceController.dispose();
-    bodController.dispose();
-    religionController.dispose();
+    // bornPlaceController.dispose();
+    // bodController.dispose();
+    // religionController.dispose();
     ktpAddressController.dispose();
     super.onClose();
   }
@@ -50,10 +52,20 @@ class ProfileController extends GetxController {
         firstNameController.text = response.data!.firstName ?? "";
         lastNameController.text = response.data!.lastName ?? "";
         emailController.text = response.data!.email ?? "";
-        bornPlaceController.text = response.data!.bornPlace ?? "";
-        bodController.text = response.data!.bod ?? "";
-        religionController.text = response.data!.religion ?? "";
         ktpAddressController.text = response.data!.ktpAddress ?? "";
+
+        var filledCount = 0.obs;
+        if (firstNameController.text.trim().isNotEmpty && firstNameController.text.trim() != "") filledCount++;
+        if (lastNameController.text.trim().isNotEmpty && lastNameController.text.trim() != "") filledCount++;
+        if (emailController.text.trim().isNotEmpty && emailController.text.trim() != "") filledCount++;
+        if (ktpAddressController.text.trim().isNotEmpty && ktpAddressController.text.trim() != "") filledCount++;
+
+        percentageData.value = (filledCount / 4) * 100;
+        print("Terisi: $filledCount/4 (${percentageData.value.toStringAsFixed(0)}%)");
+        print(percentageData.value);
+        // bornPlaceController.text = response.data!.bornPlace ?? "";
+        // bodController.text = response.data!.bod ?? "";
+        // religionController.text = response.data!.religion ?? "";
       }else{
         Get.snackbar("Error", "Gagal get detail user");
       }
@@ -108,9 +120,9 @@ class ProfileController extends GetxController {
         "first_name": firstNameController.text,
         "last_name": lastNameController.text,
         "email": emailController.text,
-        "born_place": bornPlaceController.text,
-        "bod": bodController.text,
-        "religion": religionController.text,
+        // "born_place": bornPlaceController.text,
+        // "bod": bodController.text,
+        // "religion": religionController.text,
         "ktp_address": ktpAddressController.text,
       };
       isLoading.value = true;
@@ -134,17 +146,17 @@ class ProfileController extends GetxController {
     imageFile.value = null;
   }
 
-  Future<void> selectDate(BuildContext context) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
-    );
-
-    if (pickedDate != null) {
-      bodController.text =
-        "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
-    }
-  }
+  // Future<void> selectDate(BuildContext context) async {
+  //   DateTime? pickedDate = await showDatePicker(
+  //     context: context,
+  //     initialDate: DateTime.now(),
+  //     firstDate: DateTime(2000),
+  //     lastDate: DateTime(2100),
+  //   );
+  //
+  //   if (pickedDate != null) {
+  //     bodController.text =
+  //       "${pickedDate.year}-${pickedDate.month}-${pickedDate.day}";
+  //   }
+  // }
 }

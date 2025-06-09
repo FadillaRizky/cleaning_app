@@ -7,6 +7,7 @@ class BookingSuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final arg = Get.arguments;
     return Padding(
       padding: const EdgeInsets.all(15),
       child: Column(
@@ -44,17 +45,16 @@ class BookingSuccess extends StatelessWidget {
                       ),
                     ),
                     onPressed: (){
-                      Get.toNamed("/invoice");
+                      Get.toNamed("/invoice" ,arguments: arg);
                     }, child: Text("Lihat Invoice",style: TextStyle(color: Colors.black),)),
               ),
-              SizedBox(height: 5,),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                     onPressed: (){

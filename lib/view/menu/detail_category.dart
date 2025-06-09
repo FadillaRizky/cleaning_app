@@ -1,19 +1,22 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cleaning_app/model/ListPackageResponse.dart' as Data;
 import 'package:cleaning_app/model/ObjectPackageResponse.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 import '../../controller/package.dart';
+import '../../widget/cached_image.dart';
 import '../../widget/card_package.dart';
 import '../../widget/utils.dart';
 
 class DetailCategory extends GetView<PackageController> {
   final String id;
   final String title;
-  final String img_url;
+  final List img_url;
   final String description;
 
   DetailCategory({
@@ -23,13 +26,15 @@ class DetailCategory extends GetView<PackageController> {
     required this.img_url,
     required this.description,
   });
+  final CarouselSliderController _carouselController =
+  CarouselSliderController();
 
   @override
   Widget build(BuildContext context) {
-    print(id);
     return Scaffold(
       appBar: AppBar(
         title: Text(title, style: TextStyle(fontWeight: FontWeight.w600)),
+        centerTitle: true,
       ),
       body: Column(
         children: [
@@ -37,321 +42,336 @@ class DetailCategory extends GetView<PackageController> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  CachedNetworkImage(
-                    imageUrl: img_url,
-                    fit: BoxFit.cover,
-                    height: 200,
-                    width: double.infinity,
-                    placeholder: (context, url) =>
-                        Center(child: const CircularProgressIndicator()),
-                    errorWidget: (context, url, error) => const Icon(
-                      Icons.person,
-                      size: 60,
-                      color: Colors.grey,
-                    ),
-                  ),
-                  Column(
+                  Stack(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              title,
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            ReadMoreText(
-                              description,
-                              trimLines: 10,
-                              colorClickableText: Colors.blue,
-                              trimMode: TrimMode.Line,
-                              trimCollapsedText: 'Read more',
-                              trimExpandedText: 'Read less',
-                              style: TextStyle(fontSize: 15),
-                              moreStyle: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.blue),
-                              lessStyle: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.blue),
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            title == "Deep Cleaning"
-                                ? Column(
-                                    children: [
-                                      Text(
-                                        "Pilih Paket",
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      )
-                                    ],
-                                  )
-                                : SizedBox.shrink(),
-                          ],
+                      CarouselSlider.builder(
+                        carouselController: _carouselController,
+                        itemCount: img_url.length,
+                        itemBuilder: (context, index, realIndex) {
+                          return CachedImage(imgUrl: img_url[index], height: 200, width: double.infinity);
+                          //   CachedNetworkImage(
+                          //   imageUrl: img_url[index],
+                          //   fit: BoxFit.cover,
+                          //   placeholder: (context, url) =>
+                          //       Center(child: const CircularProgressIndicator()),
+                          //   errorWidget: (context, url, error) => const Icon(
+                          //     Icons.image,
+                          //     size: 60,
+                          //     color: Colors.grey,
+                          //   ),
+                          // );
+                        },
+                        options: CarouselOptions(
+                          viewportFraction: 1,
+                          enlargeCenterPage: false,
+                          autoPlay: true,
+                          autoPlayInterval: const Duration(seconds: 3),
+                          onPageChanged: (index, reason) {
+                            controller.currentIndex.value = index;
+                          },
+
                         ),
                       ),
-                      FutureBuilder(
-                          future: (controller.getlistPackage(title)),
-                          builder: (context,
-                              AsyncSnapshot<Data.ListPackageResponse>
-                                  snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Skeletonizer(
-                                  child: Column(
+                      Obx(() {
+                        return Positioned(
+                          bottom: 10, // beri jarak dari bawah
+                          left: 0,
+                          right: 0,
+                          child: Container(
+                            child: Center(
+                              child: AnimatedSmoothIndicator(
+                                activeIndex: controller.currentIndex.value,
+                                count: img_url.length,
+                                effect: const WormEffect(dotHeight: 8, dotWidth: 8,activeDotColor: Colors.orange,dotColor: Colors.white),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20,20,20,0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        ReadMoreText(
+                          description,
+                          trimLines: 10,
+                          colorClickableText: Colors.blue,
+                          trimMode: TrimMode.Line,
+                          trimCollapsedText: 'Read more',
+                          trimExpandedText: 'Read less',
+                          style: TextStyle(fontSize: 15),
+                          moreStyle: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.blue),
+                          lessStyle: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.blue),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        title != "Daily Cleaning"
+                            ? Column(
                                 children: [
-                                  DailyCleaningCard(
-                                    imgPath: '././assets/intro1.png',
-                                    title: "Jasa Borongan Cleaning",
-                                    subtitle:
-                                        "Tersedia pilihan jasa cleaning berdasarkan luas area, jumlah tenaga kerja, waktu pengerjaan atau jenis acara/kegiatan.",
-                                    ontap: () {},
-                                    price: 0,
+                                  Text(
+                                    "Pilihan Paket",
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
                                   ),
+                                  SizedBox(
+                                    height: 5,
+                                  )
                                 ],
-                              ));
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else if (!snapshot.hasData) {
-                              return const Text('No list packages found.');
-                            }
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: snapshot.data!.data!.length,
-                              itemBuilder: (context, index) {
-                                if (title == "Deep Cleaning") {
-                                  var data = snapshot.data!.data![index];
-                                  return Column(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () {
-                                          controller.selectPackageDeep[index] =
-                                              !controller
-                                                  .selectPackageDeep[index];
-                                          if (controller
-                                              .selectPackageDeep[index]) {
-                                            popupObjectPackage(context, data,
-                                                () {
-                                              controller.selectPackageDeep[
-                                                  index] = false;
-                                            }, "tambah");
-                                          } else {
-                                            controller.resultDataObject
-                                                .removeWhere((element) =>
-                                                    element["pack_id"] ==
-                                                    data.packId);
-                                          }
-                                        },
-                                        child: Container(
-                                            padding: const EdgeInsets.all(15),
-                                            // margin: const EdgeInsets.only(bottom: 5),
-                                            decoration: BoxDecoration(
-                                                // color: Colors.red
-                                                ),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Obx(() {
-                                                  return Checkbox(
-                                                      value: controller
-                                                              .selectPackageDeep[
-                                                          index],
-                                                      onChanged: (bool? value) {
-                                                        controller
+                              )
+                            : SizedBox.shrink(),
+                        FutureBuilder(
+                            future: (controller.getlistPackage(title)),
+                            builder: (context,
+                                AsyncSnapshot<Data.ListPackageResponse>
+                                    snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Skeletonizer(
+                                    child: Column(
+                                  children: [
+                                    DailyCleaningCard(
+                                      imgPath: '././assets/intro1.png',
+                                      title: "Jasa Borongan Cleaning",
+                                      subtitle:
+                                          "Tersedia pilihan jasa cleaning berdasarkan luas area, jumlah tenaga kerja, waktu pengerjaan atau jenis acara/kegiatan.",
+                                      ontap: () {},
+                                      price: 0,
+                                    ),
+                                  ],
+                                ));
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (!snapshot.hasData) {
+                                return const Text('No list packages found.');
+                              }
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: snapshot.data!.data!.length,
+                                itemBuilder: (context, index) {
+                                  if (title != "Daily Cleaning") {
+                                    var data = snapshot.data!.data![index];
+                                    return Column(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            controller.selectPackageDeep[index] =
+                                                !controller
+                                                    .selectPackageDeep[index];
+                                            if (controller
+                                                .selectPackageDeep[index]) {
+                                              popupObjectPackage(context, data,
+                                                  () {
+                                                controller.selectPackageDeep[
+                                                    index] = false;
+                                              }, "tambah");
+                                            } else {
+                                              controller.resultDataObject
+                                                  .removeWhere((element) =>
+                                                      element["pack_id"] ==
+                                                      data.packId);
+                                            }
+                                          },
+                                          child: Container(
+                                              padding: const EdgeInsets.fromLTRB(0,10,10,10),
+                                              decoration: BoxDecoration(
+                                                border: Border.all(color: Colors.grey.shade300),
+                                                borderRadius: BorderRadius.circular(12),
+                                                  ),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Obx(() {
+                                                    return Checkbox(
+                                                        value: controller
                                                                 .selectPackageDeep[
-                                                            index] = value!;
-                                                        if (controller
-                                                                .selectPackageDeep[
-                                                            index]) {
-                                                          popupObjectPackage(
-                                                              context, data,
-                                                              () {
-                                                            controller
-                                                                    .selectPackageDeep[
-                                                                index] = false;
-                                                          }, "tambah");
-                                                        } else {
+                                                            index],
+                                                        activeColor: Colors.blue,
+                                                        side: BorderSide(color: Colors.grey[500]!),
+                                                        onChanged: (bool? value) {
                                                           controller
-                                                              .resultDataObject
-                                                              .removeWhere((element) =>
-                                                                  element[
-                                                                      "pack_id"] ==
-                                                                  data.packId);
-                                                        }
-                                                      });
-                                                }),
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl:
-                                                        data.packBannerPath!,
-                                                    fit: BoxFit.cover,
-                                                    height: 70,
-                                                    width: 70,
-                                                    placeholder: (context,
-                                                            url) =>
-                                                        const CircularProgressIndicator(),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            const Icon(
-                                                      Icons.person,
-                                                      size: 60,
-                                                      color: Colors.grey,
+                                                                  .selectPackageDeep[
+                                                              index] = value!;
+                                                          if (controller
+                                                                  .selectPackageDeep[
+                                                              index]) {
+                                                            popupObjectPackage(
+                                                                context, data,
+                                                                () {
+                                                              controller
+                                                                      .selectPackageDeep[
+                                                                  index] = false;
+                                                            }, "tambah");
+                                                          } else {
+                                                            controller
+                                                                .resultDataObject
+                                                                .removeWhere((element) =>
+                                                                    element[
+                                                                        "pack_id"] ==
+                                                                    data.packId);
+                                                          }
+                                                        });
+                                                  }),
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(8),
+                                                    child: CachedImage(imgUrl: data.packBannerPath ?? "",height: 70,width: 70,),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 14,
+                                                  ),
+                                                  Expanded(
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          data.packName! ?? "",
+                                                          style: TextStyle(
+                                                              fontSize: 17,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold),
+                                                        ),
+                                                        Obx(() {
+                                                          final count = controller
+                                                              .amountItemperPackage(
+                                                                  data.packId!);
+                                                          // print("count ${data.packId}: $count");
+                                                          return count > 0
+                                                              ? Row(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .end,
+                                                                  children: [
+                                                                    Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .start,
+                                                                      children: [
+                                                                        Text(
+                                                                            "$count Item"),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              5,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              25,
+                                                                          child: ElevatedButton(
+                                                                              style: ElevatedButton.styleFrom(
+                                                                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
+                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                                                                                  backgroundColor: Colors.blue,
+                                                                                  foregroundColor: Colors.white,
+                                                                                  textStyle: TextStyle(fontSize: 12)),
+                                                                              onPressed: () {
+                                                                                popupObjectPackage(context, data, () {
+                                                                                  controller.selectPackageDeep[index] = false;
+                                                                                }, "edit");
+                                                                              },
+                                                                              child: Text("Detail")),
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                    Spacer(),
+                                                                    Column(
+                                                                      crossAxisAlignment:
+                                                                          CrossAxisAlignment
+                                                                              .end,
+                                                                      mainAxisAlignment:
+                                                                          MainAxisAlignment
+                                                                              .end,
+                                                                      children: [
+                                                                        Text(
+                                                                          "Total Harga",
+                                                                          style: TextStyle(
+                                                                              fontSize:
+                                                                                  12,
+                                                                              fontWeight:
+                                                                                  FontWeight.bold),
+                                                                        ),
+                                                                        Text(
+                                                                          Utils.formatCurrency(
+                                                                              controller.amountPriceperPackage(data.packId!)),
+                                                                          style: TextStyle(
+                                                                              fontWeight:
+                                                                                  FontWeight.bold),
+                                                                        ),
+                                                                      ],
+                                                                    )
+                                                                  ],
+                                                                )
+                                                              : Text("(ketuk untuk memilih paket)",style: TextStyle(fontStyle: FontStyle.italic,color: Colors.grey[500]!),);
+                                                        }),
+                                                      ],
                                                     ),
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  width: 14,
-                                                ),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        data.packName! ?? "",
-                                                        style: TextStyle(
-                                                            fontSize: 17,
-                                                            fontWeight:
-                                                                FontWeight
-                                                                    .bold),
-                                                      ),
-                                                      Obx(() {
-                                                        final count = controller
-                                                            .amountItemperPackage(
-                                                                data.packId!);
-                                                        // print("count ${data.packId}: $count");
-                                                        return count > 0
-                                                            ? Row(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .end,
-                                                                children: [
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Text(
-                                                                          "$count Item"),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            5,
-                                                                      ),
-                                                                      SizedBox(
-                                                                        height:
-                                                                            25,
-                                                                        child: ElevatedButton(
-                                                                            style: ElevatedButton.styleFrom(
-                                                                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                                                                                // shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                                                                backgroundColor: Colors.blue,
-                                                                                foregroundColor: Colors.white,
-                                                                                textStyle: TextStyle(fontSize: 12)),
-                                                                            onPressed: () {
-                                                                              popupObjectPackage(context, data, () {
-                                                                                controller.selectPackageDeep[index] = false;
-                                                                              }, "edit");
-                                                                            },
-                                                                            child: Text("Lihat Detail")),
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                  Spacer(),
-                                                                  Column(
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .end,
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .end,
-                                                                    children: [
-                                                                      Text(
-                                                                        "Total Harga",
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                12,
-                                                                            fontWeight:
-                                                                                FontWeight.bold),
-                                                                      ),
-                                                                      Text(
-                                                                        Utils.formatCurrency(
-                                                                            controller.amountPriceperPackage(data.packId!)),
-                                                                        style: TextStyle(
-                                                                            fontWeight:
-                                                                                FontWeight.bold),
-                                                                      ),
-                                                                    ],
-                                                                  )
-                                                                ],
-                                                              )
-                                                            : SizedBox.shrink();
-                                                      }),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            )),
-                                      ),
-                                      Divider(
-                                        indent: 10,
-                                        endIndent: 10,
-                                      )
-                                    ],
-                                  );
-                                } else {
-                                  return DailyCleaningCard(
-                                    imgPath: snapshot.data!.data![index]
-                                            .packBannerPath ??
-                                        "",
-                                    title:
-                                        snapshot.data!.data![index].packName ??
-                                            "-",
-                                    subtitle: snapshot.data!.data![index]
-                                        .packGlobalDescription!,
-                                    price: snapshot.data!.data![index].packPrice
-                                            ?.toInt() ??
-                                        0,
-                                    ontap: () {
-                                      controller.category.value = title;
-                                      controller.selectedPackageId.value = snapshot.data!.data![index].packId!.toString();
-                                      Get.toNamed(
-                                        '/detail-daily',
-                                        arguments: {
-                                          'id': snapshot
-                                              .data!.data![index].packId!
-                                              .toString(),
-                                          'title': snapshot
-                                              .data!.data![index].packName!,
-                                        },
-                                      );
-                                    },
-                                  );
-                                }
-                              },
-                            );
-                          }),
-                    ],
+                                                ],
+                                              )),
+                                        ),
+                                        SizedBox(height: 10,)
+                                      ],
+                                    );
+                                  } else {
+                                    return DailyCleaningCard(
+                                      imgPath: snapshot.data!.data![index]
+                                              .packBannerPath ??
+                                          "",
+                                      title:
+                                          snapshot.data!.data![index].packName ??
+                                              "-",
+                                      subtitle: snapshot.data!.data![index]
+                                          .packGlobalDescription!,
+                                      price: snapshot.data!.data![index].packPrice
+                                              ?.toInt() ??
+                                          0,
+                                      ontap: () {
+                                        print(controller.selectedPackageId.value);
+                                        controller.category.value = title;
+                                        controller.selectedPackageId.value = snapshot.data!.data![index].packId!.toString();
+                                        Get.toNamed(
+                                          '/detail-daily',
+                                          arguments: {
+                                            'id': snapshot
+                                                .data!.data![index].packId!
+                                                .toString(),
+                                            'title': snapshot
+                                                .data!.data![index].packName!,
+                                          },
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                              );
+                            }),
+                      ],
+                    ),
                   )
                 ],
               ),
             ),
           ),
-          title == "Deep Cleaning"
+          title != "Daily Cleaning"
               ? Container(
                   width: double.infinity,
                   padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
@@ -739,3 +759,5 @@ class DetailCategory extends GetView<PackageController> {
     );
   }
 }
+
+

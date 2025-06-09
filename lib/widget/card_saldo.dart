@@ -1,7 +1,10 @@
+import 'package:cleaning_app/controller/home.dart';
+import 'package:cleaning_app/widget/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 
-class CardSaldo extends StatelessWidget {
+class CardSaldo extends GetView<HomeController> {
   final String saldo;
   final String point;
   const CardSaldo({
@@ -31,13 +34,29 @@ class CardSaldo extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Total Saldo",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 15),),
-                Text("Rp. $saldo",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 18)),
+                Obx(() {
+                  if (controller.isLoading.value) {
+                    return SizedBox(
+                        height: 13,
+                        width: 13,
+                        child: CircularProgressIndicator(color: Colors.white,strokeWidth: 2,));
+                  }
+                  return Text(
+                    Utils.formatCurrency(int.parse(controller.amountSaldo.value)),
+                    style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 18),
+                  );
+                }),
+                // Text("Rp. $saldo",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 18)),
               ],
             ),
             Row(
 
               children: [
-                Icon(Icons.add_circle,color: Colors.white,size: 28,),
+                GestureDetector(
+                    onTap: (){
+                      Get.toNamed("/isi-saldo");
+                    },
+                    child: Icon(Icons.add_circle,color: Colors.white,size: 28,)),
                 SizedBox(width: 10,),
                 Expanded(child: Text("Top Up",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 15))),
                 Container(

@@ -2,22 +2,27 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cleaning_app/model/DetailOrderResponse.dart';
 import 'package:cleaning_app/model/DetailPackageResponse.dart';
 import 'package:cleaning_app/model/DetailUserResponse.dart';
 import 'package:cleaning_app/model/DurationPackageResponse.dart';
+import 'package:cleaning_app/model/GetListOrderResponse.dart';
 import 'package:cleaning_app/model/GetSaldoResponse.dart';
+import 'package:cleaning_app/model/HistoryTransaksiResponse.dart';
 import 'package:cleaning_app/model/ListCategoryPackageResponse.dart';
 import 'package:cleaning_app/model/ObjectPackageResponse.dart';
 import 'package:cleaning_app/model/OrderPackageResponse.dart';
 import 'package:cleaning_app/model/PropertyAddressResponse.dart';
 import 'package:cleaning_app/model/RefreshTokenResponse.dart';
 import 'package:cleaning_app/model/RegisterResponse.dart';
+import 'package:cleaning_app/model/StoreAddressResponse.dart';
 import 'package:cleaning_app/model/UpdatePhotoProfileResponse.dart';
 import 'package:cleaning_app/model/UploadBuktiTopupResponse.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
 import 'api_helper.dart';
+import 'model/DeleteAddressResponse.dart';
 import 'model/ListPackageResponse.dart';
 import 'model/LoginResponse.dart';
 import 'model/UpdateDetailUserResponse.dart';
@@ -105,7 +110,7 @@ class Api {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
         },
-      ).timeout(const Duration(seconds: 10));
+      ).timeout(const Duration(seconds: 20));
 
       final result = RefreshTokenResponse.fromJson(jsonDecode(response.body));
 
@@ -157,7 +162,7 @@ class Api {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
-        ).timeout(const Duration(seconds: 10));
+        ).timeout(const Duration(seconds: 20));
       });
 
       if (response.statusCode == 200) {
@@ -187,7 +192,7 @@ class Api {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
-        ).timeout(const Duration(seconds: 10));
+        ).timeout(const Duration(seconds: 20));
       });
 
       if (response.statusCode == 200) {
@@ -217,7 +222,7 @@ class Api {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
-        ).timeout(const Duration(seconds: 10));
+        ).timeout(const Duration(seconds: 20));
       });
 
       if (response.statusCode == 200) {
@@ -247,7 +252,7 @@ class Api {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
-        ).timeout(const Duration(seconds: 10));
+        ).timeout(const Duration(seconds: 20));
       });
 
       if (response.statusCode == 200) {
@@ -277,7 +282,7 @@ class Api {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
-        ).timeout(const Duration(seconds: 10));
+        ).timeout(const Duration(seconds: 20));
       });
 
       if (response.statusCode == 200) {
@@ -308,7 +313,7 @@ class Api {
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
-        ).timeout(const Duration(seconds: 10));
+        ).timeout(const Duration(seconds: 20));
       });
 
       if (response.statusCode == 200) {
@@ -323,6 +328,68 @@ class Api {
     } catch (e) {
       print('Error Get Address Package: $e');
       throw 'Terjadi kesalahan saat mengambil data Address Package.';
+    }
+  }
+
+  static Future<StoreAddressResponse> storeAddress(Map<String,dynamic> data) async {
+    try {
+      final url = "$baseUrl/client/property/store";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.post(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode(data)
+        ).timeout(const Duration(seconds: 20));
+      });
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return StoreAddressResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal request Address: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Address Package: $e');
+      throw 'Terjadi kesalahan saat mengambil data Address Package.';
+    }
+  }
+
+  static Future<DeleteAddressResponse> deleteAddress(Map<String,dynamic> data) async {
+    try {
+      final url = "$baseUrl/client/property/delete";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.post(
+            Uri.parse(url),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+            body: jsonEncode(data)
+        ).timeout(const Duration(seconds: 20));
+      });
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return DeleteAddressResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Delete Address: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Address Package: $e');
+      throw 'Terjadi kesalahan saat Delete data Address .';
     }
   }
 
@@ -371,7 +438,7 @@ class Api {
             'Authorization': 'Bearer $token',
           },
             body: dataUser
-        ).timeout(const Duration(seconds: 10));
+        ).timeout(const Duration(seconds: 20));
       });
 
       final result = UpdateDetailUserResponse.fromJson(jsonDecode(response.body));
@@ -402,7 +469,7 @@ print("---");
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
-        ).timeout(const Duration(seconds: 10));
+        ).timeout(const Duration(seconds: 20));
       });
 
       if (response.statusCode == 200) {
@@ -466,7 +533,7 @@ print("---");
             'Content-Type': 'application/json',
             'Authorization': 'Bearer $token',
           },
-        ).timeout(const Duration(seconds: 10));
+        ).timeout(const Duration(seconds: 20));
       });
 
       if (response.statusCode == 200) {
@@ -484,12 +551,15 @@ print("---");
     }
   }
 
+
+
   static Future<OrderPackageResponse> orderPackage(Map<String,dynamic> data) async {
     try {
       final url = "$baseUrl/orders/store";
 
       final response = await safeApiCall(() async {
         final token = await storage.read('token');
+        print(token);
         return await http.post(
           Uri.parse(url),
           headers: {
@@ -497,9 +567,9 @@ print("---");
             'Authorization': 'Bearer $token',
           },
           body: jsonEncode(data)
-        ).timeout(const Duration(seconds: 10));
+        ).timeout(const Duration(seconds: 20));
       });
-
+print(response.statusCode);
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
         return OrderPackageResponse.fromJson(data);
@@ -514,6 +584,98 @@ print("---");
       throw 'Terjadi kesalahan saat Order package.';
     }
   }
+
+  static Future<GetListOrderResponse> getListOrder() async {
+    try {
+      final url = "$baseUrl/orders";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ).timeout(const Duration(seconds: 20));
+      });
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return GetListOrderResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Get List Order: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Saldo: $e');
+      throw 'Terjadi kesalahan saat mengambil data Get List Order.';
+    }
+  }
+
+  static Future<DetailOrderResponse> getDetailOrder(String id) async {
+    try {
+      final url = "$baseUrl/orders/detail/$id";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ).timeout(const Duration(seconds: 20));
+      });
+print("Status code : ${response.statusCode}");
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print(data);
+        return DetailOrderResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Get Detail Order: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Saldo: $e');
+      throw 'Terjadi kesalahan saat mengambil data Get Detail Order.';
+    }
+  }
+
+  static Future<HistoryTransaksiResponse> getHistoryTransaksi() async {
+    try {
+      final url = "$baseUrl/client/tractions";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ).timeout(const Duration(seconds: 20));
+      });
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return HistoryTransaksiResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Get History Transaksi: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Saldo: $e');
+      throw 'Terjadi kesalahan saat mengambil History Transaksi.';
+    }
+  }
+
 
 
 }

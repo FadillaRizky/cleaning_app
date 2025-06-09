@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../api.dart';
+import '../model/HistoryTransaksiResponse.dart';
 
 class HomeController extends GetxController {
   final RxInt currentIndex = 0.obs;
@@ -93,6 +94,7 @@ class HomeController extends GetxController {
   Future<void> refreshPackage() async {
     // await Future.delayed(Duration(seconds: 2));
     futurePackageList = Api.getCategoryPackageList();
+    fetchSaldo();
     update();
   }
 
@@ -102,7 +104,7 @@ class HomeController extends GetxController {
 
       final response = await Api.getSaldo();
       if (response.status == true) {
-      amountSaldo.value = response.data!.totalBalance.toString();
+      amountSaldo.value = response.data!.totalBalance.toString() ?? "";
       }
     } catch (e) {
       print("gagal get saldo : $e");
@@ -111,12 +113,17 @@ class HomeController extends GetxController {
     }
   }
 
+  Future<HistoryTransaksiResponse> fetchHistoryTransaksi() {
+    return Api.getHistoryTransaksi();
+  }
+
+
 
   @override
   void onInit() {
     super.onInit();
     futurePackageList = Api.getCategoryPackageList();
-fetchSaldo();
+    fetchSaldo();
     userName.value = _storage.read('name') ?? 'Anonymous';
   }
 }

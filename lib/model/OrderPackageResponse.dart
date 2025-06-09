@@ -1,6 +1,6 @@
 /// status : true
 /// message : "added data successfully"
-/// data : {"order":{"orderid":5,"pack_id":3,"pack_name":"Setrika","pack_hour":4,"due_date":"2025-05-29","due_time":"10:00:00","client_id":24,"first_name":null,"last_name":null,"partner_id":null,"property_address":"Jl. Flamboyan II, Wonogiri","sub_total":300000,"discount":2,"nominal_discount":6000,"nominal_after_discount":294000,"tax":11,"nominal_tax":32340,"grand_total":326340,"order_notes":"aaaa","order_status":"open","created_at":"2025-05-28T13:18:32.000000Z","created_by":"Trial User"},"order_detail":[{"od_id":7,"orderid":5,"object_id":2,"object_price":100000,"created_at":"2025-05-28T13:18:32.000000Z","created_by":null,"updated_at":"2025-05-28T13:18:32.000000Z","updated_by":null,"canceled_at":null,"canceled_by":null},{"od_id":8,"orderid":5,"object_id":4,"object_price":150000,"created_at":"2025-05-28T13:18:32.000000Z","created_by":null,"updated_at":"2025-05-28T13:18:32.000000Z","updated_by":null,"canceled_at":null,"canceled_by":null},{"od_id":9,"orderid":5,"object_id":5,"object_price":200000,"created_at":"2025-05-28T13:18:32.000000Z","created_by":null,"updated_at":"2025-05-28T13:18:32.000000Z","updated_by":null,"canceled_at":null,"canceled_by":null}]}
+/// data : {"orderid":39,"data_pack":[{"pack_id":31,"pack_name":"Sofa","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":495000,"object_id":[4,5],"object_name":["Sofa Medium (2 Seat)","Sofa Large (3 Seat)"],"object_price":["210000","285000"]},{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":600000,"object_id":[9,12,16],"object_name":["Cuci Karpet","Cuci Kasur King","Cuci Kasur Single"],"object_price":["75000","315000","210000"]}],"due_date":"2025-05-29","category":"Deep Cleaning","due_time":"10:00:00","discount":2,"order_notes":"aaaa","property_address":"Jl. Flamboyan II, Wonogiri","sub_total":1095000,"nominal_discount":21900,"nominal_after_discount":1073100,"tax":11,"nominal_tax":118041,"grand_total":1191141,"order_status":"open"}
 
 class OrderPackageResponse {
   OrderPackageResponse({
@@ -43,364 +43,247 @@ OrderPackageResponse copyWith({  bool? status,
 
 }
 
-/// order : {"orderid":5,"pack_id":3,"pack_name":"Setrika","pack_hour":4,"due_date":"2025-05-29","due_time":"10:00:00","client_id":24,"first_name":null,"last_name":null,"partner_id":null,"property_address":"Jl. Flamboyan II, Wonogiri","sub_total":300000,"discount":2,"nominal_discount":6000,"nominal_after_discount":294000,"tax":11,"nominal_tax":32340,"grand_total":326340,"order_notes":"aaaa","order_status":"open","created_at":"2025-05-28T13:18:32.000000Z","created_by":"Trial User"}
-/// order_detail : [{"od_id":7,"orderid":5,"object_id":2,"object_price":100000,"created_at":"2025-05-28T13:18:32.000000Z","created_by":null,"updated_at":"2025-05-28T13:18:32.000000Z","updated_by":null,"canceled_at":null,"canceled_by":null},{"od_id":8,"orderid":5,"object_id":4,"object_price":150000,"created_at":"2025-05-28T13:18:32.000000Z","created_by":null,"updated_at":"2025-05-28T13:18:32.000000Z","updated_by":null,"canceled_at":null,"canceled_by":null},{"od_id":9,"orderid":5,"object_id":5,"object_price":200000,"created_at":"2025-05-28T13:18:32.000000Z","created_by":null,"updated_at":"2025-05-28T13:18:32.000000Z","updated_by":null,"canceled_at":null,"canceled_by":null}]
+/// orderid : 39
+/// data_pack : [{"pack_id":31,"pack_name":"Sofa","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":495000,"object_id":[4,5],"object_name":["Sofa Medium (2 Seat)","Sofa Large (3 Seat)"],"object_price":["210000","285000"]},{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":600000,"object_id":[9,12,16],"object_name":["Cuci Karpet","Cuci Kasur King","Cuci Kasur Single"],"object_price":["75000","315000","210000"]}]
+/// due_date : "2025-05-29"
+/// category : "Deep Cleaning"
+/// due_time : "10:00:00"
+/// discount : 2
+/// order_notes : "aaaa"
+/// property_address : "Jl. Flamboyan II, Wonogiri"
+/// sub_total : 1095000
+/// nominal_discount : 21900
+/// nominal_after_discount : 1073100
+/// tax : 11
+/// nominal_tax : 118041
+/// grand_total : 1191141
+/// order_status : "open"
 
 class Data {
   Data({
-      Order? order, 
-      List<OrderDetail>? orderDetail,}){
-    _order = order;
-    _orderDetail = orderDetail;
-}
-
-  Data.fromJson(dynamic json) {
-    _order = json['order'] != null ? Order.fromJson(json['order']) : null;
-    if (json['order_detail'] != null) {
-      _orderDetail = [];
-      json['order_detail'].forEach((v) {
-        _orderDetail?.add(OrderDetail.fromJson(v));
-      });
-    }
-  }
-  Order? _order;
-  List<OrderDetail>? _orderDetail;
-Data copyWith({  Order? order,
-  List<OrderDetail>? orderDetail,
-}) => Data(  order: order ?? _order,
-  orderDetail: orderDetail ?? _orderDetail,
-);
-  Order? get order => _order;
-  List<OrderDetail>? get orderDetail => _orderDetail;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    if (_order != null) {
-      map['order'] = _order?.toJson();
-    }
-    if (_orderDetail != null) {
-      map['order_detail'] = _orderDetail?.map((v) => v.toJson()).toList();
-    }
-    return map;
-  }
-
-}
-
-/// od_id : 7
-/// orderid : 5
-/// object_id : 2
-/// object_price : 100000
-/// created_at : "2025-05-28T13:18:32.000000Z"
-/// created_by : null
-/// updated_at : "2025-05-28T13:18:32.000000Z"
-/// updated_by : null
-/// canceled_at : null
-/// canceled_by : null
-
-class OrderDetail {
-  OrderDetail({
-      num? odId, 
       num? orderid, 
-      num? objectId, 
-      num? objectPrice, 
-      String? createdAt, 
-      dynamic createdBy, 
-      String? updatedAt, 
-      dynamic updatedBy, 
-      dynamic canceledAt, 
-      dynamic canceledBy,}){
-    _odId = odId;
-    _orderid = orderid;
-    _objectId = objectId;
-    _objectPrice = objectPrice;
-    _createdAt = createdAt;
-    _createdBy = createdBy;
-    _updatedAt = updatedAt;
-    _updatedBy = updatedBy;
-    _canceledAt = canceledAt;
-    _canceledBy = canceledBy;
-}
-
-  OrderDetail.fromJson(dynamic json) {
-    _odId = json['od_id'];
-    _orderid = json['orderid'];
-    _objectId = json['object_id'];
-    _objectPrice = json['object_price'];
-    _createdAt = json['created_at'];
-    _createdBy = json['created_by'];
-    _updatedAt = json['updated_at'];
-    _updatedBy = json['updated_by'];
-    _canceledAt = json['canceled_at'];
-    _canceledBy = json['canceled_by'];
-  }
-  num? _odId;
-  num? _orderid;
-  num? _objectId;
-  num? _objectPrice;
-  String? _createdAt;
-  dynamic _createdBy;
-  String? _updatedAt;
-  dynamic _updatedBy;
-  dynamic _canceledAt;
-  dynamic _canceledBy;
-OrderDetail copyWith({  num? odId,
-  num? orderid,
-  num? objectId,
-  num? objectPrice,
-  String? createdAt,
-  dynamic createdBy,
-  String? updatedAt,
-  dynamic updatedBy,
-  dynamic canceledAt,
-  dynamic canceledBy,
-}) => OrderDetail(  odId: odId ?? _odId,
-  orderid: orderid ?? _orderid,
-  objectId: objectId ?? _objectId,
-  objectPrice: objectPrice ?? _objectPrice,
-  createdAt: createdAt ?? _createdAt,
-  createdBy: createdBy ?? _createdBy,
-  updatedAt: updatedAt ?? _updatedAt,
-  updatedBy: updatedBy ?? _updatedBy,
-  canceledAt: canceledAt ?? _canceledAt,
-  canceledBy: canceledBy ?? _canceledBy,
-);
-  num? get odId => _odId;
-  num? get orderid => _orderid;
-  num? get objectId => _objectId;
-  num? get objectPrice => _objectPrice;
-  String? get createdAt => _createdAt;
-  dynamic get createdBy => _createdBy;
-  String? get updatedAt => _updatedAt;
-  dynamic get updatedBy => _updatedBy;
-  dynamic get canceledAt => _canceledAt;
-  dynamic get canceledBy => _canceledBy;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['od_id'] = _odId;
-    map['orderid'] = _orderid;
-    map['object_id'] = _objectId;
-    map['object_price'] = _objectPrice;
-    map['created_at'] = _createdAt;
-    map['created_by'] = _createdBy;
-    map['updated_at'] = _updatedAt;
-    map['updated_by'] = _updatedBy;
-    map['canceled_at'] = _canceledAt;
-    map['canceled_by'] = _canceledBy;
-    return map;
-  }
-
-}
-
-/// orderid : 5
-/// pack_id : 3
-/// pack_name : "Setrika"
-/// pack_hour : 4
-/// due_date : "2025-05-29"
-/// due_time : "10:00:00"
-/// client_id : 24
-/// first_name : null
-/// last_name : null
-/// partner_id : null
-/// property_address : "Jl. Flamboyan II, Wonogiri"
-/// sub_total : 300000
-/// discount : 2
-/// nominal_discount : 6000
-/// nominal_after_discount : 294000
-/// tax : 11
-/// nominal_tax : 32340
-/// grand_total : 326340
-/// order_notes : "aaaa"
-/// order_status : "open"
-/// created_at : "2025-05-28T13:18:32.000000Z"
-/// created_by : "Trial User"
-
-class Order {
-  Order({
-      num? orderid, 
-      num? packId, 
-      String? packName, 
-      num? packHour, 
+      List<DataPack>? dataPack, 
       String? dueDate, 
+      String? category, 
       String? dueTime, 
-      num? clientId, 
-      dynamic firstName, 
-      dynamic lastName, 
-      dynamic partnerId, 
+      num? discount, 
+      String? orderNotes, 
       String? propertyAddress, 
       num? subTotal, 
-      num? discount, 
       num? nominalDiscount, 
       num? nominalAfterDiscount, 
       num? tax, 
       num? nominalTax, 
       num? grandTotal, 
-      String? orderNotes, 
-      String? orderStatus, 
-      String? createdAt, 
-      String? createdBy,}){
+      String? orderStatus,}){
     _orderid = orderid;
-    _packId = packId;
-    _packName = packName;
-    _packHour = packHour;
+    _dataPack = dataPack;
     _dueDate = dueDate;
+    _category = category;
     _dueTime = dueTime;
-    _clientId = clientId;
-    _firstName = firstName;
-    _lastName = lastName;
-    _partnerId = partnerId;
+    _discount = discount;
+    _orderNotes = orderNotes;
     _propertyAddress = propertyAddress;
     _subTotal = subTotal;
-    _discount = discount;
     _nominalDiscount = nominalDiscount;
     _nominalAfterDiscount = nominalAfterDiscount;
     _tax = tax;
     _nominalTax = nominalTax;
     _grandTotal = grandTotal;
-    _orderNotes = orderNotes;
     _orderStatus = orderStatus;
-    _createdAt = createdAt;
-    _createdBy = createdBy;
 }
 
-  Order.fromJson(dynamic json) {
+  Data.fromJson(dynamic json) {
     _orderid = json['orderid'];
-    _packId = json['pack_id'];
-    _packName = json['pack_name'];
-    _packHour = json['pack_hour'];
+    if (json['data_pack'] != null) {
+      _dataPack = [];
+      json['data_pack'].forEach((v) {
+        _dataPack?.add(DataPack.fromJson(v));
+      });
+    }
     _dueDate = json['due_date'];
+    _category = json['category'];
     _dueTime = json['due_time'];
-    _clientId = json['client_id'];
-    _firstName = json['first_name'];
-    _lastName = json['last_name'];
-    _partnerId = json['partner_id'];
+    _discount = json['discount'];
+    _orderNotes = json['order_notes'];
     _propertyAddress = json['property_address'];
     _subTotal = json['sub_total'];
-    _discount = json['discount'];
     _nominalDiscount = json['nominal_discount'];
     _nominalAfterDiscount = json['nominal_after_discount'];
     _tax = json['tax'];
     _nominalTax = json['nominal_tax'];
     _grandTotal = json['grand_total'];
-    _orderNotes = json['order_notes'];
     _orderStatus = json['order_status'];
-    _createdAt = json['created_at'];
-    _createdBy = json['created_by'];
   }
   num? _orderid;
-  num? _packId;
-  String? _packName;
-  num? _packHour;
+  List<DataPack>? _dataPack;
   String? _dueDate;
+  String? _category;
   String? _dueTime;
-  num? _clientId;
-  dynamic _firstName;
-  dynamic _lastName;
-  dynamic _partnerId;
+  num? _discount;
+  String? _orderNotes;
   String? _propertyAddress;
   num? _subTotal;
-  num? _discount;
   num? _nominalDiscount;
   num? _nominalAfterDiscount;
   num? _tax;
   num? _nominalTax;
   num? _grandTotal;
-  String? _orderNotes;
   String? _orderStatus;
-  String? _createdAt;
-  String? _createdBy;
-Order copyWith({  num? orderid,
-  num? packId,
-  String? packName,
-  num? packHour,
+Data copyWith({  num? orderid,
+  List<DataPack>? dataPack,
   String? dueDate,
+  String? category,
   String? dueTime,
-  num? clientId,
-  dynamic firstName,
-  dynamic lastName,
-  dynamic partnerId,
+  num? discount,
+  String? orderNotes,
   String? propertyAddress,
   num? subTotal,
-  num? discount,
   num? nominalDiscount,
   num? nominalAfterDiscount,
   num? tax,
   num? nominalTax,
   num? grandTotal,
-  String? orderNotes,
   String? orderStatus,
-  String? createdAt,
-  String? createdBy,
-}) => Order(  orderid: orderid ?? _orderid,
-  packId: packId ?? _packId,
-  packName: packName ?? _packName,
-  packHour: packHour ?? _packHour,
+}) => Data(  orderid: orderid ?? _orderid,
+  dataPack: dataPack ?? _dataPack,
   dueDate: dueDate ?? _dueDate,
+  category: category ?? _category,
   dueTime: dueTime ?? _dueTime,
-  clientId: clientId ?? _clientId,
-  firstName: firstName ?? _firstName,
-  lastName: lastName ?? _lastName,
-  partnerId: partnerId ?? _partnerId,
+  discount: discount ?? _discount,
+  orderNotes: orderNotes ?? _orderNotes,
   propertyAddress: propertyAddress ?? _propertyAddress,
   subTotal: subTotal ?? _subTotal,
-  discount: discount ?? _discount,
   nominalDiscount: nominalDiscount ?? _nominalDiscount,
   nominalAfterDiscount: nominalAfterDiscount ?? _nominalAfterDiscount,
   tax: tax ?? _tax,
   nominalTax: nominalTax ?? _nominalTax,
   grandTotal: grandTotal ?? _grandTotal,
-  orderNotes: orderNotes ?? _orderNotes,
   orderStatus: orderStatus ?? _orderStatus,
-  createdAt: createdAt ?? _createdAt,
-  createdBy: createdBy ?? _createdBy,
 );
   num? get orderid => _orderid;
-  num? get packId => _packId;
-  String? get packName => _packName;
-  num? get packHour => _packHour;
+  List<DataPack>? get dataPack => _dataPack;
   String? get dueDate => _dueDate;
+  String? get category => _category;
   String? get dueTime => _dueTime;
-  num? get clientId => _clientId;
-  dynamic get firstName => _firstName;
-  dynamic get lastName => _lastName;
-  dynamic get partnerId => _partnerId;
+  num? get discount => _discount;
+  String? get orderNotes => _orderNotes;
   String? get propertyAddress => _propertyAddress;
   num? get subTotal => _subTotal;
-  num? get discount => _discount;
   num? get nominalDiscount => _nominalDiscount;
   num? get nominalAfterDiscount => _nominalAfterDiscount;
   num? get tax => _tax;
   num? get nominalTax => _nominalTax;
   num? get grandTotal => _grandTotal;
-  String? get orderNotes => _orderNotes;
   String? get orderStatus => _orderStatus;
-  String? get createdAt => _createdAt;
-  String? get createdBy => _createdBy;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['orderid'] = _orderid;
-    map['pack_id'] = _packId;
-    map['pack_name'] = _packName;
-    map['pack_hour'] = _packHour;
+    if (_dataPack != null) {
+      map['data_pack'] = _dataPack?.map((v) => v.toJson()).toList();
+    }
     map['due_date'] = _dueDate;
+    map['category'] = _category;
     map['due_time'] = _dueTime;
-    map['client_id'] = _clientId;
-    map['first_name'] = _firstName;
-    map['last_name'] = _lastName;
-    map['partner_id'] = _partnerId;
+    map['discount'] = _discount;
+    map['order_notes'] = _orderNotes;
     map['property_address'] = _propertyAddress;
     map['sub_total'] = _subTotal;
-    map['discount'] = _discount;
     map['nominal_discount'] = _nominalDiscount;
     map['nominal_after_discount'] = _nominalAfterDiscount;
     map['tax'] = _tax;
     map['nominal_tax'] = _nominalTax;
     map['grand_total'] = _grandTotal;
-    map['order_notes'] = _orderNotes;
     map['order_status'] = _orderStatus;
-    map['created_at'] = _createdAt;
-    map['created_by'] = _createdBy;
+    return map;
+  }
+
+}
+
+/// pack_id : 31
+/// pack_name : "Sofa"
+/// pack_category : "Deep Cleaning"
+/// pack_hour : "0"
+/// pack_price : 495000
+/// object_id : [4,5]
+/// object_name : ["Sofa Medium (2 Seat)","Sofa Large (3 Seat)"]
+/// object_price : ["210000","285000"]
+
+class DataPack {
+  DataPack({
+      num? packId, 
+      String? packName, 
+      String? packCategory, 
+      String? packHour, 
+      num? packPrice, 
+      List<num>? objectId, 
+      List<String>? objectName, 
+      List<String>? objectPrice,}){
+    _packId = packId;
+    _packName = packName;
+    _packCategory = packCategory;
+    _packHour = packHour;
+    _packPrice = packPrice;
+    _objectId = objectId;
+    _objectName = objectName;
+    _objectPrice = objectPrice;
+}
+
+  DataPack.fromJson(dynamic json) {
+    _packId = json['pack_id'];
+    _packName = json['pack_name'];
+    _packCategory = json['pack_category'];
+    _packHour = json['pack_hour'];
+    _packPrice = json['pack_price'];
+    _objectId = json['object_id'] != null ? json['object_id'].cast<num>() : [];
+    _objectName = json['object_name'] != null ? json['object_name'].cast<String>() : [];
+    _objectPrice = json['object_price'] != null ? json['object_price'].cast<String>() : [];
+  }
+  num? _packId;
+  String? _packName;
+  String? _packCategory;
+  String? _packHour;
+  num? _packPrice;
+  List<num>? _objectId;
+  List<String>? _objectName;
+  List<String>? _objectPrice;
+DataPack copyWith({  num? packId,
+  String? packName,
+  String? packCategory,
+  String? packHour,
+  num? packPrice,
+  List<num>? objectId,
+  List<String>? objectName,
+  List<String>? objectPrice,
+}) => DataPack(  packId: packId ?? _packId,
+  packName: packName ?? _packName,
+  packCategory: packCategory ?? _packCategory,
+  packHour: packHour ?? _packHour,
+  packPrice: packPrice ?? _packPrice,
+  objectId: objectId ?? _objectId,
+  objectName: objectName ?? _objectName,
+  objectPrice: objectPrice ?? _objectPrice,
+);
+  num? get packId => _packId;
+  String? get packName => _packName;
+  String? get packCategory => _packCategory;
+  String? get packHour => _packHour;
+  num? get packPrice => _packPrice;
+  List<num>? get objectId => _objectId;
+  List<String>? get objectName => _objectName;
+  List<String>? get objectPrice => _objectPrice;
+
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['pack_id'] = _packId;
+    map['pack_name'] = _packName;
+    map['pack_category'] = _packCategory;
+    map['pack_hour'] = _packHour;
+    map['pack_price'] = _packPrice;
+    map['object_id'] = _objectId;
+    map['object_name'] = _objectName;
+    map['object_price'] = _objectPrice;
     return map;
   }
 

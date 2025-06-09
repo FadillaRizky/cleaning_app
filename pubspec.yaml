@@ -60,6 +60,12 @@ dependencies:
   printing: ^5.14.2
   readmore: ^3.0.0
   dotted_border: ^3.0.1
+  line_icons: ^2.0.3
+  font_awesome_flutter: ^10.8.0
+  geocoding: ^4.0.0
+  permission_handler: ^12.0.0+1
+  flutter_icon_snackbar: ^1.2.1
+
 
 dev_dependencies:
   flutter_test:
@@ -71,7 +77,13 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.14.3
 
+flutter_launcher_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icons.png"
+  min_sdk_android: 21
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

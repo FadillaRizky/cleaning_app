@@ -24,7 +24,7 @@ class Pemesanan extends GetView<PemesananController> {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: const EdgeInsets.all(15),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -63,431 +63,508 @@ class Pemesanan extends GetView<PemesananController> {
                               snapshot.data!.data!.first.picName!;
                           controller.propertyAddress.value =
                               snapshot.data!.data!.first.propertyAddress!;
+                          controller.propertyId.value =
+                          snapshot.data!.data!.first.id.toString();
                           controller.selectedProperty.value =
                               snapshot.data!.data!.first.id!.toInt();
-                          return Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "Pilih Alamat",
-                                style: TextStyle(
-                                    fontSize: 17, fontWeight: FontWeight.bold),
-                              ),
-                              Obx(() {
-                                return ListTile(
-                                  contentPadding:
-                                      EdgeInsets.only(left: 5, right: 0),
-                                  leading: Icon(Icons.home),
-                                  title: Text(
-                                    controller.picName.value,
-                                    style: TextStyle(fontSize: 15),
-                                  ),
-                                  subtitle: Text(
-                                    controller.propertyAddress.value,
-                                    style: TextStyle(fontSize: 13),
-                                  ),
-                                  trailing: TextButton(
-                                    style: ButtonStyle(
-                                      overlayColor: MaterialStateProperty.all(
-                                          Colors.transparent),
+                          return Container(
+                            padding: EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                            color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Alamat",
+                                  style: TextStyle(
+                                      fontSize: 17, fontWeight: FontWeight.bold),
+                                ),
+                                Divider(),
+                                Obx(() {
+                                  return ListTile(
+                                    contentPadding:
+                                        EdgeInsets.only(left: 5, right: 0),
+                                    leading: Icon(Icons.home),
+                                    title: Text(
+                                      controller.picName.value,
+                                      style: TextStyle(fontSize: 15),
                                     ),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return Dialog(
-                                            shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      10.0), // Sudut membulat
-                                            ),
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(15),
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  // Title for the dialog
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        'Pilih Alamat',
-                                                        style: TextStyle(
-                                                            fontSize: 18),
-                                                      ),
-                                                    ],
-                                                  ),
-
-                                                  SizedBox(height: 10),
-
-                                                  // ListView.builder for displaying the addresses
-                                                  SizedBox(
-                                                    height: 200,
-                                                    // Set the height of the list view
-                                                    child: ListView.builder(
-                                                      itemCount: snapshot
-                                                          .data!.data!.length,
-                                                      itemBuilder:
-                                                          (context, index) {
-                                                        return Obx(() {
-                                                          return ListTile(
-                                                            contentPadding:
-                                                                EdgeInsets.only(
-                                                                    left: 5,
-                                                                    right: 0),
-                                                            leading: Icon(
-                                                                Icons.home),
-                                                            title: Text(
-                                                              snapshot
-                                                                  .data!
-                                                                  .data![index]
-                                                                  .picName!,
-                                                              style: TextStyle(
-                                                                  fontSize: 13),
-                                                            ),
-                                                            subtitle: Text(
-                                                              snapshot
-                                                                  .data!
-                                                                  .data![index]
-                                                                  .propertyAddress!,
-                                                              style: TextStyle(
-                                                                  fontSize: 12),
-                                                            ),
-                                                            trailing: Radio(
-                                                                value: snapshot
-                                                                    .data!
-                                                                    .data![
-                                                                        index]
-                                                                    .id,
-                                                                groupValue:
-                                                                    controller
-                                                                        .selectedProperty
-                                                                        .value,
-                                                                onChanged:
-                                                                    (value) {
-                                                                  controller.selectedProperty.value = value!.toInt();
-                                                                  controller.picName.value = snapshot.data!.data![index].picName!;
-                                                                  controller.propertyAddress.value = snapshot.data!.data![index].propertyAddress!;
-                                                                }),
-                                                          );
-                                                        });
-                                                      },
-                                                    ),
-                                                  ),
-
-                                                  // Button to close the dialog
-                                                  SizedBox(height: 20),
-                                                  SizedBox(
-                                                      width: double.infinity,
-                                                      child: ElevatedButton(
-                                                          style: ElevatedButton.styleFrom(
-                                                              backgroundColor:
-                                                                  Colors.blue,
-                                                              foregroundColor:
-                                                                  Colors.white,
-                                                              shape: RoundedRectangleBorder(
-                                                                  borderRadius:
-                                                                      BorderRadius
-                                                                          .circular(
-                                                                              10))),
-                                                          onPressed: () {
-                                                            Navigator.pop(
-                                                                context);
-                                                          },
-                                                          child:
-                                                              Text("Simpan")))
-                                                ],
+                                    subtitle: Text(
+                                      controller.propertyAddress.value,
+                                      style: TextStyle(fontSize: 13),
+                                    ),
+                                    trailing: TextButton(
+                                      style: ButtonStyle(
+                                        overlayColor: MaterialStateProperty.all(
+                                            Colors.transparent),
+                                      ),
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Dialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0), // Sudut membulat
                                               ),
-                                            ),
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Text("Ubah"),
-                                  ),
-                                );
-                              }),
-                            ],
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(15),
+                                                child: Column(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    // Title for the dialog
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          'Pilih Alamat',
+                                                          style: TextStyle(
+                                                              fontSize: 18),
+                                                        ),
+                                                      ],
+                                                    ),
+
+                                                    SizedBox(height: 10),
+
+                                                    // ListView.builder for displaying the addresses
+                                                    SizedBox(
+                                                      height: 200,
+                                                      // Set the height of the list view
+                                                      child: ListView.builder(
+                                                        itemCount: snapshot
+                                                            .data!.data!.length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          return Obx(() {
+                                                            return ListTile(
+                                                              contentPadding:
+                                                                  EdgeInsets.only(
+                                                                      left: 5,
+                                                                      right: 0),
+                                                              leading: Icon(
+                                                                  Icons.home),
+                                                              title: Text(
+                                                                snapshot
+                                                                    .data!
+                                                                    .data![index]
+                                                                    .picName!,
+                                                                style: TextStyle(
+                                                                    fontSize: 13),
+                                                              ),
+                                                              subtitle: Text(
+                                                                snapshot
+                                                                    .data!
+                                                                    .data![index]
+                                                                    .propertyAddress!,
+                                                                style: TextStyle(
+                                                                    fontSize: 12),
+                                                              ),
+                                                              trailing: Radio(
+                                                                  value: snapshot
+                                                                      .data!
+                                                                      .data![
+                                                                          index]
+                                                                      .id,
+                                                                  groupValue:
+                                                                      controller
+                                                                          .selectedProperty
+                                                                          .value,
+                                                                  onChanged:
+                                                                      (value) {
+                                                                    controller.selectedProperty.value = value!.toInt();
+                                                                    controller.picName.value = snapshot.data!.data![index].picName!;
+                                                                    controller.propertyAddress.value = snapshot.data!.data![index].propertyAddress!;
+                                                                    controller.propertyId.value = snapshot.data!.data![index].id.toString();
+                                                                  }),
+                                                            );
+                                                          });
+                                                        },
+                                                      ),
+                                                    ),
+
+                                                    // Button to close the dialog
+                                                    SizedBox(height: 20),
+                                                    SizedBox(
+                                                        width: double.infinity,
+                                                        child: ElevatedButton(
+                                                            style: ElevatedButton.styleFrom(
+                                                                backgroundColor:
+                                                                    Colors.blue,
+                                                                foregroundColor:
+                                                                    Colors.white,
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(
+                                                                                10))),
+                                                            onPressed: () {
+                                                              Navigator.pop(
+                                                                  context);
+                                                            },
+                                                            child:
+                                                                Text("Simpan")))
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Text("Ubah"),
+                                    ),
+                                  );
+                                }),
+                              ],
+                            ),
                           );
                         }),
-                    Divider(),
-                    Text("Pesanan Anda",
-                        style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold)),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(packController.category.value,
-                        style: TextStyle(
-                            fontSize: 15, fontWeight: FontWeight.bold)),
                     SizedBox(height: 10,),
-                    packController.category.value == "Deep Cleaning"
-                    ? ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: packController.resultDataObject.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child: CachedNetworkImage(
-                                      imageUrl: packController
-                                          .resultDataObject[index]['pack_img'],
-                                      fit: BoxFit.cover,
-                                      height: 70,
-                                      width: 70,
-                                      placeholder: (context, url) =>
-                                          const CircularProgressIndicator(),
-                                      errorWidget: (context, url, error) =>
-                                          const Icon(
-                                        Icons.person,
-                                        size: 60,
-                                        color: Colors.grey,
-                                      ),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("Pesanan Anda",
+                              style: TextStyle(
+                                  fontSize: 17, fontWeight: FontWeight.bold)),
+                          Divider(),
+                          Text(packController.category.value,
+                              style: TextStyle(
+                                  fontSize: 15, fontWeight: FontWeight.bold)),
+                          SizedBox(height: 10,),
+                          packController.category.value == "Deep Cleaning"
+                              ? ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: packController.resultDataObject.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  children: [
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        ClipRRect(
+                                          borderRadius: BorderRadius.circular(8),
+                                          child: CachedNetworkImage(
+                                            imageUrl: packController
+                                                .resultDataObject[index]['pack_img'],
+                                            fit: BoxFit.cover,
+                                            height: 70,
+                                            width: 70,
+                                            placeholder: (context, url) =>
+                                            const CircularProgressIndicator(),
+                                            errorWidget: (context, url, error) =>
+                                            const Icon(
+                                              Icons.person,
+                                              size: 60,
+                                              color: Colors.grey,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 15,
+                                        ),
+                                        Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              packController.resultDataObject[index]
+                                              ['pack_name'],
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: packController
+                                                  .resultDataObject[index]
+                                              ["data_object"]
+                                                  .map<Widget>((item) {
+                                                return Text(
+                                                    "\u2022 ${item['object_name']}");
+                                              }).toList(),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
                                     ),
+                                    SizedBox(
+                                      height: 10,
+                                    )
+                                  ],
+                                );
+                              })
+                              : Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(8),
+                                child: CachedNetworkImage(
+                                  imageUrl: packController.selectedPackageImg.value,
+                                  fit: BoxFit.cover,
+                                  height: 70,
+                                  width: 70,
+                                  placeholder: (context, url) =>
+                                  const CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                  const Icon(
+                                    Icons.person,
+                                    size: 60,
+                                    color: Colors.grey,
                                   ),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        packController.resultDataObject[index]
-                                            ['pack_name'],
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: packController
-                                            .resultDataObject[index]
-                                                ["data_object"]
-                                            .map<Widget>((item) {
-                                          return Text(
-                                              "\u2022 ${item['object_name']}");
-                                        }).toList(),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                                ),
                               ),
                               SizedBox(
-                                height: 10,
-                              )
+                                width: 15,
+                              ),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      packController.selectedPackageName.value,
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Text(
+                                      "${packController.selectedDuration.value} Jam",
+                                      style: TextStyle(
+                                          fontSize: 15),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          Utils.formatCurrency(int.parse(packController.selectedPriceDuration.value)),
+                                          style: TextStyle(
+                                              fontSize: 15),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
                             ],
-                          );
-                        })
-                    : Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: CachedNetworkImage(
-                            imageUrl: packController.selectedPackageImg.value,
-                            fit: BoxFit.cover,
-                            height: 70,
-                            width: 70,
-                            placeholder: (context, url) =>
-                            const CircularProgressIndicator(),
-                            errorWidget: (context, url, error) =>
-                            const Icon(
-                              Icons.person,
-                              size: 60,
-                              color: Colors.grey,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10,),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Catatan",
+                            style:
+                            TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                          ),
+                          Divider(),
+                          TextField(
+                            maxLines: 3,
+                            controller: controller.noteController,
+                            decoration: InputDecoration(
+                              hintText: "Catatan (Opsional)",
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey, width: 1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              filled: true,
+                              fillColor: Color(0xfff7f9fc),
                             ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 15,
-                        ),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                packController.selectedPackageName.value,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                "${packController.selectedDuration.value} Jam",
-                                style: TextStyle(
-                                    fontSize: 15),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    Utils.formatCurrency(int.parse(packController.selectedPriceDuration.value)),
-                                    style: TextStyle(
-                                        fontSize: 15),
-                                  ),
-                                ],
-                              )
-                            ],
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
-                      ],
-                    ),
-                    Divider(),
-                    Text(
-                      "Catatan",
-                      style:
-                          TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                    ),
-                    TextField(
-                      maxLines: 3,
-                      controller: controller.noteController,
-                      decoration: InputDecoration(
-                        hintText: "Catatan (Opsional)",
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        disabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        filled: true,
-                        fillColor: Color(0xfff7f9fc),
+                          Text(
+                            "Pilih Waktu Layanan",
+                            style:
+                            TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                          ),
+                          Divider(),
+                          Text(
+                            "Tanggal",
+                            style: TextStyle(fontWeight: FontWeight.w600,color: Colors.black54),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          TextField(
+                            controller: controller.dateController,
+                            decoration: InputDecoration(
+                              hintText: "Pilih Tanggal",
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                              ),
+                              suffixIcon: Icon(
+                                Icons.calendar_month_rounded,
+                                color: Colors.grey,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey, width: 1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              filled: true,
+                              fillColor: Color(0xfff7f9fc),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              controller.selectDate(context);
+                            },
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "Waktu",
+                            style: TextStyle(fontWeight: FontWeight.w600,color: Colors.black54),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          TextField(
+                            controller: controller.timeController,
+                            decoration: InputDecoration(
+                              hintText: "Pilih Waktu",
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                              ),
+                              suffixIcon: Icon(
+                                Icons.access_time_outlined,
+                                color: Colors.grey,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey, width: 1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              filled: true,
+                              fillColor: Color(0xfff7f9fc),
+                            ),
+                            readOnly: true,
+                            onTap: () {
+                              // controller.selectTime(context);
+                              Navigator.push(
+                                  context,
+                                  showPicker(
+                                    context: context,
+                                    value: Time(hour: 11, minute: 30, second: 20),
+                                    sunrise: TimeOfDay(hour: 6, minute: 0),
+                                    // optional
+                                    sunset: TimeOfDay(hour: 18, minute: 0),
+                                    // optional
+                                    is24HrFormat: true,
+                                    duskSpanInMinutes: 120,
+                                    // optional
+                                    minHour: 8,
+                                    maxHour: 18,
+                                    onChange: (time) {
+                                      String formattedTimeUI =
+                                          '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+                                      String formattedTimeData =
+                                          '${time.hour.toString().padLeft(2, '0')}:'
+                                          '${time.minute.toString().padLeft(2, '0')}:00';
+                                      controller.timeController.text =
+                                          formattedTimeUI;
+                                      controller.timeText.value = formattedTimeData;
+                                    },
+                                  ));
+                            },
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "Tambahan",
+                            style:
+                            TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                          ),
+                          Divider(),
+                          Text(
+                            "Gender Mitra",
+                            style: TextStyle(fontWeight: FontWeight.w600,color: Colors.black54),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Obx(() {
+                            return DropdownButtonFormField<String>(
+                              decoration: InputDecoration(
+                                hintText: 'Pilih',
+                                hintStyle: TextStyle(color: Colors.grey),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey, width: 1),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                disabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey.shade300),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                filled: true,
+                                fillColor: Color(0xfff7f9fc),
+                                // contentPadding: EdgeInsets.symmetric(vertical: 10)
+                              ),
+                              value: controller.selectedGender.value == '' ? null : controller.selectedGender.value,
+                              style: TextStyle(color: Colors.grey,fontSize: 16,),
+                              items: controller.genderMitra.map((fruit) {
+                                return DropdownMenuItem<String>(
+                                  value: fruit,
+                                  child: Text(fruit),
+                                );
+                              }).toList(),
+                              onChanged: (val) => controller.selectedGender.value = val!,
+                            );
+                          }),
+                          SizedBox(height: 5,),
+                          Text("* Opsi ini dapat Anda sesuaikan apabila menginginkan mitra dengan gender tertentu untuk kenyamanan Anda selama layanan berlangsung.",style: TextStyle(fontSize: 10,color: Colors.grey),)
+                        ],
                       ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Divider(),
-                    Text(
-                      "Pilih Waktu Layanan",
-                      style:
-                          TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Tanggal",
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    TextField(
-                      controller: controller.dateController,
-                      decoration: InputDecoration(
-                        hintText: "Pilih Tanggal",
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                        ),
-                        suffixIcon: Icon(
-                          Icons.calendar_month_rounded,
-                          color: Colors.grey,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        disabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        filled: true,
-                        fillColor: Color(0xfff7f9fc),
-                      ),
-                      readOnly: true,
-                      onTap: () {
-                        controller.selectDate(context);
-                      },
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Waktu",
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    TextField(
-                      controller: controller.timeController,
-                      decoration: InputDecoration(
-                        hintText: "Pilih Waktu",
-                        hintStyle: TextStyle(
-                          color: Colors.grey,
-                        ),
-                        suffixIcon: Icon(
-                          Icons.access_time_outlined,
-                          color: Colors.grey,
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey, width: 1),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        disabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: Colors.grey.shade300),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        filled: true,
-                        fillColor: Color(0xfff7f9fc),
-                      ),
-                      readOnly: true,
-                      onTap: () {
-                        // controller.selectTime(context);
-                        Navigator.push(
-                            context,
-                            showPicker(
-                              context: context,
-                              value: Time(hour: 11, minute: 30, second: 20),
-                              sunrise: TimeOfDay(hour: 6, minute: 0),
-                              // optional
-                              sunset: TimeOfDay(hour: 18, minute: 0),
-                              // optional
-                              is24HrFormat: true,
-                              duskSpanInMinutes: 120,
-                              // optional
-                              minHour: 8,
-                              maxHour: 18,
-                              onChange: (time) {
-                                String formattedTimeUI =
-                                    '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-                                String formattedTimeData =
-                                    '${time.hour.toString().padLeft(2, '0')}:'
-                                    '${time.minute.toString().padLeft(2, '0')}:00';
-                                controller.timeController.text =
-                                    formattedTimeUI;
-                                controller.timeText.value = formattedTimeData;
-                              },
-                            ));
-                      },
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Divider(),
+                    )
                   ],
                 ),
               ),
@@ -500,7 +577,7 @@ class Pemesanan extends GetView<PemesananController> {
                 padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
                 margin: const EdgeInsets.only(bottom: 15),
                 decoration: BoxDecoration(
-                  color: Color(0xfff4f4f4),
+                  color: Colors.white,
                 ),
                 child: Obx(() {
                   int total = 0;
@@ -593,7 +670,7 @@ class Pemesanan extends GetView<PemesananController> {
                           child: Obx(() {
                             final enabled =
                                 controller.timeText.value.isNotEmpty &&
-                                    controller.dateText.value.isNotEmpty;
+                                    controller.dateText.value.isNotEmpty && controller.selectedGender.value != "";
                             return ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 backgroundColor:
@@ -621,9 +698,9 @@ class Pemesanan extends GetView<PemesananController> {
                                   "due_date": controller.dateText.value,
                                   "due_time": controller.timeText.value,
                                   "discount": 2,
-                                  "order_notes":
-                                  controller.noteController.text,
-                                  "property_address": controller.propertyAddress.value
+                                  "order_notes": controller.noteController.text,
+                                  "property_id": int.parse(controller.propertyId.value),
+                                  "mitra_gender"          : controller.selectedGender.value
                                 };
                                 controller.orderPackage(data);
                                 // Get.toNamed("/pembayaran");
@@ -662,7 +739,7 @@ class Pemesanan extends GetView<PemesananController> {
                                 fontWeight: FontWeight.w600,
                                 color: Colors.grey),
                           ),
-                          Text(Utils.formatCurrency(int.parse(packController.selectedPriceDuration.value)),
+                          Text(Utils.formatCurrency(int.parse(packController.selectedDiscount.value)),
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.bold)),
@@ -730,7 +807,7 @@ class Pemesanan extends GetView<PemesananController> {
                       child: Obx(() {
                         final enabled =
                             controller.timeText.value.isNotEmpty &&
-                                controller.dateText.value.isNotEmpty;
+                                controller.dateText.value.isNotEmpty && controller.selectedGender.value != "";
                         return ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             backgroundColor:
@@ -758,10 +835,10 @@ class Pemesanan extends GetView<PemesananController> {
                               "due_time"              : controller.timeText.value,
                               "discount"              : packController.selectedDiscount.value,
                               "order_notes"           : controller.noteController.text,
-                              "property_address"      : controller.propertyAddress.value
+                              "property_id"           : int.parse(controller.propertyId.value),
+                              "mitra_gender"          : controller.selectedGender.value
                             };
                             controller.orderPackage(data);
-                            // Get.toNamed("/pembayaran");
                           }
                               : null,
                           child: Text(

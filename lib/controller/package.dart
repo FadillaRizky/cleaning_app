@@ -11,6 +11,9 @@ import '../api.dart';
 class PackageController extends GetxController {
   var category = "".obs;
 
+  ///Carousel detail Category
+  var currentIndex = 0.obs;
+
   RxList<bool> selectPackageDeep = <bool>[].obs;
   RxList<bool> selectObjectPackage = <bool>[].obs;
 
@@ -134,7 +137,7 @@ class PackageController extends GetxController {
   Future<ListPackageResponse> getlistPackage(String category) async{
     final response = await Api.getPackageList(category);
 
-    if (category == "Deep Cleaning" && response.data != null) {
+    if (category != "Daily Cleaning" && response.data != null) {
       selectPackageDeep.value = List<bool>.filled(response.data!.length, false);
     }
 

@@ -12,6 +12,8 @@ class PemesananController extends GetxController {
   var isLoading = false.obs;
   var dateText = ''.obs;
   var timeText = ''.obs;
+  var genderMitra = ['Laki - Laki', 'Perempuan', 'Bebas'].obs;
+  var selectedGender = "".obs;
   var dateController = TextEditingController();
   var timeController = TextEditingController();
   var noteController = TextEditingController();
@@ -24,6 +26,7 @@ class PemesananController extends GetxController {
   ///Property
   var picName = ''.obs;
   var propertyAddress = ''.obs;
+  var propertyId = ''.obs;
   var selectedProperty = 0.obs;
 
   Future<PropertyAddressResponse> getDetailPackage() {
@@ -49,12 +52,13 @@ class PemesananController extends GetxController {
   }
 
   Future<void> orderPackage(Map<String, dynamic> data) async {
+    print(data);
     try {
       EasyLoading.show();
       print("aaa");
       final response = await Api.orderPackage(data);
       if (response.status == true) {
-        Get.offNamed("/booking-success");
+        Get.offNamed("/booking-success",arguments: response.data!.orderid);
         packController.resultDataObject.clear();
         packController.category.value = "";
         timeText.value = "";

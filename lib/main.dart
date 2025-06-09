@@ -11,9 +11,11 @@ import 'package:cleaning_app/view/menu/detail_category.dart';
 import 'package:cleaning_app/view/menu/editprofile.dart';
 import 'package:cleaning_app/view/menu/home.dart';
 import 'package:cleaning_app/view/menu/invoice.dart';
+import 'package:cleaning_app/view/menu/order_detail.dart';
 import 'package:cleaning_app/view/menu/pembayaran.dart';
 import 'package:cleaning_app/view/menu/pemesanan.dart';
 import 'package:cleaning_app/view/menu/profile.dart';
+import 'package:cleaning_app/view/menu/tambah_alamat.dart';
 import 'package:cleaning_app/view/register.dart';
 import 'package:cleaning_app/view/register_verify.dart';
 import 'package:flutter/material.dart';
@@ -74,6 +76,8 @@ class MyApp extends StatelessWidget {
       fallbackLocale: const Locale('en', 'US'),
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+        scaffoldBackgroundColor: Colors.grey[100],
+        appBarTheme: AppBarTheme(color: Colors.white),
         iconTheme: IconThemeData(color: Colors.white,),
         fontFamily: 'Inter',
         textTheme: const TextTheme(
@@ -150,6 +154,7 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/invoice',
           page: () =>  InvoicePage(),
+          binding: InvoiceBindings()
         ),
         GetPage(
           name: '/isi-saldo',
@@ -166,6 +171,25 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/info-saldo',
           page: () =>  InfoSaldo(),
+        ),
+        GetPage(
+          name: '/alamat',
+          page: () =>  DaftarAlamat(),
+          binding: AlamatBindings()
+        ),
+        GetPage(
+            name: '/tambah-alamat',
+            page: () =>  TambahAlamat(),
+            binding: AlamatBindings()
+        ),
+        GetPage(
+            name: '/pilih-provinsi',
+            page: () =>  SelectProvince(),
+            binding: AlamatBindings()
+        ),
+        GetPage(
+            name: '/detail-order',
+            page: () =>  OrderDetail(),
         ),
       ],
     );

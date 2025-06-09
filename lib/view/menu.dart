@@ -1,5 +1,7 @@
 import 'package:cleaning_app/view/menu/booking.dart';
 import 'package:cleaning_app/view/menu/home.dart';
+import 'package:cleaning_app/view/menu/profile.dart';
+import 'package:cleaning_app/view/support.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
@@ -25,13 +27,7 @@ class Menu extends StatelessWidget {
               title: "Booking",
             ),
           ),
-          PersistentTabConfig(
-            screen: Home(),
-            item: ItemConfig(
-              icon: Icon(Icons.person),
-              title: "Profile",
-            ),
-          ),
+
           PersistentTabConfig(
             screen: Home(),
             item: ItemConfig(
@@ -40,10 +36,17 @@ class Menu extends StatelessWidget {
             ),
           ),
           PersistentTabConfig(
-            screen: Home(),
+            screen: SupportPage(),
             item: ItemConfig(
               icon: Icon(Icons.headset_mic_rounded),
               title: "Support",
+            ),
+          ),
+          PersistentTabConfig(
+            screen: ProfilePage(),
+            item: ItemConfig(
+              icon: Icon(Icons.person),
+              title: "Profile",
             ),
           ),
         ],
