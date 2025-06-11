@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cleaning_app/widget/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
@@ -7,6 +8,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../api.dart';
+import '../widget/popup.dart';
 
 class ProfileController extends GetxController {
   final firstNameController = TextEditingController();
@@ -67,11 +69,11 @@ class ProfileController extends GetxController {
         // bodController.text = response.data!.bod ?? "";
         // religionController.text = response.data!.religion ?? "";
       }else{
-        Get.snackbar("Error", "Gagal get detail user");
+        SnackbarUtil.error("Gagal get detail user");
       }
     } catch (e) {
       print('Get Detail User Error: $e');
-      Get.snackbar("Error", "Terjadi kesalahan: $e");
+      SnackbarUtil.error("Terjadi kesalahan: $e");
     }
   }
 
@@ -96,21 +98,21 @@ class ProfileController extends GetxController {
       );
 
       if (compressedFile == null) {
-        Get.snackbar("Error", "Gagal kompres gambar.");
+        SnackbarUtil.error("Gagal kompres gambar.");
         return;
       }
       imageFile.value = File(compressedFile!.path);
       final response = await Api.updateAvatar(imageFile.value!);
       if (response.status == "success") {
         urlAvatar.value = response.data!.avatarPath!;
-        Get.snackbar("Success", "Avatar updated!");
+        SnackbarUtil.success("Avatar updated!");
       } else {
         print("Response message: ${response.message}");
-        Get.snackbar("Error", "Failed to upload avatar");
+        SnackbarUtil.error("Failed to upload avatar");
       }
     } catch (e) {
       print('Update Avatar Error: $e');
-      Get.snackbar("Error", "Terjadi kesalahan: $e");
+      SnackbarUtil.error("Terjadi kesalahan: $e");
     }
   }
 
@@ -128,14 +130,14 @@ class ProfileController extends GetxController {
       isLoading.value = true;
       final response = await Api.updateDetailUser(data);
       if (response.status == "success") {
-        Get.snackbar("Success", "Data updated!");
+        SnackbarUtil.success("Data updated!");
         update();
       }  else{
-        Get.snackbar("Error", "Gagal Update");
+        SnackbarUtil.error("Gagal Update");
       }
     }catch(e){
       print('Update Data Error: $e');
-      Get.snackbar("Error", "Terjadi kesalahan: $e");
+      SnackbarUtil.error("Terjadi kesalahan: $e");
     }finally{
       isLoading.value = false;
     }

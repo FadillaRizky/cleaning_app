@@ -3,6 +3,7 @@ import 'package:cleaning_app/view/menu.dart';
 import 'package:cleaning_app/view/register.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 import '../controller/login.dart';
@@ -16,28 +17,28 @@ class LoginPage extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: EdgeInsets.all(53.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Center(child: Image.asset("assets/logo.png", width: 250,)),
-              SizedBox(height: 100,),
+              Center(child: Image.asset("assets/logo.png", width: 714.w,)),
+              SizedBox(height: 180.h,),
               Text("Sign in",
-                style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),),
+                style: TextStyle(fontSize: 80.sp, fontWeight: FontWeight.bold),),
               Text("Senang bertemu denganmu lagi!",
                 style: TextStyle(fontWeight: FontWeight.w500),),
-              SizedBox(height: 20,),
+              SizedBox(height: 50.h,),
               GlassmorphicTextField(
                   controller: controller.controllerphoneNumber,
                   hintText: 'Masukan Nomor Hp',
                   inputType: TextInputType.number,
                   prefixIcon: Text(
                     '+62',
-                    style: TextStyle(fontSize: 16),
+                    style: TextStyle(fontSize: 43.sp),
                   ),
                 ),
-              const SizedBox(height: 16),
+              SizedBox(height: 25.h),
               Obx(() {
                 return GlassmorphicTextField(
                     controller: controller.controllerPassword,
@@ -45,7 +46,7 @@ class LoginPage extends StatelessWidget {
                     obscureText: !controller.isPasswordVisible.value,
                     // Changed this line
                     prefixIcon: Padding(
-                      padding: const EdgeInsets.only(right: 5),
+                      padding: EdgeInsets.only(right: 15.w),
                       child: Icon(
                         Icons.lock_outline,
                         color: Colors.black54,
@@ -61,8 +62,7 @@ class LoginPage extends StatelessWidget {
                       onPressed: () => controller.isPasswordVisible.toggle(),
                     ));
               }),
-              const SizedBox(height: 16),
-              const SizedBox(height: 16),
+              SizedBox(height: 70.h),
               Obx(() =>
               controller.errorMessage.isNotEmpty
                   ? Center(
@@ -73,7 +73,7 @@ class LoginPage extends StatelessWidget {
                           .of(context)
                           .colorScheme
                           .error,
-                      fontSize: 11),
+                      fontSize: 30.sp),
                   textAlign: TextAlign.center,
                 ),
               )
@@ -82,7 +82,6 @@ class LoginPage extends StatelessWidget {
               Obx(() {
                 return SizedBox(
                   width: double.infinity,
-                  height: 45,
                   child: ElevatedButton(
                     onPressed: controller.isLoading.value
                         ? null
@@ -91,7 +90,7 @@ class LoginPage extends StatelessWidget {
                       backgroundColor: Colors.blue,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(
-                            50), // Rounded corners
+                            50.r), // Rounded corners
                       ), // Shadow color
                     ),
                     child: controller.isLoading.value
@@ -113,7 +112,7 @@ class LoginPage extends StatelessWidget {
                   text: TextSpan(
                     style: TextStyle(
                       color: Colors.black, // Default text color
-                      fontSize: 12, // Set font size as per your design
+                      fontSize: 35.sp, // Set font size as per your design
                     ),
                     children: <TextSpan>[
                       TextSpan(text: 'Belum Punya Akun? '),

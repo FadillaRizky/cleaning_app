@@ -258,13 +258,14 @@ class TambahAlamat extends GetView<AlamatController> {
                     ),
                     value: controller.selectedProperty.value == '' ? null : controller.selectedProperty.value,
                     style: TextStyle(color: Colors.grey,fontSize: 15),
-                    items: controller.typeProperty.map((fruit) {
+
+                    items: controller.typeProperty.map((property) {
                       return DropdownMenuItem<String>(
-                        value: fruit,
-                        child: Text(fruit),
+                        value: property,
+                        child: Text(property),
                       );
                     }).toList(),
-                    onChanged: (val) => controller.selectedProperty.value = val!,
+                    onChanged: !isDetail ? (val) => controller.selectedProperty.value = val! : null
                   );
                 }),
 

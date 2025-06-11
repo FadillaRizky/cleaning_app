@@ -4,6 +4,7 @@ import 'package:cleaning_app/controller/package.dart';
 import 'package:cleaning_app/model/DetailPackageResponse.dart';
 import 'package:cleaning_app/model/DurationPackageResponse.dart';
 import 'package:cleaning_app/model/PropertyAddressResponse.dart';
+import 'package:cleaning_app/widget/cached_image.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -409,8 +410,19 @@ class DetailDailyCleaning extends GetView<PackageController> {
                           cardLayanan(
                             path: '././assets/icon/estimasi_pengerjaan.svg',
                             title: 'Estimasi Pengerjaan',
-                            description:
-                                detail.data!.pack!.packProcedureDescription!,
+                            widgetContent: ListView.builder(
+                                itemCount: detail.data!.pdesc!.length,
+                                itemBuilder: (content,index){
+                                  final data = detail.data!.pdesc![index];
+                                  return ListTile(
+                                    leading: ClipRRect(
+                                        borderRadius:
+                                        BorderRadius.circular(8),
+                                            child: CachedImage(imgUrl: data.pdescImgPath!, height: 70, width: 70)),
+                                    title: Text(data.pdescTitle!),
+                                    subtitle: Text(data.pdescDetail!),
+                                  );
+                                }),
                           ),
                           SizedBox(
                             width: 10,
@@ -418,7 +430,9 @@ class DetailDailyCleaning extends GetView<PackageController> {
                           cardLayanan(
                             path: '././assets/icon/detail_pengerjaan.svg',
                             title: 'Detail Pengerjaan',
-                            description: detail.data!.pack!.packJobDescription!,
+                            widgetContent: SingleChildScrollView(
+                              child: Text(detail.data!.pack!.packJobDescription!),
+                            ),
                           ),
                           SizedBox(
                             width: 10,
@@ -426,8 +440,9 @@ class DetailDailyCleaning extends GetView<PackageController> {
                           cardLayanan(
                             path: '././assets/icon/peralatan.svg',
                             title: 'Peralatan',
-                            description:
-                                detail.data!.pack!.packObjectDescription!,
+                            widgetContent: SingleChildScrollView(
+                              child: Text(detail.data!.pack!.packObjectDescription!),
+                            ),
                           ),
                         ],
                       )
@@ -574,13 +589,12 @@ class DetailDailyCleaning extends GetView<PackageController> {
 class cardLayanan extends StatelessWidget {
   final String path;
   final String title;
-  final String description;
+  final Widget widgetContent;
 
   const cardLayanan({
     super.key,
     required this.path,
-    required this.title,
-    required this.description,
+    required this.title, required this.widgetContent,
   });
 
   @override
@@ -591,15 +605,17 @@ class cardLayanan extends StatelessWidget {
           showDialog(
             context: context,
             builder: (BuildContext context) {
-              return Dialog(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10.0), // Sudut membulat
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(15),
-                  child: SizedBox(
-                    height: 350,
-                    width: double.infinity,
+              return Center(
+                child: Container(
+                  height: 500,
+                  width: 350,
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
                     child: Column(
                       children: [
                         Row(
@@ -615,7 +631,7 @@ class cardLayanan extends StatelessWidget {
                         Divider(),
                         Expanded(
                             child:
-                                SingleChildScrollView(child: Text(description)))
+                                widgetContent)
                       ],
                     ),
                   ),

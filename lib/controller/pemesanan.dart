@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import '../api.dart';
 
 class PemesananController extends GetxController {
+  late Future<PropertyAddressResponse> listAddressFuture;
   PackageController packController = Get.find<PackageController>();
   var isLoading = false.obs;
   var dateText = ''.obs;
@@ -21,6 +22,7 @@ class PemesananController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    refreshAddress();
   }
 
   ///Property
@@ -29,8 +31,13 @@ class PemesananController extends GetxController {
   var propertyId = ''.obs;
   var selectedProperty = 0.obs;
 
-  Future<PropertyAddressResponse> getDetailPackage() {
-    return Api.getAddress();
+  // Future<PropertyAddressResponse> getDetailPackage() {
+  //   return Api.getAddress();
+  // }
+
+  void refreshAddress() {
+    listAddressFuture = Api.getAddress();
+    update(); // for GetBuilder
   }
 
   Future<void> selectDate(BuildContext context) async {

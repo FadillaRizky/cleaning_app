@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 
 import '../api.dart';
 import '../model/HistoryTransaksiResponse.dart';
+import '../widget/popup.dart';
 
 class HomeController extends GetxController {
   final RxInt currentIndex = 0.obs;
@@ -60,13 +61,13 @@ class HomeController extends GetxController {
       );
 
       if (compressedFile == null) {
-        Get.snackbar("Error", "Gagal kompres gambar.");
+        SnackbarUtil.error("Gagal kompres gambar.");
         return;
       }
       imageDocument.value = File(compressedFile!.path);
     } catch (e) {
       print('Update Avatar Error: $e');
-      Get.snackbar("Error", "Terjadi kesalahan: $e");
+      SnackbarUtil.error("Terjadi kesalahan: $e");
     }
   }
 
@@ -82,10 +83,10 @@ class HomeController extends GetxController {
       if (response.status == true) {
         Get.toNamed("/topup-success");
       } else {
-        Get.snackbar("Gagal", "Upload Gagal: ${response.message}");
+        SnackbarUtil.error("Upload Gagal: ${response.message}");
       }
     } catch (e) {
-      Get.snackbar("Error", "Upload gagal: $e");
+      SnackbarUtil.error("Upload gagal: $e");
     } finally {
       isLoading.value = false;
     }

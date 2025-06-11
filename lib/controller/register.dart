@@ -1,3 +1,4 @@
+import 'package:cleaning_app/widget/popup.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -77,11 +78,7 @@ class RegisterController extends GetxController {
 
 
     } catch (e) {
-      Get.snackbar(
-        "Error",
-        "$e",
-        snackPosition: SnackPosition.BOTTOM, // Show at bottom
-      );
+      SnackbarUtil.error(e.toString());
       print(e);
     }finally {
       isLoading.value = false;
@@ -138,11 +135,7 @@ class RegisterController extends GetxController {
         }
       }
      else if (response.status == "error") {
-        Get.snackbar(
-          "Gagal",
-          "Nomor atau Email tersebut sudah terpakai",
-          snackPosition: SnackPosition.BOTTOM, // Show at bottom
-        );
+        SnackbarUtil.error("Nomor atau Email tersebut sudah terpakai");
       }  
       else {
         throw "Terjadi Kesalahan Coba Lagi...";
@@ -151,18 +144,10 @@ class RegisterController extends GetxController {
 
     } catch (e) {
       if (e.toString() == "[firebase_auth/invalid-verification-code] The verification code from SMS/TOTP is invalid. Please check and enter the correct verification code again.") {
-        Get.snackbar(
-          "Error",
-          "Otp Invalid",
-          snackPosition: SnackPosition.BOTTOM, // Show at bottom
-        );
+        SnackbarUtil.error("Otp Invalid");
       }
       print(e);
-      Get.snackbar(
-        "Error",
-        "$e",
-        snackPosition: SnackPosition.BOTTOM, // Show at bottom
-      );
+      SnackbarUtil.error("$e");
     }finally{
       isLoading.value = false;
     }

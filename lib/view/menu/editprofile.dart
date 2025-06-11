@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleaning_app/controller/profile.dart';
+import 'package:cleaning_app/view/menu/profile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -63,27 +64,47 @@ class EditProfile extends GetView<ProfileController> {
                 return Center(
                   child: Stack(
                     children: [
-                      CircleAvatar(
-                          radius: 60,
-                          backgroundColor: Colors.grey[200],
-                          child: ClipOval(
-                            child: SizedBox(
-                              width: 120,
-                              height: 120,
-                              child: CachedNetworkImage(
-                                imageUrl: controller.urlAvatar.value,
-                                fit: BoxFit.cover,
-                                placeholder: (context, url) =>
-                                const CircularProgressIndicator(),
-                                errorWidget: (context, url, error) =>
-                                const Icon(
-                                  Icons.person,
-                                  size: 60,
-                                  color: Colors.grey,
+                      GestureDetector(
+                        onTap: (){
+                          showDialog(
+                            context: context,
+                            barrierColor: Colors.black12,
+                            builder: (_) =>
+                                Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 10,
+                                  child: CircleAvatar(
+                                    radius: 100,
+                                    child: AvatarCircle(
+                                      imageUrl: controller.urlAvatar.value,
+                                      size: 200,
+                                    ),
+                                  ),
+                                ),
+                          );
+                        },
+                        child: CircleAvatar(
+                            radius: 60,
+                            backgroundColor: Colors.grey[200],
+                            child: ClipOval(
+                              child: SizedBox(
+                                width: 120,
+                                height: 120,
+                                child: CachedNetworkImage(
+                                  imageUrl: controller.urlAvatar.value,
+                                  fit: BoxFit.cover,
+                                  placeholder: (context, url) =>
+                                  const CircularProgressIndicator(),
+                                  errorWidget: (context, url, error) =>
+                                  const Icon(
+                                    Icons.person,
+                                    size: 60,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                               ),
-                            ),
-                          )
+                            )
+                        ),
                       ),
                       Positioned(
                         bottom: 0,

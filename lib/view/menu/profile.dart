@@ -243,7 +243,9 @@ class ProfilePage extends StatelessWidget {
                       buildListTile(
                         title: 'Kebijakan Privasi',
                         icon: Icon(LineIcons.userShield,),
-                        ontap: () {},
+                        ontap: () {
+                          Get.toNamed("/privacy_policy");
+                        },
                       ),
                       buildListTile(
                         title: 'Keluar',

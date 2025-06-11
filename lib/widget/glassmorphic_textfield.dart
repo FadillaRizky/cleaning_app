@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class GlassmorphicTextField extends StatelessWidget {
   final String hintText;
@@ -21,9 +22,9 @@ class GlassmorphicTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 45,
+      height: 100.h,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.circular(35.r),
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
@@ -33,7 +34,7 @@ class GlassmorphicTextField extends StatelessWidget {
           ],
         ),
         border: Border.all(
-          color: Colors.black54,
+          color: Colors.grey,
           width: 1,
         ),
       ),
@@ -41,9 +42,9 @@ class GlassmorphicTextField extends StatelessWidget {
         controller: controller,
         obscureText: obscureText,
         keyboardType: inputType,
-        style: const TextStyle(
+        style: TextStyle(
           color: Colors.black87,
-          fontSize: 15,
+          fontSize: 43.sp,
         ),
          inputFormatters: suffixIcon == null ? [
           RemoveLeadingZeroFormatter(),
@@ -51,20 +52,16 @@ class GlassmorphicTextField extends StatelessWidget {
         ] : null ,
         decoration: InputDecoration(
           prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 15, right: 10,top: 10,bottom: 10),
+            padding: EdgeInsets.only(left: 15, right: 10,top: 10,bottom: 10),
             child: prefixIcon,
           ),
           suffixIcon: suffixIcon,
           hintText: hintText,
           hintStyle: TextStyle(
             color: Colors.black54,
-            fontSize: 13,
+            fontSize: 36.sp,
           ),
           border: InputBorder.none,
-          // contentPadding: const EdgeInsets.symmetric(
-          //   horizontal: 20,
-          //   vertical: 20,
-          // ),
         ),
       ),
     );
