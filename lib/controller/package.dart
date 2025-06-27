@@ -43,7 +43,7 @@ class PackageController extends GetxController {
   String amountObjectPrice(){
     var amount = tempDataObject.fold(
         0, (sum, item) {
-      return sum + int.parse(item["object_price"]);
+      return sum + item["object_price"] as int;
     });
 
     return Utils.formatCurrency(amount);

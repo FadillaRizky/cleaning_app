@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cleaning_app/controller/home.dart';
 import 'package:cleaning_app/controller/package.dart';
 import 'package:cleaning_app/model/PropertyAddressResponse.dart';
+import 'package:cleaning_app/widget/popup.dart';
 import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:day_night_time_picker/lib/state/time.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ import '../../widget/utils.dart';
 
 class Pemesanan extends GetView<PemesananController> {
   PackageController packController = Get.put(PackageController());
+  HomeController homeController = Get.put(HomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -29,276 +32,270 @@ class Pemesanan extends GetView<PemesananController> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    GetBuilder<PemesananController>(
-                      builder: (_) {
-                        return FutureBuilder(
-                            future: controller.listAddressFuture,
-                            builder: (context,
-                                AsyncSnapshot<PropertyAddressResponse> snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Skeletonizer(
-                                    child: Column(
-                                  children: [
-                                    SizedBox(
-                                      height: 100,
-                                      width: double.infinity,
-                                    ),
-                                    Padding(
-                                      padding:
-                                          const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                                      child: Column(
-                                        children: [
-                                          Text("Daily Cleaning"),
-                                          Text(
-                                              "Layanan kebersihan rutin yang dilakukan setiap hari untuk menjaga kebersihan dan kerapian sebuah hunian. Tujuannya adalah untuk mencegah penumpukan kotoran, debu, dan sampah, serta menciptakan lingkungan yang bersih, sehat, dan nyaman."),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ));
-                              } else if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              } else if (snapshot.hasData &&
-                                  snapshot.data!.data!.isNotEmpty) {
-                                controller.picName.value =
-                                    snapshot.data!.data!.first.picName!;
-                                controller.propertyAddress.value =
-                                    snapshot.data!.data!.first.propertyAddress!;
-                                controller.propertyId.value =
-                                    snapshot.data!.data!.first.id.toString();
-                                controller.selectedProperty.value =
-                                    snapshot.data!.data!.first.id!.toInt();
-                                return Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
+                    GetBuilder<PemesananController>(builder: (_) {
+                      return FutureBuilder(
+                          future: controller.listAddressFuture,
+                          builder: (context,
+                              AsyncSnapshot<PropertyAddressResponse> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Skeletonizer(
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "Alamat",
-                                        style: TextStyle(
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      Divider(),
-                                      Obx(() {
-                                        return ListTile(
-                                          contentPadding:
-                                              EdgeInsets.only(left: 5, right: 0),
-                                          leading: Icon(Icons.home),
-                                          title: Text(
-                                            controller.picName.value,
-                                            style: TextStyle(fontSize: 15),
-                                          ),
-                                          subtitle: Text(
-                                            controller.propertyAddress.value,
-                                            style: TextStyle(fontSize: 13),
-                                          ),
-                                          trailing: TextButton(
-                                            style: ButtonStyle(
-                                              overlayColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.transparent),
-                                            ),
-                                            onPressed: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (BuildContext context) {
-                                                  return Dialog(
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10.0), // Sudut membulat
-                                                    ),
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(15),
-                                                      child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          // Title for the dialog
-                                                          Row(
-                                                            children: [
-                                                              Text(
-                                                                'Pilih Alamat',
-                                                                style: TextStyle(
-                                                                    fontSize: 18),
-                                                              ),
-                                                            ],
-                                                          ),
-
-                                                          SizedBox(height: 10),
-
-                                                          // ListView.builder for displaying the addresses
-                                                          SizedBox(
-                                                            height: 200,
-                                                            // Set the height of the list view
-                                                            child: ListView.builder(
-                                                              itemCount: snapshot
-                                                                  .data!
-                                                                  .data!
-                                                                  .length,
-                                                              itemBuilder:
-                                                                  (context, index) {
-                                                                return Obx(() {
-                                                                  return ListTile(
-                                                                    contentPadding:
-                                                                        EdgeInsets.only(
-                                                                            left: 5,
-                                                                            right:
-                                                                                0),
-                                                                    leading: Icon(
-                                                                        Icons.home),
-                                                                    title: Text(
-                                                                      snapshot
-                                                                          .data!
-                                                                          .data![
-                                                                              index]
-                                                                          .picName!,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              13),
-                                                                    ),
-                                                                    subtitle: Text(
-                                                                      snapshot
-                                                                          .data!
-                                                                          .data![
-                                                                              index]
-                                                                          .propertyAddress!,
-                                                                      style: TextStyle(
-                                                                          fontSize:
-                                                                              12),
-                                                                    ),
-                                                                    trailing: Radio(
-                                                                        value: snapshot
-                                                                            .data!
-                                                                            .data![
-                                                                                index]
-                                                                            .id,
-                                                                        groupValue:
-                                                                            controller
-                                                                                .selectedProperty
-                                                                                .value,
-                                                                        onChanged:
-                                                                            (value) {
-                                                                          controller
-                                                                                  .selectedProperty
-                                                                                  .value =
-                                                                              value!
-                                                                                  .toInt();
-                                                                          controller.picName.value = snapshot
-                                                                              .data!
-                                                                              .data![
-                                                                                  index]
-                                                                              .picName!;
-                                                                          controller.propertyAddress.value = snapshot
-                                                                              .data!
-                                                                              .data![
-                                                                                  index]
-                                                                              .propertyAddress!;
-                                                                          controller.propertyId.value = snapshot
-                                                                              .data!
-                                                                              .data![
-                                                                                  index]
-                                                                              .id
-                                                                              .toString();
-                                                                        }),
-                                                                  );
-                                                                });
-                                                              },
-                                                            ),
-                                                          ),
-
-                                                          // Button to close the dialog
-                                                          SizedBox(height: 20),
-                                                          SizedBox(
-                                                              width:
-                                                                  double.infinity,
-                                                              child: ElevatedButton(
-                                                                  style: ElevatedButton.styleFrom(
-                                                                      backgroundColor:
-                                                                          Colors
-                                                                              .blue,
-                                                                      foregroundColor:
-                                                                          Colors
-                                                                              .white,
-                                                                      shape: RoundedRectangleBorder(
-                                                                          borderRadius:
-                                                                              BorderRadius.circular(
-                                                                                  10))),
-                                                                  onPressed: () {
-                                                                    Navigator.pop(
-                                                                        context);
-                                                                  },
-                                                                  child: Text(
-                                                                      "Simpan")))
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              );
-                                            },
-                                            child: Text("Ubah"),
-                                          ),
-                                        );
-                                      }),
-                                    ],
-                                  ),
-                                );
-                              }
-
-                              return Container(
-                                  padding: EdgeInsets.all(10),
-                                  decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "Alamat",
-                                    style: TextStyle(
-                                        fontSize: 17, fontWeight: FontWeight.bold),
+                                  SizedBox(
+                                    height: 100,
+                                    width: double.infinity,
                                   ),
-                                  Divider(),
-                                  ListTile(
-                                      contentPadding:
-                                          EdgeInsets.only(left: 5, right: 0),
-                                      title: Text(
-                                        "Tambah Alamat ",
-                                        style: TextStyle(fontSize: 14),
-                                      ),
-                                      subtitle: Text(
-                                        "alamat belum ditambahkan",
-                                        style: TextStyle(fontSize: 13),
-                                      ),
-                                      trailing: ElevatedButton.icon(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.blue,
-                                            foregroundColor: Colors.white,
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10))),
-                                        onPressed: () async{
-                                          var result =
-                                              await Get.toNamed("/tambah-alamat");
-                                          if (result == 'refresh') {
-                                            controller.refreshAddress();
-                                          }
-                                        },
-                                        label: Text("Tambah"),
-                                        icon: Icon(LineIcons.plus),
-                                      ))
+                                  Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                        20, 20, 20, 0),
+                                    child: Column(
+                                      children: [
+                                        Text("Daily Cleaning"),
+                                        Text(
+                                            "Layanan kebersihan rutin yang dilakukan setiap hari untuk menjaga kebersihan dan kerapian sebuah hunian. Tujuannya adalah untuk mencegah penumpukan kotoran, debu, dan sampah, serta menciptakan lingkungan yang bersih, sehat, dan nyaman."),
+                                      ],
+                                    ),
+                                  ),
                                 ],
                               ));
-                            });
-                      }
-                    ),
+                            } else if (snapshot.hasError) {
+                              return Text('Error: ${snapshot.error}');
+                            } else if (snapshot.hasData &&
+                                snapshot.data!.data!.isNotEmpty) {
+                              controller.picName.value =
+                                  snapshot.data!.data!.first.picName!;
+                              controller.propertyAddress.value =
+                                  snapshot.data!.data!.first.propertyAddress!;
+                              controller.propertyId.value =
+                                  snapshot.data!.data!.first.id.toString();
+                              controller.selectedProperty.value =
+                                  snapshot.data!.data!.first.id!.toInt();
+                              return Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Alamat",
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Divider(),
+                                    Obx(() {
+                                      return ListTile(
+                                        contentPadding:
+                                            EdgeInsets.only(left: 5, right: 0),
+                                        leading: Icon(Icons.home),
+                                        title: Text(
+                                          controller.picName.value,
+                                          style: TextStyle(fontSize: 15),
+                                        ),
+                                        subtitle: Text(
+                                          controller.propertyAddress.value,
+                                          style: TextStyle(fontSize: 13),
+                                        ),
+                                        trailing: TextButton(
+                                          style: ButtonStyle(
+                                            overlayColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.transparent),
+                                          ),
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return Dialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0), // Sudut membulat
+                                                  ),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                            15),
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        // Title for the dialog
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                              'Pilih Alamat',
+                                                              style: TextStyle(
+                                                                  fontSize: 18),
+                                                            ),
+                                                          ],
+                                                        ),
+
+                                                        SizedBox(height: 10),
+
+                                                        // ListView.builder for displaying the addresses
+                                                        SizedBox(
+                                                          height: 200,
+                                                          // Set the height of the list view
+                                                          child:
+                                                              ListView.builder(
+                                                            itemCount: snapshot
+                                                                .data!
+                                                                .data!
+                                                                .length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    index) {
+                                                              return Obx(() {
+                                                                return ListTile(
+                                                                  contentPadding:
+                                                                      EdgeInsets.only(
+                                                                          left:
+                                                                              5,
+                                                                          right:
+                                                                              0),
+                                                                  leading: Icon(
+                                                                      Icons
+                                                                          .home),
+                                                                  title: Text(
+                                                                    snapshot
+                                                                        .data!
+                                                                        .data![
+                                                                            index]
+                                                                        .picName!,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            13),
+                                                                  ),
+                                                                  subtitle:
+                                                                      Text(
+                                                                    snapshot
+                                                                        .data!
+                                                                        .data![
+                                                                            index]
+                                                                        .propertyAddress!,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            12),
+                                                                  ),
+                                                                  trailing:
+                                                                      Radio(
+                                                                          value: snapshot
+                                                                              .data!
+                                                                              .data![
+                                                                                  index]
+                                                                              .id,
+                                                                          groupValue: controller
+                                                                              .selectedProperty
+                                                                              .value,
+                                                                          onChanged:
+                                                                              (value) {
+                                                                            controller.selectedProperty.value =
+                                                                                value!.toInt();
+                                                                            controller.picName.value =
+                                                                                snapshot.data!.data![index].picName!;
+                                                                            controller.propertyAddress.value =
+                                                                                snapshot.data!.data![index].propertyAddress!;
+                                                                            controller.propertyId.value =
+                                                                                snapshot.data!.data![index].id.toString();
+                                                                          }),
+                                                                );
+                                                              });
+                                                            },
+                                                          ),
+                                                        ),
+
+                                                        // Button to close the dialog
+                                                        SizedBox(height: 20),
+                                                        SizedBox(
+                                                            width:
+                                                                double.infinity,
+                                                            child:
+                                                                ElevatedButton(
+                                                                    style: ElevatedButton.styleFrom(
+                                                                        backgroundColor:
+                                                                            Colors
+                                                                                .blue,
+                                                                        foregroundColor:
+                                                                            Colors
+                                                                                .white,
+                                                                        shape: RoundedRectangleBorder(
+                                                                            borderRadius: BorderRadius.circular(
+                                                                                10))),
+                                                                    onPressed:
+                                                                        () {
+                                                                      Navigator.pop(
+                                                                          context);
+                                                                    },
+                                                                    child: Text(
+                                                                        "Simpan")))
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: Text("Ubah"),
+                                        ),
+                                      );
+                                    }),
+                                  ],
+                                ),
+                              );
+                            }
+
+                            return Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      "Alamat",
+                                      style: TextStyle(
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    Divider(),
+                                    ListTile(
+                                        contentPadding:
+                                            EdgeInsets.only(left: 5, right: 0),
+                                        title: Text(
+                                          "Tambah Alamat ",
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                        subtitle: Text(
+                                          "alamat belum ditambahkan",
+                                          style: TextStyle(fontSize: 13),
+                                        ),
+                                        trailing: ElevatedButton.icon(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.blue,
+                                              foregroundColor: Colors.white,
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          10))),
+                                          onPressed: () async {
+                                            var result = await Get.toNamed(
+                                                "/tambah-alamat");
+                                            if (result == 'refresh') {
+                                              controller.refreshAddress();
+                                            }
+                                          },
+                                          label: Text("Tambah"),
+                                          icon: Icon(LineIcons.plus),
+                                        ))
+                                  ],
+                                ));
+                          });
+                    }),
                     SizedBox(
                       height: 10,
                     ),
@@ -320,7 +317,7 @@ class Pemesanan extends GetView<PemesananController> {
                           SizedBox(
                             height: 10,
                           ),
-                          packController.category.value == "Deep Cleaning"
+                          packController.category.value != "Daily Cleaning"
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
@@ -667,7 +664,7 @@ class Pemesanan extends GetView<PemesananController> {
                                   ? null
                                   : controller.selectedGender.value,
                               style: TextStyle(
-                                color: Colors.grey,
+                                color: Colors.black,
                                 fontSize: 16,
                               ),
                               items: controller.genderMitra.map((fruit) {
@@ -695,299 +692,215 @@ class Pemesanan extends GetView<PemesananController> {
               ),
             ),
           ),
-          Obx(() {
-            return packController.category.value == "Deep Cleaning"
-                ? Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
-                    margin: const EdgeInsets.only(bottom: 15),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    child: Obx(() {
-                      int total = 0;
-                      for (var pack in packController.resultDataObject) {
-                        final objects = pack["data_object"] as List;
-                        for (var obj in objects) {
-                          total += int.parse(obj["object_price"]);
-                        }
+          Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
+                margin: const EdgeInsets.only(bottom: 15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                ),
+                child: Obx(() {
+                  String saldoString = homeController.amountSaldo.value;
+                  int saldoInt = int.tryParse(saldoString) ?? 0;
+                  int total = 0;
+                  if (packController.category.value != "Daily Cleaning") {
+                    for (var pack in packController.resultDataObject) {
+                      final objects = pack["data_object"] as List;
+                      for (var obj in objects) {
+                        total += obj["object_price"] as int;
                       }
-                      return Column(
-                        children: [
-                          packController.resultDataObject.isNotEmpty
-                              ? Column(
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Total Pesanan",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.grey),
-                                        ),
-                                        Text(Utils.formatCurrency(total),
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Biaya Layanan",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.grey),
-                                        ),
-                                        Text("Rp 2.000",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                    // Row(
-                                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    //   children: [
-                                    //     Text(
-                                    //       "Discount",
-                                    //       style: TextStyle(
-                                    //           fontWeight: FontWeight.w600,
-                                    //           color: Colors.grey),
-                                    //     ),
-                                    //     Text(
-                                    //         Utils.formatCurrency(int.parse(
-                                    //             controller.selectedDuration.value) -
-                                    //             int.parse(
-                                    //                 controller.selectedDiscount.value)),
-                                    //         style: TextStyle(
-                                    //             fontSize: 14,
-                                    //             fontWeight: FontWeight.bold,
-                                    //             color: Colors.red)),
-                                    //   ],
-                                    // ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Total",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                        Text(Utils.formatCurrency(total + 2000),
-                                            style: TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.bold)),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                  ],
-                                )
-                              : SizedBox(),
-                          SizedBox(
-                              width: double.infinity,
-                              child: Obx(() {
-                                final enabled =
-                                    controller.timeText.value.isNotEmpty &&
-                                        controller.dateText.value.isNotEmpty &&
-                                        controller.selectedGender.value != "";
-                                return ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    backgroundColor:
-                                        enabled ? Colors.blue : Colors.grey,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 12),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                      side: BorderSide.none,
-                                    ),
-                                  ),
-                                  onPressed: enabled
-                                      ? () {
-                                          var listData = packController
-                                              .resultDataObject
-                                              .map((pack) {
-                                            return {
-                                              "pack_id":
-                                                  pack["pack_id"].toString(),
-                                              "pack_category":
-                                                  packController.category.value,
-                                              "pack_hour": "0",
+                    }
+                  }
 
-                                              /// Deep Cleaning default 0
-                                              "object_id": (pack["data_object"]
-                                                      as List)
-                                                  .map((obj) => obj["object_id"]
-                                                      .toString())
-                                                  .toList(),
-                                              "object_price":
-                                                  (pack["data_object"] as List)
-                                                      .map((obj) =>
-                                                          obj["object_price"])
-                                                      .toList(),
-                                            };
-                                          }).toList();
-                                          var data = {
-                                            "data_pack": listData,
-                                            "category":
-                                                packController.category.value,
-                                            "due_date":
-                                                controller.dateText.value,
-                                            "due_time":
-                                                controller.timeText.value,
-                                            "discount": 2,
-                                            "order_notes":
-                                                controller.noteController.text,
-                                            "property_id": int.parse(
-                                                controller.propertyId.value),
-                                            "mitra_gender":
-                                                controller.selectedGender.value
-                                          };
-                                          controller.orderPackage(data);
-                                          // Get.toNamed("/pembayaran");
-                                        }
-                                      : null,
-                                  child: Text(
-                                    "Bayar Sekarang",
-                                    style: TextStyle(
-                                      color: Colors.white,
+                  return Column(
+                    children: [
+                      packController.resultDataObject.isNotEmpty ||
+                              packController.selectedPriceDuration.isNotEmpty
+                          ? Column(
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Saldo",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.blue),
                                     ),
-                                  ),
-                                );
-                              })),
-                        ],
-                      );
-                    }))
-                : Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
-                    margin: const EdgeInsets.only(bottom: 15),
-                    decoration: BoxDecoration(
-                      color: Color(0xfff4f4f4),
-                    ),
-                    child: Column(
-                      children: [
-                        packController.selectedPriceDuration.isNotEmpty
-                            ? Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Total Pesanan",
+                                    Text(Utils.formatCurrency(saldoInt),
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.grey),
-                                      ),
-                                      Text(
-                                          Utils.formatCurrency(int.parse(
-                                              packController
-                                                  .selectedDiscount.value)),
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Biaya Layanan",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.grey),
-                                      ),
-                                      Text("Rp 2.000",
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Discount",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.grey),
-                                      ),
-                                      Text(
-                                          Utils.formatCurrency(int.parse(
-                                                  packController
-                                                      .selectedPriceDuration
-                                                      .value) -
-                                              int.parse(packController
-                                                  .selectedDiscount.value)),
-                                          style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.red)),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Total",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      Text(
-                                          Utils.formatCurrency(int.parse(
-                                                  packController
-                                                      .selectedPriceDuration
-                                                      .value) +
-                                              2000),
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                ],
-                              )
-                            : SizedBox(),
-                        SizedBox(
-                            width: double.infinity,
-                            child: Obx(() {
-                              final enabled =
-                                  controller.timeText.value.isNotEmpty &&
-                                      controller.dateText.value.isNotEmpty &&
-                                      controller.selectedGender.value != "";
-                              return ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      enabled ? Colors.blue : Colors.grey,
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    side: BorderSide.none,
-                                  ),
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.blue)),
+                                  ],
                                 ),
-                                onPressed: enabled
-                                    ? () {
-                                        var data = {
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Total Pesanan",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey),
+                                    ),
+                                    Text(
+                                        packController.category.value !=
+                                                "Daily Cleaning"
+                                            ? Utils.formatCurrency(total)
+                                            : Utils.formatCurrency(int.parse(
+                                                packController
+                                                    .selectedDiscount.value)),
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Biaya Layanan",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          color: Colors.grey),
+                                    ),
+                                    Text("Rp 2.000",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                                packController.category.value == "Daily Cleaning"
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "Discount",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.grey),
+                                          ),
+                                          Text(
+                                              Utils.formatCurrency(int.parse(
+                                                      packController
+                                                          .selectedPriceDuration
+                                                          .value) -
+                                                  int.parse(packController
+                                                      .selectedDiscount.value)),
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.red)),
+                                        ],
+                                      )
+                                    : SizedBox(),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Total",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Text(
+                                        packController.category.value !=
+                                                "Daily Cleaning"
+                                            ? Utils.formatCurrency(total + 2000)
+                                            : Utils.formatCurrency(int.parse(
+                                                    packController
+                                                        .selectedPriceDuration
+                                                        .value) +
+                                                2000),
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold)),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                              ],
+                            )
+                          : SizedBox(),
+                      SizedBox(
+                          width: double.infinity,
+                          child: Obx(() {
+                            final enabled =
+                                controller.timeText.value.isNotEmpty &&
+                                    controller.dateText.value.isNotEmpty &&
+                                    controller.selectedGender.value != "";
+                            return ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    enabled ? Colors.blue : Colors.grey,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide.none,
+                                ),
+                              ),
+                              onPressed: () {
+
+                                if (packController.category.value != "Daily Cleaning") {
+                                  if (saldoInt < total) {
+                                    SnackbarUtil.show("Saldo Tidak Mencukupi", "Silakan Top up Saldo terlebih dahulu");
+                                    return ;
+                                  }
+                                }else{
+                                  if (saldoInt < int.parse(
+                                      packController
+                                          .selectedPriceDuration
+                                          .value)) {
+                                    SnackbarUtil.show("Saldo Tidak Mencukupi", "Silakan top up saldo terlebih dahulu");
+                                    return ;
+                                  }
+                                }
+                                if (controller.dateText.value.isEmpty) {
+                                  SnackbarUtil.show("Tanggal Layanan Kosong", "Silakan pilih tanggal layanan terlebih dahulu");
+                                  return ;
+                                }
+                                if (controller.timeText.value.isEmpty) {
+                                  SnackbarUtil.show("Waktu Layanan Kosong", "Silakan pilih waktu layanan terlebih dahulu");
+                                  return ;
+                                }
+                                if (controller.selectedGender.value == "") {
+                                  SnackbarUtil.show("Gender Mitra Kosong", "Silakan pilih preferensi gender mitra yang diinginkan");
+                                  return ;
+                                }
+
+
+                                      if (packController.category.value !=
+                                          "Daily Cleaning") {
+                                        var dataDeep = {
+                                          "data_pack":
+                                          controller.getListDataPack(),
+                                          "category":
+                                          packController.category.value,
+                                          "due_date": controller.dateText.value,
+                                          "due_time": controller.timeText.value,
+                                          "discount": 2,
+                                          "order_notes":
+                                          controller.noteController.text,
+                                          "property_id": int.parse(
+                                              controller.propertyId.value),
+                                          "mitra_gender":
+                                          controller.selectedGender.value
+                                        };
+                                        controller.orderPackage(dataDeep);
+                                      } else {
+                                        var dataDaily = {
                                           "data_pack": [
                                             {
-                                              "pack_id": int.parse(
-                                                  packController
-                                                      .selectedPackageId.value),
+                                              "pack_id": int.parse(packController
+                                                  .selectedPackageId.value),
                                               "pack_category":
-                                                  packController.category.value,
+                                              packController.category.value,
                                               "pack_hour": packController
                                                   .selectedDuration.value,
                                               "object_id": [],
@@ -995,33 +908,32 @@ class Pemesanan extends GetView<PemesananController> {
                                             }
                                           ],
                                           "category":
-                                              packController.category.value,
+                                          packController.category.value,
                                           "due_date": controller.dateText.value,
                                           "due_time": controller.timeText.value,
                                           "discount": packController
                                               .selectedDiscount.value,
                                           "order_notes":
-                                              controller.noteController.text,
+                                          controller.noteController.text,
                                           "property_id": int.parse(
                                               controller.propertyId.value),
                                           "mitra_gender":
-                                              controller.selectedGender.value
+                                          controller.selectedGender.value
                                         };
-                                        controller.orderPackage(data);
+                                        controller.orderPackage(dataDaily);
                                       }
-                                    : null,
-                                child: Text(
-                                  "Bayar Sekarang",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                  ),
+                                    },
+                              child: Text(
+                                "Bayar Sekarang",
+                                style: TextStyle(
+                                  color: Colors.white,
                                 ),
-                              );
-                            })),
-                      ],
-                    ),
+                              ),
+                            );
+                          })),
+                    ],
                   );
-          })
+                }))
         ],
       ),
     );

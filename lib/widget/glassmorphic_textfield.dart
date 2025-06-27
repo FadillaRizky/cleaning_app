@@ -62,7 +62,9 @@ class GlassmorphicTextField extends StatelessWidget {
             fontSize: 36.sp,
           ),
           border: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 15.h)
         ),
+
       ),
     );
   }

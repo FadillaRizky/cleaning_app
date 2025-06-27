@@ -1,5 +1,3 @@
-
-
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:cleaning_app/model/GetListOrderResponse.dart' as Data;
@@ -24,17 +22,17 @@ class BookingController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-getListOrder();
+    getListOrder();
   }
 
-  Future<void> getListOrder()async{
+  Future<void> getListOrder() async {
     try {
       isLoading.value = true;
 
       final response = await Api.getListOrder();
       if (response.status == true) {
         listOrder.assignAll(response.data ?? []);
-      }else{
+      } else {
         EasyLoading.showError("Gagal Get List Order");
       }
     } catch (e) {
@@ -44,9 +42,28 @@ getListOrder();
     }
   }
 
-  Future<DetailOrderResponse> getDetailorder(){
+  Future<DetailOrderResponse> getDetailorder() {
     final id = Get.arguments;
     return Api.getDetailOrder(id.toString());
   }
 
+  Future<void> cancelOrder(Map<String, dynamic> data) async {
+    try {
+      EasyLoading.show();
+      var response = await Api.cancelOrder(data);
+      if (response.status == true) {
+        Get.back();
+        Get.back(result: true);
+        EasyLoading.showSuccess("Berhasil Cancel Order ${response.data!.category}");
+      } else {
+        EasyLoading.showError("Gagal Cancel Order");
+      }
+    } catch (e, stackTrace) {
+      print("Error: $e");
+      print("StackTrace: $stackTrace");
+      EasyLoading.showError("Gagal : $e");
+    } finally {
+      EasyLoading.dismiss();
+    }
+  }
 }

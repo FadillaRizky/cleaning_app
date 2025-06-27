@@ -151,7 +151,11 @@ class Booking extends GetView<BookingController> {
                       final item = dataByStatus[index];
                       return GestureDetector(
                         onTap: (){
-                          Get.toNamed("/detail-order",arguments: item.orderid);
+                          Get.toNamed("/detail-order",arguments: item.orderid)?.then((result) {
+                            if (result == true) {
+                              controller.getListOrder();
+                            }
+                          });
                           print(item.orderid);
                         },
                         child: Container(

@@ -20,6 +20,8 @@ class HomeController extends GetxController {
   late Future<ListCategoryPackageResponse> futurePackageList;
   var options = <Map<String, dynamic>>[].obs;
 
+  ///keterangan Notif
+  var notifLength = 0.obs;
 
   /// Keterangan Jumlah Saldo
   var amountSaldo = "".obs;
@@ -27,8 +29,20 @@ class HomeController extends GetxController {
   /// Top up Saldo
   var isLoading = false.obs;
   var topupText = ''.obs;
-  var listBank = ["bca", "mandiri"].obs;
-  var selectBank = ''.obs;
+  // var listBank = ["bca", "mandiri"].obs;
+  var listBank = <Map<String, String>>[
+    {
+      'bank_name': 'BCA',
+      'account_number': '62789947384784333',
+    },
+    {
+      'bank_name': 'Mandiri',
+      'account_number': '23455434543454423',
+    },
+  ].obs;
+  // var selectBank = ''.obs;
+  var selectBank = Rx<Map<String, String>?>(null);
+
   var showError = false.obs;
   final ImagePicker _picker = ImagePicker();
   var imageDocument = Rx<File?>(null);
@@ -96,6 +110,7 @@ class HomeController extends GetxController {
     // await Future.delayed(Duration(seconds: 2));
     futurePackageList = Api.getCategoryPackageList();
     fetchSaldo();
+    fetchNotif();
     update();
   }
 
@@ -118,7 +133,36 @@ class HomeController extends GetxController {
     return Api.getHistoryTransaksi();
   }
 
+  String getGreetingByTime() {
+    final now = DateTime.now();
+    final hour = now.hour;
+    final minute = now.minute;
 
+    if (hour >= 5 && (hour < 9 || (hour == 9 && minute == 0))) {
+      return "Pagi";
+    } else if ((hour == 9 && minute >= 1) || (hour > 9 && hour < 14) || (hour == 14 && minute == 0)) {
+      return "Siang";
+    } else if ((hour == 14 && minute >= 1) || (hour > 14 && hour < 18) || (hour == 18 && minute == 0)) {
+      return "Sore";
+    } else {
+      return "Malam";
+    }
+  }
+
+  Future<void> fetchNotif() async {
+    try {
+      isLoading.value = true;
+
+      final response = await Api.getNotification();
+      if (response.status == true) {
+        notifLength.value = response.data!.where((item) => item.status == "0").length;
+      }
+    } catch (e) {
+      print("gagal get saldo : $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   @override
   void onInit() {
@@ -126,5 +170,6 @@ class HomeController extends GetxController {
     futurePackageList = Api.getCategoryPackageList();
     fetchSaldo();
     userName.value = _storage.read('name') ?? 'Anonymous';
+    fetchNotif();
   }
 }

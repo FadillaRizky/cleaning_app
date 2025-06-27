@@ -95,21 +95,26 @@ class IsiSaldo extends GetView<HomeController> {
                     ),
                     Obx(() {
                       return Column(
-                          children: controller.listBank.map<Widget>((item) {
-                        return ListTile(
-                          contentPadding: EdgeInsets.zero,
-                          leading: Image.asset(
-                            "assets/icon/$item.png",
-                            height: 20,
-                          ),
-                          trailing: Radio(
+                        children: controller.listBank.map<Widget>((item) {
+                          final bankName = item['bank_name'] ?? '';
+
+                          return ListTile(
+                            contentPadding: EdgeInsets.zero,
+                            leading: Image.asset(
+                              "assets/icon/${bankName.toLowerCase()}.png", // pastikan nama file lowercase
+                              height: 20,
+                            ),
+                            title: Text(bankName),
+                            trailing: Radio(
                               value: item,
                               groupValue: controller.selectBank.value,
                               onChanged: (value) {
-                                controller.selectBank.value = value!;
-                              }),
-                        );
-                      }).toList());
+                                controller.selectBank.value = value;
+                              },
+                            ),
+                          );
+                        }).toList(),
+                      );
                     })
                   ],
                 ),
@@ -118,17 +123,17 @@ class IsiSaldo extends GetView<HomeController> {
           ),
           Obx(() {
             var enable = controller.topupText.value.isNotEmpty &&
-                !controller.showError.value && controller.selectBank.value != "";
+                controller.showError.value == false && controller.selectBank.value != "";
             return Container(
               width: double.infinity,
               padding: EdgeInsets.all(20),
               child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: enable ? Colors.blue : Colors.grey,
+                      backgroundColor: Colors.blue,
                       foregroundColor: Colors.white),
-                  onPressed: () {
+                  onPressed: enable ? () {
                     Get.toNamed("/upload-bukti-topup");
-                  },
+                  } : null,
                   child: Text("Lanjutkan")),
             );
           })
@@ -172,10 +177,10 @@ class UploadBuktiTopup extends GetView<HomeController> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("123 456 789"),
+                          Text(controller.selectBank.value!["account_number"] ?? ""),
                           GestureDetector(
                             onTap: (){
-                              Clipboard.setData(ClipboardData(text: "123 456 789"));
+                              Clipboard.setData(ClipboardData(text: controller.selectBank.value!["account_number"] ?? ""));
                               IconSnackBar.show(context,snackBarType: SnackBarType.alert, label: 'Text berhasil di salin.');
                             },
                             child: Text(

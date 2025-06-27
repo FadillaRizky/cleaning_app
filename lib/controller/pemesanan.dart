@@ -13,7 +13,7 @@ class PemesananController extends GetxController {
   var isLoading = false.obs;
   var dateText = ''.obs;
   var timeText = ''.obs;
-  var genderMitra = ['Laki - Laki', 'Perempuan', 'Bebas'].obs;
+  var genderMitra = ['Pria', 'Wanita', 'Random'].obs;
   var selectedGender = "".obs;
   var dateController = TextEditingController();
   var timeController = TextEditingController();
@@ -44,7 +44,7 @@ class PemesananController extends GetxController {
     DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      firstDate:  DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
       lastDate: DateTime(2100),
       locale: const Locale('id', 'ID'),
     );
@@ -56,6 +56,22 @@ class PemesananController extends GetxController {
       dateText.value = DateFormat('yyyy-MM-dd', 'id_ID').format(pickedDate);
       print(dateText);
     }
+  }
+
+  List<Map<String, dynamic>> getListDataPack() {
+    return packController.resultDataObject.map((pack) {
+      return {
+        "pack_id": pack["pack_id"].toString(),
+        "pack_category": packController.category.value,
+        "pack_hour": "0", // Default value
+        "object_id": (pack["data_object"] as List)
+            .map((obj) => obj["object_id"].toString())
+            .toList(),
+        "object_price": (pack["data_object"] as List)
+            .map((obj) => obj["object_price"])
+            .toList(),
+      };
+    }).toList();
   }
 
   Future<void> orderPackage(Map<String, dynamic> data) async {

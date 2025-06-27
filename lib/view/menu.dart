@@ -5,6 +5,8 @@ import 'package:cleaning_app/view/support.dart';
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
+import 'menu/notification.dart';
+
 class Menu extends StatelessWidget {
   const Menu({super.key});
 
@@ -29,7 +31,7 @@ class Menu extends StatelessWidget {
           ),
 
           PersistentTabConfig(
-            screen: Home(),
+            screen: NotificationPage(),
             item: ItemConfig(
               icon: Icon(Icons.notifications),
               title: "Notification",
@@ -50,7 +52,7 @@ class Menu extends StatelessWidget {
             ),
           ),
         ],
-        navBarBuilder: (navBarConfig) => Style6BottomNavBar(
+        navBarBuilder: (navBarConfig) => Style1BottomNavBar(
               navBarConfig: navBarConfig,
             ));
   }

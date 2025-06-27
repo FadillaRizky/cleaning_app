@@ -384,7 +384,7 @@ class DetailCategory extends GetView<PackageController> {
                     for (var pack in controller.resultDataObject) {
                       final objects = pack["data_object"] as List;
                       for (var obj in objects) {
-                        total += int.parse(obj["object_price"]);
+                        total += obj["object_price"] as int;
                       }
                     }
                     return Column(
@@ -603,7 +603,7 @@ class DetailCategory extends GetView<PackageController> {
                                             "object_name":
                                                 options[index].objectName,
                                             "object_price":
-                                                options[index].objectPrice,
+                                                options[index].objectPriceDisc,
                                           });
                                         } else {
                                           controller.tempDataObject.removeWhere(
@@ -635,7 +635,7 @@ class DetailCategory extends GetView<PackageController> {
                                                             .objectName,
                                                     "object_price":
                                                         options[index]
-                                                            .objectPrice,
+                                                            .objectPriceDisc,
                                                   });
                                                 } else {
                                                   controller.tempDataObject
@@ -675,9 +675,14 @@ class DetailCategory extends GetView<PackageController> {
                                               ],
                                             ),
                                           ),
-                                          Text(Utils.formatCurrency(int.parse(
-                                              options[index].objectPrice ??
-                                                  ""))),
+                                          SizedBox(width: 3,),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            children: [
+                                              Text(Utils.formatCurrency(options[index].objectPriceDisc!)),
+                                              Text(Utils.formatCurrency(options[index].objectPrice!),style: TextStyle(fontSize: 12 ,decoration: TextDecoration.lineThrough,)),
+                                            ],
+                                          ),
                                         ],
                                       ),
                                     ),

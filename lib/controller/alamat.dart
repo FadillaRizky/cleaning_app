@@ -18,6 +18,7 @@ class AlamatController extends GetxController {
   var typeProperty = ['Rumah', 'Apartement', 'Kontrakan', 'Kos'].obs;
   var selectedProperty = "".obs;
   var detailLocation = "".obs;
+  var specificLocation = "".obs;
   var latlongLocation = "".obs;
   var latLocation = "".obs;
   var longLocation = "".obs;
@@ -43,6 +44,7 @@ class AlamatController extends GetxController {
     detailAddressController.clear();
     selectedProperty.value == "";
     detailLocation.value = "";
+    specificLocation.value = "";
     latlongLocation.value = "";
     latLocation.value = "";
     longLocation.value = "";
@@ -74,28 +76,27 @@ class AlamatController extends GetxController {
     return true;
   }
 
-  getDetailLocation(LatLng latLng) async {
-    try {
-      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
-        latLng.latitude,
-        latLng.longitude,
-      );
+    getDetailLocation(LatLng latLng) async {
+      try {
+        List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
+          latLng.latitude,
+          latLng.longitude,
+        );
 
-      if (placemarks.isNotEmpty) {
-        final place = placemarks.first;
-        final provinsi = place.administrativeArea; // Provinsi
-        final kabupaten = place.subAdministrativeArea; // Kabupaten / Kota
-        final kecamatan = place.locality ?? place.subLocality; // Kecamatan
+        if (placemarks.isNotEmpty) {
+          final place = placemarks.first;
+          final provinsi = place.administrativeArea; // Provinsi
+          final kabupaten = place.subAdministrativeArea; // Kabupaten / Kota
+          final kecamatan = place.locality ?? place.subLocality; // Kecamatan
+          final kelurahan = place.subLocality ?? place.name; // Kelurahan/Desa fallback ke name
 
-        detailLocation.value = "${provinsi},${kabupaten},${kecamatan}";
-        print('Provinsi: $provinsi');
-        print('Kabupaten: $kabupaten');
-        print('Kecamatan: $kecamatan');
+          detailLocation.value = "$provinsi, $kabupaten, $kecamatan, $kelurahan";
+          specificLocation.value = kelurahan!;
+        }
+      } catch (e) {
+        print('Error: $e');
       }
-    } catch (e) {
-      print('Error: $e');
     }
-  }
 
   Future<void> storeAddress(Map<String, dynamic> data) async {
     try {
@@ -147,6 +148,9 @@ class AlamatController extends GetxController {
     nameController.text = data.picName!;
     phoneNumberController.text = data.picPhone!;
     detailLocation.value = data.propertyAddress!;
+    List<String> parts = data.propertyAddress!.split(',');
+    String kelurahan = parts.last;
+    specificLocation.value = kelurahan;
     detailAddressController.text = data.description!;
     selectedProperty.value = data.propertyType!;
     latlongLocation.value = "${data.lat},${data.long}";

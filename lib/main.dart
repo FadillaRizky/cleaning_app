@@ -9,6 +9,7 @@ import 'package:cleaning_app/view/login.dart';
 import 'package:cleaning_app/view/menu.dart';
 import 'package:cleaning_app/view/menu/detail_daily_cleaning.dart';
 import 'package:cleaning_app/view/menu/detail_category.dart';
+import 'package:cleaning_app/view/menu/detail_notif.dart';
 import 'package:cleaning_app/view/menu/editprofile.dart';
 import 'package:cleaning_app/view/menu/home.dart';
 import 'package:cleaning_app/view/menu/invoice.dart';
@@ -33,7 +34,7 @@ import 'controller/register.dart';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'view/menu/detail_category_deep.dart';
+// import 'view/menu/detail_category_deep.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -88,15 +89,15 @@ class MyApp extends StatelessWidget {
             scaffoldBackgroundColor: Colors.grey[100],
             appBarTheme: AppBarTheme(color: Colors.white),
             iconTheme: IconThemeData(color: Colors.white,),
-            fontFamily: 'Inter',
+            fontFamily: 'Poppins',
             textTheme: const TextTheme(
               displayLarge: TextStyle(
-                fontFamily: 'Inter',
+                fontFamily: 'Poppins',
                 fontSize: 32,
                 fontWeight: FontWeight.bold,
               ),
               bodyLarge: TextStyle(
-                fontFamily: 'Inter',
+                fontFamily: 'Poppins',
                 fontSize: 16,
                 fontWeight: FontWeight.normal,
               ),
@@ -137,11 +138,11 @@ class MyApp extends StatelessWidget {
               page: () =>  DetailCategory.fromArguments(),
               binding: DetailPackageBindings(),
             ),
-            GetPage(
-              name: '/detail-category-deep',
-              page: () =>  DetailCategoryDeep.fromArguments(),
-              binding: DetailPackageBindings(),
-            ),
+            // GetPage(
+            //   name: '/detail-category-deep',
+            //   page: () =>  DetailCategoryDeep.fromArguments(),
+            //   binding: DetailPackageBindings(),
+            // ),
             GetPage(
               name: '/detail-daily',
               page: () =>  DetailDailyCleaning.fromArguments(),
@@ -199,6 +200,10 @@ class MyApp extends StatelessWidget {
             GetPage(
                 name: '/detail-order',
                 page: () =>  OrderDetail(),
+            ),
+            GetPage(
+              name: '/detail-notif',
+              page: () =>  DetailNotif.fromArguments(),
             ),
             GetPage(
               name: '/privacy_policy',

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cleaning_app/model/CancelOrderResponse.dart';
 import 'package:cleaning_app/model/DetailOrderResponse.dart';
 import 'package:cleaning_app/model/DetailPackageResponse.dart';
 import 'package:cleaning_app/model/DetailUserResponse.dart';
@@ -23,9 +24,11 @@ import 'package:http/http.dart' as http;
 
 import 'api_helper.dart';
 import 'model/DeleteAddressResponse.dart';
+import 'model/GetNotificationResponse.dart';
 import 'model/ListPackageResponse.dart';
 import 'model/LoginResponse.dart';
 import 'model/UpdateDetailUserResponse.dart';
+import 'model/UpdateNotificationResponse.dart';
 
 class ApiWrapper {
   static const int timeoutDuration = 120; // 2 minutes
@@ -615,6 +618,37 @@ print(response.statusCode);
     }
   }
 
+  static Future<CancelOrderResponse> cancelOrder(Map<String,dynamic> data) async {
+    try {
+      final url = "$baseUrl/orders/cancel";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.post(
+            Uri.parse(url),
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $token',
+            },
+            body: jsonEncode(data)
+        ).timeout(const Duration(seconds: 20));
+      });
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return CancelOrderResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Cancel Order: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Address Package: $e');
+      throw 'Terjadi kesalahan saat Cancel Order';
+    }
+  }
+
   static Future<DetailOrderResponse> getDetailOrder(String id) async {
     try {
       final url = "$baseUrl/orders/detail/$id";
@@ -676,6 +710,64 @@ print("Status code : ${response.statusCode}");
     }
   }
 
+  static Future<GetNotificationResponse> getNotification() async {
+    try {
+      final url = "$baseUrl/notif";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ).timeout(const Duration(seconds: 20));
+      });
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return GetNotificationResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Get Notification: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Saldo: $e');
+      throw 'Terjadi kesalahan saat mengambil data Get Notification.';
+    }
+  }
+  static Future<UpdateNotificationResponse> updateNotification(String id) async {
+    try {
+      final url = "$baseUrl/notif/status/update?id=$id";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ).timeout(const Duration(seconds: 20));
+      });
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return UpdateNotificationResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Get Notification: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Saldo: $e');
+      throw 'Terjadi kesalahan saat mengambil data Get Notification.';
+    }
+  }
 
 
 }
