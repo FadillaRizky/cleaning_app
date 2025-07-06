@@ -2,6 +2,7 @@ import 'package:cleaning_app/controller/alamat.dart';
 import 'package:cleaning_app/controller/detail_daily_cleaning.dart';
 import 'package:cleaning_app/controller/home.dart';
 import 'package:cleaning_app/controller/invoice.dart';
+import 'package:cleaning_app/controller/menu.dart';
 import 'package:cleaning_app/controller/notification.dart';
 import 'package:cleaning_app/controller/package.dart';
 import 'package:cleaning_app/controller/pemesanan.dart';
@@ -18,6 +19,7 @@ class InitialBindings extends Bindings {
   void dependencies() {
     Get.put(LoginController(), permanent: true);
     Get.lazyPut(() => HomeController(), fenix: true);
+    Get.lazyPut(() => ControllerMenu(), fenix: true);
 
   }
 }
@@ -32,6 +34,7 @@ class RegisterBindings extends Bindings {
 class HomeBindings extends Bindings {
   @override
   void dependencies() {
+    Get.lazyPut(() => ControllerMenu());
     Get.lazyPut(() => HomeController());
     Get.lazyPut(() => BookingController());
     Get.lazyPut(() => ProfileController());

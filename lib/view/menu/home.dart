@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import '../../controller/menu.dart';
 import '../../model/ListCategoryPackageResponse.dart';
 
 class Home extends GetView<HomeController> {
@@ -91,10 +92,14 @@ class Home extends GetView<HomeController> {
                                         controller.notifLength.value.toString(),
                                         style: TextStyle(color: Colors.white),
                                       ),
+                                      onTap: (){
+                                        Get.find<ControllerMenu>().goToTab(2);
+                                        print("asdasd");
+                                      },
                                       showBadge:
                                           controller.notifLength.value != 0,
                                       child: Icon(
-                                        Icons.notifications,
+                                        Icons.notifications_none,
                                         color: Colors.black,
                                         size: 26,
                                       ),

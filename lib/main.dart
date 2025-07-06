@@ -130,7 +130,7 @@ class MyApp extends StatelessWidget {
             GetPage(name: '/edit-profile', page: () => EditProfile()),
             GetPage(
               name: '/menu',
-              page: () => const Menu(),
+              page: () => Menu(),
               binding: HomeBindings(),
             ),
             GetPage(

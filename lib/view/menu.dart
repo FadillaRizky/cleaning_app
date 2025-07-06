@@ -3,16 +3,19 @@ import 'package:cleaning_app/view/menu/home.dart';
 import 'package:cleaning_app/view/menu/profile.dart';
 import 'package:cleaning_app/view/support.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent_bottom_nav_bar_v2.dart';
 
+import '../controller/menu.dart';
 import 'menu/notification.dart';
 
 class Menu extends StatelessWidget {
-  const Menu({super.key});
-
+   Menu({super.key});
+  final ControllerMenu menuController = Get.put(ControllerMenu());
   @override
   Widget build(BuildContext context) {
     return PersistentTabView(
+        controller: menuController.tabController,
         gestureNavigationEnabled: true,
         tabs: [
           PersistentTabConfig(
