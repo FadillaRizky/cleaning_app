@@ -889,6 +889,7 @@ class Pemesanan extends GetView<PemesananController> {
                                           controller.noteController.text,
                                           "property_id": int.parse(
                                               controller.propertyId.value),
+                                          "property_city": Utils.extractSecondSentence(controller.propertyAddress.value),
                                           "mitra_gender":
                                           controller.selectedGender.value
                                         };
@@ -917,6 +918,7 @@ class Pemesanan extends GetView<PemesananController> {
                                           controller.noteController.text,
                                           "property_id": int.parse(
                                               controller.propertyId.value),
+                                          "property_city": Utils.extractSecondSentence(controller.propertyAddress.value),
                                           "mitra_gender":
                                           controller.selectedGender.value
                                         };

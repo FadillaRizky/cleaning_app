@@ -13,7 +13,7 @@ import 'package:cleaning_app/view/menu/detail_notif.dart';
 import 'package:cleaning_app/view/menu/editprofile.dart';
 import 'package:cleaning_app/view/menu/home.dart';
 import 'package:cleaning_app/view/menu/invoice.dart';
-import 'package:cleaning_app/view/menu/order_detail.dart';
+import 'package:cleaning_app/view/menu/booking/order_detail.dart';
 import 'package:cleaning_app/view/menu/pembayaran.dart';
 import 'package:cleaning_app/view/menu/pemesanan.dart';
 import 'package:cleaning_app/view/menu/profile.dart';

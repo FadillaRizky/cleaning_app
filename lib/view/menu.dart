@@ -1,4 +1,4 @@
-import 'package:cleaning_app/view/menu/booking.dart';
+import 'package:cleaning_app/view/menu/booking/booking.dart';
 import 'package:cleaning_app/view/menu/home.dart';
 import 'package:cleaning_app/view/menu/profile.dart';
 import 'package:cleaning_app/view/support.dart';

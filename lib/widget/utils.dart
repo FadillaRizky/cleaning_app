@@ -27,6 +27,22 @@ class Utils{
     return formatter.format(dateTime);
   }
 
+  static String formatTime(String inputTime) {
+    final parsedTime = DateFormat.Hms().parse(inputTime); /// "22:30:00 to 22:30
+    return DateFormat.Hm().format(parsedTime);
+  }
+
+  static String extractSecondSentence(String alamat) { ///"Daerah Khusus Ibukota Jakarta, Kota Jakarta Pusat, Kecamatan Sawah Besar, Pasar Baru"; to Jakarta Pusat
+    List<String> parts = alamat.split(',').map((e) => e.trim()).toList();
+
+    if (parts.length < 2) return ''; // pastikan ada kalimat kedua
+
+    String second = parts[1]; // kalimat ke-2
+    second = second.replaceAll(RegExp(r'\b(Kota|Kabupaten)\b'), '').trim();
+
+    return second;
+  }
+
 }
 
 

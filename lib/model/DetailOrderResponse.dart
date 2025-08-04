@@ -1,6 +1,6 @@
 /// status : true
 /// message : "data founded"
-/// data : {"orderid":22,"property_type":"rumah","pic_name":"Rizky","pic_phone":"085158426044","property_address":"Jawa Tengah, Wonogiri, Jatisrono, Rejosari","data_pack":[{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":435000,"data_object":[{"object_id":9,"object_name":"Cuci Karpet","object_price":"45000"},{"object_id":10,"object_name":"Cuci kasur Super King","object_price":"360000"}]}],"due_date":"2025-06-20","category":"Deep Cleaning","due_time":"11:30:00","discount":2,"order_notes":null,"sub_total":435000,"nominal_discount":8700,"nominal_after_discount":426300,"tax":11,"nominal_tax":46893,"grand_total":473193,"order_status":"open","mitra_gender":"random"}
+/// data : {"orderid":3,"property_type":"Rumah","pic_name":"okay","pic_phone":"08239444111","property_address":"Daerah Khusus Ibukota Jakarta, Kota Jakarta Pusat, Kecamatan Gambir, Gambir","property_city":"Jakarta","data_pack":[{"pack_id":31,"pack_name":"Sofa","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":495000,"data_object":[{"object_id":4,"object_name":"Sofa Medium (2 Seat)","object_price":"210000"},{"object_id":5,"object_name":"Sofa Large (3 Seat)","object_price":"285000"}]},{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":570000,"data_object":[{"object_id":9,"object_name":"Karpet Ukuran <5 m2","object_price":"120000"},{"object_id":12,"object_name":"Kasur King 180 x 200","object_price":"350000"},{"object_id":16,"object_name":"Kasur Single 90 x 200","object_price":"225000"}]},{"pack_id":31,"pack_name":"Sofa","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":495000,"data_object":[{"object_id":4,"object_name":"Sofa Medium (2 Seat)","object_price":"210000"},{"object_id":5,"object_name":"Sofa Large (3 Seat)","object_price":"285000"}]},{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":695000,"data_object":[{"object_id":9,"object_name":"Karpet Ukuran <5 m2","object_price":"120000"},{"object_id":12,"object_name":"Kasur King 180 x 200","object_price":"350000"},{"object_id":16,"object_name":"Kasur Single 90 x 200","object_price":"225000"}]}],"due_date":"2025-05-29","category":"Deep Cleaning","due_time":"10:00:00","discount":2,"order_notes":"aaaa","sub_total":1190000,"nominal_discount":23800,"nominal_after_discount":1166200,"tax":11,"nominal_tax":128282,"grand_total":1294482,"order_status":"open","mitra_gender":null,"partner_name":" ","partner_phone":null,"partner_photo":null}
 
 class DetailOrderResponse {
   DetailOrderResponse({
@@ -43,25 +43,29 @@ DetailOrderResponse copyWith({  bool? status,
 
 }
 
-/// orderid : 22
-/// property_type : "rumah"
-/// pic_name : "Rizky"
-/// pic_phone : "085158426044"
-/// property_address : "Jawa Tengah, Wonogiri, Jatisrono, Rejosari"
-/// data_pack : [{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":435000,"data_object":[{"object_id":9,"object_name":"Cuci Karpet","object_price":"45000"},{"object_id":10,"object_name":"Cuci kasur Super King","object_price":"360000"}]}]
-/// due_date : "2025-06-20"
+/// orderid : 3
+/// property_type : "Rumah"
+/// pic_name : "okay"
+/// pic_phone : "08239444111"
+/// property_address : "Daerah Khusus Ibukota Jakarta, Kota Jakarta Pusat, Kecamatan Gambir, Gambir"
+/// property_city : "Jakarta"
+/// data_pack : [{"pack_id":31,"pack_name":"Sofa","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":495000,"data_object":[{"object_id":4,"object_name":"Sofa Medium (2 Seat)","object_price":"210000"},{"object_id":5,"object_name":"Sofa Large (3 Seat)","object_price":"285000"}]},{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":570000,"data_object":[{"object_id":9,"object_name":"Karpet Ukuran <5 m2","object_price":"120000"},{"object_id":12,"object_name":"Kasur King 180 x 200","object_price":"350000"},{"object_id":16,"object_name":"Kasur Single 90 x 200","object_price":"225000"}]},{"pack_id":31,"pack_name":"Sofa","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":495000,"data_object":[{"object_id":4,"object_name":"Sofa Medium (2 Seat)","object_price":"210000"},{"object_id":5,"object_name":"Sofa Large (3 Seat)","object_price":"285000"}]},{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":695000,"data_object":[{"object_id":9,"object_name":"Karpet Ukuran <5 m2","object_price":"120000"},{"object_id":12,"object_name":"Kasur King 180 x 200","object_price":"350000"},{"object_id":16,"object_name":"Kasur Single 90 x 200","object_price":"225000"}]}]
+/// due_date : "2025-05-29"
 /// category : "Deep Cleaning"
-/// due_time : "11:30:00"
+/// due_time : "10:00:00"
 /// discount : 2
-/// order_notes : null
-/// sub_total : 435000
-/// nominal_discount : 8700
-/// nominal_after_discount : 426300
+/// order_notes : "aaaa"
+/// sub_total : 1190000
+/// nominal_discount : 23800
+/// nominal_after_discount : 1166200
 /// tax : 11
-/// nominal_tax : 46893
-/// grand_total : 473193
+/// nominal_tax : 128282
+/// grand_total : 1294482
 /// order_status : "open"
-/// mitra_gender : "random"
+/// mitra_gender : null
+/// partner_name : " "
+/// partner_phone : null
+/// partner_photo : null
 
 class Data {
   Data({
@@ -70,12 +74,13 @@ class Data {
       String? picName, 
       String? picPhone, 
       String? propertyAddress, 
+      String? propertyCity, 
       List<DataPack>? dataPack, 
       String? dueDate, 
       String? category, 
       String? dueTime, 
       num? discount, 
-      dynamic orderNotes, 
+      String? orderNotes, 
       num? subTotal, 
       num? nominalDiscount, 
       num? nominalAfterDiscount, 
@@ -83,12 +88,16 @@ class Data {
       num? nominalTax, 
       num? grandTotal, 
       String? orderStatus, 
-      String? mitraGender,}){
+      dynamic mitraGender, 
+      String? partnerName, 
+      dynamic partnerPhone, 
+      dynamic partnerPhoto,}){
     _orderid = orderid;
     _propertyType = propertyType;
     _picName = picName;
     _picPhone = picPhone;
     _propertyAddress = propertyAddress;
+    _propertyCity = propertyCity;
     _dataPack = dataPack;
     _dueDate = dueDate;
     _category = category;
@@ -103,6 +112,9 @@ class Data {
     _grandTotal = grandTotal;
     _orderStatus = orderStatus;
     _mitraGender = mitraGender;
+    _partnerName = partnerName;
+    _partnerPhone = partnerPhone;
+    _partnerPhoto = partnerPhoto;
 }
 
   Data.fromJson(dynamic json) {
@@ -111,6 +123,7 @@ class Data {
     _picName = json['pic_name'];
     _picPhone = json['pic_phone'];
     _propertyAddress = json['property_address'];
+    _propertyCity = json['property_city'];
     if (json['data_pack'] != null) {
       _dataPack = [];
       json['data_pack'].forEach((v) {
@@ -130,18 +143,22 @@ class Data {
     _grandTotal = json['grand_total'];
     _orderStatus = json['order_status'];
     _mitraGender = json['mitra_gender'];
+    _partnerName = json['partner_name'];
+    _partnerPhone = json['partner_phone'];
+    _partnerPhoto = json['partner_photo'];
   }
   num? _orderid;
   String? _propertyType;
   String? _picName;
   String? _picPhone;
   String? _propertyAddress;
+  String? _propertyCity;
   List<DataPack>? _dataPack;
   String? _dueDate;
   String? _category;
   String? _dueTime;
   num? _discount;
-  dynamic _orderNotes;
+  String? _orderNotes;
   num? _subTotal;
   num? _nominalDiscount;
   num? _nominalAfterDiscount;
@@ -149,18 +166,22 @@ class Data {
   num? _nominalTax;
   num? _grandTotal;
   String? _orderStatus;
-  String? _mitraGender;
+  dynamic _mitraGender;
+  String? _partnerName;
+  dynamic _partnerPhone;
+  dynamic _partnerPhoto;
 Data copyWith({  num? orderid,
   String? propertyType,
   String? picName,
   String? picPhone,
   String? propertyAddress,
+  String? propertyCity,
   List<DataPack>? dataPack,
   String? dueDate,
   String? category,
   String? dueTime,
   num? discount,
-  dynamic orderNotes,
+  String? orderNotes,
   num? subTotal,
   num? nominalDiscount,
   num? nominalAfterDiscount,
@@ -168,12 +189,16 @@ Data copyWith({  num? orderid,
   num? nominalTax,
   num? grandTotal,
   String? orderStatus,
-  String? mitraGender,
+  dynamic mitraGender,
+  String? partnerName,
+  dynamic partnerPhone,
+  dynamic partnerPhoto,
 }) => Data(  orderid: orderid ?? _orderid,
   propertyType: propertyType ?? _propertyType,
   picName: picName ?? _picName,
   picPhone: picPhone ?? _picPhone,
   propertyAddress: propertyAddress ?? _propertyAddress,
+  propertyCity: propertyCity ?? _propertyCity,
   dataPack: dataPack ?? _dataPack,
   dueDate: dueDate ?? _dueDate,
   category: category ?? _category,
@@ -188,18 +213,22 @@ Data copyWith({  num? orderid,
   grandTotal: grandTotal ?? _grandTotal,
   orderStatus: orderStatus ?? _orderStatus,
   mitraGender: mitraGender ?? _mitraGender,
+  partnerName: partnerName ?? _partnerName,
+  partnerPhone: partnerPhone ?? _partnerPhone,
+  partnerPhoto: partnerPhoto ?? _partnerPhoto,
 );
   num? get orderid => _orderid;
   String? get propertyType => _propertyType;
   String? get picName => _picName;
   String? get picPhone => _picPhone;
   String? get propertyAddress => _propertyAddress;
+  String? get propertyCity => _propertyCity;
   List<DataPack>? get dataPack => _dataPack;
   String? get dueDate => _dueDate;
   String? get category => _category;
   String? get dueTime => _dueTime;
   num? get discount => _discount;
-  dynamic get orderNotes => _orderNotes;
+  String? get orderNotes => _orderNotes;
   num? get subTotal => _subTotal;
   num? get nominalDiscount => _nominalDiscount;
   num? get nominalAfterDiscount => _nominalAfterDiscount;
@@ -207,7 +236,10 @@ Data copyWith({  num? orderid,
   num? get nominalTax => _nominalTax;
   num? get grandTotal => _grandTotal;
   String? get orderStatus => _orderStatus;
-  String? get mitraGender => _mitraGender;
+  dynamic get mitraGender => _mitraGender;
+  String? get partnerName => _partnerName;
+  dynamic get partnerPhone => _partnerPhone;
+  dynamic get partnerPhoto => _partnerPhoto;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -216,6 +248,7 @@ Data copyWith({  num? orderid,
     map['pic_name'] = _picName;
     map['pic_phone'] = _picPhone;
     map['property_address'] = _propertyAddress;
+    map['property_city'] = _propertyCity;
     if (_dataPack != null) {
       map['data_pack'] = _dataPack?.map((v) => v.toJson()).toList();
     }
@@ -232,17 +265,20 @@ Data copyWith({  num? orderid,
     map['grand_total'] = _grandTotal;
     map['order_status'] = _orderStatus;
     map['mitra_gender'] = _mitraGender;
+    map['partner_name'] = _partnerName;
+    map['partner_phone'] = _partnerPhone;
+    map['partner_photo'] = _partnerPhoto;
     return map;
   }
 
 }
 
-/// pack_id : 30
-/// pack_name : "Kasur"
+/// pack_id : 31
+/// pack_name : "Sofa"
 /// pack_category : "Deep Cleaning"
 /// pack_hour : "0"
-/// pack_price : 435000
-/// data_object : [{"object_id":9,"object_name":"Cuci Karpet","object_price":"45000"},{"object_id":10,"object_name":"Cuci kasur Super King","object_price":"360000"}]
+/// pack_price : 495000
+/// data_object : [{"object_id":4,"object_name":"Sofa Medium (2 Seat)","object_price":"210000"},{"object_id":5,"object_name":"Sofa Large (3 Seat)","object_price":"285000"}]
 
 class DataPack {
   DataPack({
@@ -314,9 +350,9 @@ DataPack copyWith({  num? packId,
 
 }
 
-/// object_id : 9
-/// object_name : "Cuci Karpet"
-/// object_price : "45000"
+/// object_id : 4
+/// object_name : "Sofa Medium (2 Seat)"
+/// object_price : "210000"
 
 class DataObject {
   DataObject({

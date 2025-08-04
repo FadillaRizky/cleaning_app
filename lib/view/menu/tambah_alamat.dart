@@ -65,39 +65,38 @@ class DaftarAlamat extends GetView<AlamatController> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Skeletonizer(
                           child: ListTile(
-                            leading: const Icon(Icons.home),
-                            title: Row(
-                              children: [
-                                const Text("Rumah",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold)),
-                                const SizedBox(width: 8),
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    color: Colors.grey[300],
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: const Text(
-                                    "Alamat Utama",
-                                    style: TextStyle(
-                                        fontSize: 8, color: Colors.black54),
-                                  ),
-                                ),
-                              ],
+                        leading: const Icon(Icons.home),
+                        title: Row(
+                          children: [
+                            const Text("Rumah",
+                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300],
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: const Text(
+                                "Alamat Utama",
+                                style: TextStyle(
+                                    fontSize: 8, color: Colors.black54),
+                              ),
                             ),
-                            subtitle: const Text(
-                                "Tangerang\nJl. Cedrawasih\nTangerang, Banten\nIndonesia"),
-                            trailing: Radio<String>(
-                              value: "Rumah",
-                              groupValue: "selectedAddress",
-                              onChanged: (value) {
-                                // selectedAddress = value!;
-                              },
-                            ),
-                            tileColor: Colors.white,
-                          ));
+                          ],
+                        ),
+                        subtitle: const Text(
+                            "Tangerang\nJl. Cedrawasih\nTangerang, Banten\nIndonesia"),
+                        trailing: Radio<String>(
+                          value: "Rumah",
+                          groupValue: "selectedAddress",
+                          onChanged: (value) {
+                            // selectedAddress = value!;
+                          },
+                        ),
+                        tileColor: Colors.white,
+                      ));
                     } else if (snapshot.hasError) {
                       return Text('Error: ${snapshot.error}');
                     } else if (!snapshot.hasData) {
@@ -129,20 +128,20 @@ class DaftarAlamat extends GetView<AlamatController> {
                                     SizedBox(width: 8),
                                     index == 0
                                         ? Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 2),
-                                      decoration: BoxDecoration(
-                                          borderRadius:
-                                          BorderRadius.circular(3),
-                                          border: Border.all(
-                                              color: Colors.black)),
-                                      child: Text(
-                                        "Utama",
-                                        style: TextStyle(
-                                            fontSize: 10,
-                                            color: Colors.black),
-                                      ),
-                                    )
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8, vertical: 2),
+                                            decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(3),
+                                                border: Border.all(
+                                                    color: Colors.black)),
+                                            child: Text(
+                                              "Utama",
+                                              style: TextStyle(
+                                                  fontSize: 10,
+                                                  color: Colors.black),
+                                            ),
+                                          )
                                         : SizedBox.shrink()
                                   ],
                                 ),
@@ -150,9 +149,7 @@ class DaftarAlamat extends GetView<AlamatController> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                        "${snapshot.data!.data![index]
-                                            .picName!} (${snapshot.data!
-                                            .data![index].picPhone})"),
+                                        "${snapshot.data!.data![index].picName!} (${snapshot.data!.data![index].picPhone})"),
                                     Text(
                                       snapshot
                                           .data!.data![index].propertyAddress!,
@@ -165,7 +162,7 @@ class DaftarAlamat extends GetView<AlamatController> {
                                   ],
                                 ),
                                 contentPadding:
-                                EdgeInsets.fromLTRB(15, 5, 0, 5),
+                                    EdgeInsets.fromLTRB(15, 5, 0, 5),
                                 tileColor: Colors.white,
                               ),
                               SizedBox(
@@ -211,150 +208,182 @@ class TambahAlamat extends GetView<AlamatController> {
                       children: [
                         Container(
                           height: 400,
-                  
                           child: Stack(children: [
                             FlutterMap(
                               mapController: controller.mapController,
                               options: MapOptions(
-                                initialCenter: LatLng(-6.1754, 106.8272),
-                                initialZoom: 13,
-                                // interactionOptions: InteractionOptions(
-                                //   flags: !isDetail ? InteractiveFlag.all : InteractiveFlag.drag,
-                                // ),
-                                onTap:
-                                !isDetail ?
-                                    (tapPosition, latLng) {
-                                  controller.pickedLocation.value = latLng;
-                                  controller.latlongLocation.value =
-                                  "${latLng.latitude} , ${latLng.longitude}";
-                                  controller.latLocation.value =
-                                      latLng.latitude.toString();
-                                  controller.longLocation.value =
-                                      latLng.longitude.toString();
-                                  controller.getDetailLocation(latLng);
-                                } : null
-                              ),
+                                  initialCenter: LatLng(-6.1754, 106.8272),
+                                  initialZoom: 13,
+                                  // interactionOptions: InteractionOptions(
+                                  //   flags: !isDetail ? InteractiveFlag.all : InteractiveFlag.drag,
+                                  // ),
+                                  onTap: !isDetail
+                                      ? (tapPosition, latLng) {
+                                          controller.pickedLocation.value =
+                                              latLng;
+                                          controller.latlongLocation.value =
+                                              "${latLng.latitude} , ${latLng.longitude}";
+                                          controller.latLocation.value =
+                                              latLng.latitude.toString();
+                                          controller.longLocation.value =
+                                              latLng.longitude.toString();
+                                          controller.getDetailLocation(latLng);
+                                        }
+                                      : null),
                               children: [
                                 TileLayer(
                                   urlTemplate:
-                                  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                                  userAgentPackageName: 'com.example.app',
+                                  'https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.png?key=jgR9RzmD0bqJ3JFDMu0u',
+                                  additionalOptions: {
+                                    'key': 'jgR9RzmD0bqJ3JFDMu0u',
+                                  },
+                                  userAgentPackageName: 'com.example.myapp',
                                 ),
                                 Obx(() {
                                   final loc = controller.pickedLocation.value;
                                   if (loc != null) {
                                     // Centerkan map ke lokasi baru
                                     Future.microtask(() {
-                                      controller.mapController
-                                          .move(loc, 15); // Zoom 15 (atau sesuaikan)
+                                      controller.mapController.move(
+                                          loc, 15); // Zoom 15 (atau sesuaikan)
                                     });
                                   }
-                  
+
                                   return MarkerLayer(
                                     markers: loc != null
                                         ? [
-                                      Marker(
-                                        point: loc,
-                                        width: 40,
-                                        height: 40,
-                                        child: Icon(Icons.location_on,
-                                            color: Colors.red, size: 30),
-                                      )
-                                    ]
+                                            Marker(
+                                              point: loc,
+                                              width: 40,
+                                              height: 40,
+                                              child: Icon(Icons.location_on,
+                                                  color: Colors.red, size: 30),
+                                            )
+                                          ]
                                         : [],
                                   );
                                 }),
                               ],
                             ),
                             !isDetail
-                            ? Positioned(
-                              bottom: 10,
-                              right: 10,
-                              child: ElevatedButton.icon(
-                                  style: ElevatedButton.styleFrom(
-                                      backgroundColor: Colors.blue,
-                                      foregroundColor: Colors.white,
-                                      padding: EdgeInsets.symmetric(horizontal: 35.w,),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(15))
-                                  ),
-                                  onPressed: () async {
-                                    controller.isLoading.value = true;
-                  
-                                    final location = Location();
-                                    final hasPermission =
-                                    await controller.checkLocationPermission(location);
-                                    if (!hasPermission) {
-                                      controller.isLoading.value = false;
-                                      return;
-                                    }
-                  
-                                    try {
-                                      final currentLocation = await location.getLocation();
-                  
-                                      if (currentLocation.latitude == null ||
-                                          currentLocation.longitude == null) {
-                                        throw Exception('Latitude or Longitude is null.');
-                                      }
-                  
-                                      final lat = currentLocation.latitude!;
-                                      final lng = currentLocation.longitude!;
-                  
-                                      final latLng = LatLng(lat, lng);
-                                      controller.pickedLocation.value = latLng;
-                                      controller.latlongLocation.value = '$lat,$lng';
-                                      controller.latLocation.value = lat.toString();
-                                      controller.longLocation.value = lng.toString();
-                  
-                                      await controller.getDetailLocation(latLng);
-                                    } catch (e) {
-                                      print('Error getting location: $e');
-                                      controller.isLoading.value = false;
-                                      return;
-                                    } finally {
-                                      controller.isLoading.value = false;
-                                    }
-                                  },
-                                  icon: Icon(LineIcons.crosshairs),
-                                  label: Obx(() {
-                                    return controller.isLoading.value
-                                        ? SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(color: Colors.white,strokeWidth: 2,))
-                                        : Text(
-                                      "Gunakan lokasi saat ini",
-                                      style: TextStyle(fontSize: 12),
-                                    );
-                                  })),
-                            )
+                                ? Positioned(
+                                    bottom: 10,
+                                    right: 10,
+                                    child: ElevatedButton.icon(
+                                        style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.blue,
+                                            foregroundColor: Colors.white,
+                                            padding: EdgeInsets.symmetric(
+                                              horizontal: 35.w,
+                                            ),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(15))),
+                                        onPressed: () async {
+                                          controller.isLoading.value = true;
+
+                                          final location = Location();
+                                          final hasPermission = await controller
+                                              .checkLocationPermission(
+                                                  location);
+                                          if (!hasPermission) {
+                                            controller.isLoading.value = false;
+                                            return;
+                                          }
+
+                                          try {
+                                            final currentLocation =
+                                                await location.getLocation();
+
+                                            if (currentLocation.latitude ==
+                                                    null ||
+                                                currentLocation.longitude ==
+                                                    null) {
+                                              throw Exception(
+                                                  'Latitude or Longitude is null.');
+                                            }
+
+                                            final lat =
+                                                currentLocation.latitude!;
+                                            final lng =
+                                                currentLocation.longitude!;
+
+                                            final latLng = LatLng(lat, lng);
+                                            controller.pickedLocation.value =
+                                                latLng;
+                                            controller.latlongLocation.value =
+                                                '$lat,$lng';
+                                            controller.latLocation.value =
+                                                lat.toString();
+                                            controller.longLocation.value =
+                                                lng.toString();
+
+                                            await controller
+                                                .getDetailLocation(latLng);
+                                          } catch (e) {
+                                            print('Error getting location: $e');
+                                            controller.isLoading.value = false;
+                                            return;
+                                          } finally {
+                                            controller.isLoading.value = false;
+                                          }
+                                        },
+                                        icon: Icon(LineIcons.crosshairs),
+                                        label: Obx(() {
+                                          return controller.isLoading.value
+                                              ? SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                    color: Colors.white,
+                                                    strokeWidth: 2,
+                                                  ))
+                                              : Text(
+                                                  "Gunakan lokasi saat ini",
+                                                  style:
+                                                      TextStyle(fontSize: 12),
+                                                );
+                                        })),
+                                  )
                                 : SizedBox.shrink()
                           ]),
                         ),
-                        Obx((){
-                         return controller.detailLocation.value != ""
-                             ? Padding(
-                           padding: const EdgeInsets.all(8.0),
-                           child: Column(
-                             children: [
-                               Row(
-                                 children: [
-                                   Icon(LineIcons.mapPin, color: Colors.black,),
-                                   Text(controller.specificLocation.value,style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold,color: Colors.black)),
-                                 ],
-                               ),
-                               Text(controller.detailLocation.value,
-                                 style: TextStyle(color: Colors.grey),),
-                             ],
-                           ),
-                         )
-                             : SizedBox.shrink();
+                        Obx(() {
+                          return controller.detailLocation.value != ""
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            LineIcons.mapPin,
+                                            color: Colors.black,
+                                          ),
+                                          Text(
+                                              controller.specificLocation.value,
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black)),
+                                        ],
+                                      ),
+                                      Text(
+                                        controller.detailLocation.value,
+                                        style: TextStyle(color: Colors.grey),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : SizedBox.shrink();
                         }),
-                  
                       ],
                     ),
                   ),
-                  SizedBox(height: 10,),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                     color: Colors.white,
@@ -405,7 +434,8 @@ class TambahAlamat extends GetView<AlamatController> {
                               value: controller.selectedProperty.value == ''
                                   ? null
                                   : controller.selectedProperty.value,
-                              style: TextStyle(color: Colors.grey, fontSize: 15),
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 15),
                               items: controller.typeProperty.map((property) {
                                 return DropdownMenuItem<String>(
                                   value: property,
@@ -413,7 +443,8 @@ class TambahAlamat extends GetView<AlamatController> {
                                 );
                               }).toList(),
                               onChanged: !isDetail
-                                  ? (val) => controller.selectedProperty.value = val!
+                                  ? (val) =>
+                                      controller.selectedProperty.value = val!
                                   : null);
                         }),
                       ],
@@ -422,78 +453,67 @@ class TambahAlamat extends GetView<AlamatController> {
                   SizedBox(
                     height: 5,
                   ),
-                  
-                  
                 ],
               ),
             ),
           ),
           Container(
             padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.white
-            ),
+            decoration: BoxDecoration(color: Colors.white),
             child: (data != "detail-alamat")
                 ? SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white),
-                  onPressed: () async {
-                    if (controller.nameController.text.isEmpty) {
-                      EasyLoading.showError("Nama Kosong");
-                      return;
-                    }
-                    if (controller
-                        .phoneNumberController.text.isEmpty) {
-                      EasyLoading.showError("Nomor Telepon Kosong");
-                      return;
-                    }
-                    if (controller
-                        .detailAddressController.text.isEmpty) {
-                      EasyLoading.showError("Detail Alamat Kosong");
-                      return;
-                    }
-                    if (controller.selectedProperty.value == "") {
-                      EasyLoading.showError("Type Property Kosong");
-                      return;
-                    }
-                    if (controller.latlongLocation.value.isEmpty) {
-                      EasyLoading.showError(
-                          "Silahkan Pilih Titik Lokasi");
-                      return;
-                    }
-      
-                    var data = {
-                      "pic_name": controller.nameController.text,
-                      "pic_phone":
-                      controller.phoneNumberController.text,
-                      "property_type":
-                      controller.selectedProperty.value,
-                      "lat": controller.latLocation.value,
-                      "long": controller.longLocation.value,
-                      "property_address":
-                      controller.detailLocation.value,
-                      "description":
-                      controller.detailAddressController.text
-                    };
-                    controller.storeAddress(data);
-                  },
-                  child: Text("Simpan"),
-                ))
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white),
+                      onPressed: () async {
+                        if (controller.nameController.text.isEmpty) {
+                          EasyLoading.showError("Nama Kosong");
+                          return;
+                        }
+                        if (controller.phoneNumberController.text.isEmpty) {
+                          EasyLoading.showError("Nomor Telepon Kosong");
+                          return;
+                        }
+                        if (controller.detailAddressController.text.isEmpty) {
+                          EasyLoading.showError("Detail Alamat Kosong");
+                          return;
+                        }
+                        if (controller.selectedProperty.value == "") {
+                          EasyLoading.showError("Type Property Kosong");
+                          return;
+                        }
+                        if (controller.latlongLocation.value.isEmpty) {
+                          EasyLoading.showError("Silahkan Pilih Titik Lokasi");
+                          return;
+                        }
+
+                        var data = {
+                          "pic_name": controller.nameController.text,
+                          "pic_phone": controller.phoneNumberController.text,
+                          "property_type": controller.selectedProperty.value,
+                          "lat": controller.latLocation.value,
+                          "long": controller.longLocation.value,
+                          "property_address": controller.detailLocation.value,
+                          "description": controller.detailAddressController.text
+                        };
+                        controller.storeAddress(data);
+                      },
+                      child: Text("Simpan"),
+                    ))
                 : SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white),
-                  onPressed: () {
-                    var data = {"id": controller.idAddress.value};
-                    controller.deleteAddress(data);
-                  },
-                  child: Text("Hapus Alamat")),
-            ),
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.red,
+                            foregroundColor: Colors.white),
+                        onPressed: () {
+                          var data = {"id": controller.idAddress.value};
+                          controller.deleteAddress(data);
+                        },
+                        child: Text("Hapus Alamat")),
+                  ),
           )
         ],
       ),
@@ -531,7 +551,7 @@ class TambahAlamat extends GetView<AlamatController> {
                       onTap: (tapPosition, latLng) {
                         controller.pickedLocation.value = latLng;
                         controller.latlongLocation.value =
-                        "${latLng.latitude} , ${latLng.longitude}";
+                            "${latLng.latitude} , ${latLng.longitude}";
                         controller.latLocation.value =
                             latLng.latitude.toString();
                         controller.longLocation.value =
@@ -542,8 +562,11 @@ class TambahAlamat extends GetView<AlamatController> {
                     children: [
                       TileLayer(
                         urlTemplate:
-                        "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-                        userAgentPackageName: 'com.example.app',
+                            'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?key=b3e1d25f-8792-4ae7-a599-a93a01e9b84b',
+                        additionalOptions: {
+                          'key': 'b3e1d25f-8792-4ae7-a599-a93a01e9b84b',
+                        },
+                        userAgentPackageName: 'com.example.myapp',
                       ),
                       Obx(() {
                         final loc = controller.pickedLocation.value;
@@ -558,14 +581,14 @@ class TambahAlamat extends GetView<AlamatController> {
                         return MarkerLayer(
                           markers: loc != null
                               ? [
-                            Marker(
-                              point: loc,
-                              width: 40,
-                              height: 40,
-                              child: Icon(Icons.location_on,
-                                  color: Colors.red, size: 40),
-                            )
-                          ]
+                                  Marker(
+                                    point: loc,
+                                    width: 40,
+                                    height: 40,
+                                    child: Icon(Icons.location_on,
+                                        color: Colors.red, size: 40),
+                                  )
+                                ]
                               : [],
                         );
                       }),
@@ -582,7 +605,7 @@ class TambahAlamat extends GetView<AlamatController> {
 
                       final location = Location();
                       final hasPermission =
-                      await controller.checkLocationPermission(location);
+                          await controller.checkLocationPermission(location);
                       if (!hasPermission) {
                         controller.isLoading.value = false;
                         return;
@@ -674,7 +697,7 @@ class FieldAlamat extends StatelessWidget {
           suffixIcon: isCurrentLocation ? Icon(Icons.arrow_forward_ios) : null,
           border: InputBorder.none,
           focusedBorder:
-          UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
+              UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
           enabled: isProvince || isCurrentLocation ? false : true,
         ),
       ),

@@ -51,30 +51,30 @@ class AlamatController extends GetxController {
     pickedLocation.value = LatLng(-6.1754, 106.8272);
   }
 
-  Future<bool> checkLocationPermission(loc.Location location) async {
-    bool serviceEnabled = await location.serviceEnabled();
-
-    if (!serviceEnabled) {
-      serviceEnabled = await location.requestService();
-
-      await Future.delayed(Duration(seconds: 1));
-      serviceEnabled = await location.serviceEnabled();
+    Future<bool> checkLocationPermission(loc.Location location) async {
+      bool serviceEnabled = await location.serviceEnabled();
 
       if (!serviceEnabled) {
-        return false;
-      }
-    }
+        serviceEnabled = await location.requestService();
 
-    var permissionGranted = await location.hasPermission();
-    if (permissionGranted == loc.PermissionStatus.denied) {
-      permissionGranted = await location.requestPermission();
-      if (permissionGranted != loc.PermissionStatus.granted) {
-        return false;
-      }
-    }
+        await Future.delayed(Duration(seconds: 1));
+        serviceEnabled = await location.serviceEnabled();
 
-    return true;
-  }
+        if (!serviceEnabled) {
+          return false;
+        }
+      }
+
+      var permissionGranted = await location.hasPermission();
+      if (permissionGranted == loc.PermissionStatus.denied) {
+        permissionGranted = await location.requestPermission();
+        if (permissionGranted != loc.PermissionStatus.granted) {
+          return false;
+        }
+      }
+
+      return true;
+    }
 
     getDetailLocation(LatLng latLng) async {
       try {
