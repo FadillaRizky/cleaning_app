@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfile extends GetView<ProfileController> {
-  final _formKey = GlobalKey<FormState>();
+
 
 
   void _showPicker(BuildContext context) {
@@ -41,6 +41,7 @@ class EditProfile extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
+    final formKey = GlobalKey<FormState>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Edit Profile'),
@@ -55,7 +56,7 @@ class EditProfile extends GetView<ProfileController> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

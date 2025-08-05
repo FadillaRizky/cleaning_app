@@ -17,14 +17,17 @@ import '../../controller/menu.dart';
 import '../../model/ListCategoryPackageResponse.dart';
 
 class Home extends GetView<HomeController> {
+   Home({super.key});
   final CarouselSliderController _carouselController =
       CarouselSliderController();
 
-  final ProfileController profileController = Get.find<ProfileController>();
+
 
   @override
   Widget build(BuildContext context) {
+    final ProfileController profileController = Get.find<ProfileController>();
     return Scaffold(
+      key: const PageStorageKey('HomeScaffold'),
       body: SafeArea(
         child: GetBuilder<HomeController>(builder: (context) {
           return RefreshIndicator(

@@ -12,49 +12,37 @@ import 'menu/notification.dart';
 class Menu extends StatelessWidget {
    Menu({super.key});
   final ControllerMenu menuController = Get.put(ControllerMenu());
+
+   final List<PersistentTabConfig> _tabs = [
+     PersistentTabConfig(
+       screen: Home(key: PageStorageKey("HomeTab")),
+       item: ItemConfig(icon: Icon(Icons.home), title: "Home"),
+     ),
+     PersistentTabConfig(
+       screen: Booking(key: PageStorageKey("BookingTab")),
+       item: ItemConfig(icon: Icon(Icons.calendar_month_rounded), title: "Booking"),
+     ),
+     PersistentTabConfig(
+       screen: NotificationPage(key: PageStorageKey("NotificationTab")),
+       item: ItemConfig(icon: Icon(Icons.notifications), title: "Notification"),
+     ),
+     PersistentTabConfig(
+       screen: SupportPage(key: PageStorageKey("SupportTab")),
+       item: ItemConfig(icon: Icon(Icons.headset_mic_rounded), title: "Support"),
+     ),
+     PersistentTabConfig(
+       screen: ProfilePage(key: PageStorageKey("ProfileTab")),
+       item: ItemConfig(icon: Icon(Icons.person), title: "Profile"),
+     ),
+   ];
   @override
   Widget build(BuildContext context) {
     return PersistentTabView(
         controller: menuController.tabController,
         gestureNavigationEnabled: true,
-        tabs: [
-          PersistentTabConfig(
-            screen: Home(),
-            item: ItemConfig(
-              icon: Icon(Icons.home),
-              title: "Home",
-            ),
-          ),
-          PersistentTabConfig(
-            screen: Booking(),
-            item: ItemConfig(
-              icon: Icon(Icons.calendar_month_rounded),
-              title: "Booking",
-            ),
-          ),
-
-          PersistentTabConfig(
-            screen: NotificationPage(),
-            item: ItemConfig(
-              icon: Icon(Icons.notifications),
-              title: "Notification",
-            ),
-          ),
-          PersistentTabConfig(
-            screen: SupportPage(),
-            item: ItemConfig(
-              icon: Icon(Icons.headset_mic_rounded),
-              title: "Support",
-            ),
-          ),
-          PersistentTabConfig(
-            screen: ProfilePage(),
-            item: ItemConfig(
-              icon: Icon(Icons.person),
-              title: "Profile",
-            ),
-          ),
-        ],
+        tabs: _tabs,
+        backgroundColor: Colors.white,
+        stateManagement: false,
         navBarBuilder: (navBarConfig) => Style1BottomNavBar(
               navBarConfig: navBarConfig,
             ));

@@ -8,9 +8,11 @@ import 'package:cleaning_app/model/GetListOrderResponse.dart' as Data;
 import '../../../controller/booking.dart';
 
 class Booking extends GetView<BookingController> {
+  const Booking({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: const PageStorageKey('BookingScaffold'),
       appBar: AppBar(
         title: Text("Booking"),
       ),

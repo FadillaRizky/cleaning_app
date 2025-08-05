@@ -15,9 +15,6 @@ class ProfileController extends GetxController {
   final lastNameController = TextEditingController();
   final emailController = TextEditingController();
   final ktpAddressController = TextEditingController();
-  // final bornPlaceController = TextEditingController();
-  // final bodController = TextEditingController();
-  // final religionController = TextEditingController();
 
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
@@ -37,43 +34,48 @@ class ProfileController extends GetxController {
     firstNameController.dispose();
     lastNameController.dispose();
     emailController.dispose();
-    // bornPlaceController.dispose();
-    // bodController.dispose();
-    // religionController.dispose();
     ktpAddressController.dispose();
     super.onClose();
   }
 
   Future<void> getDetailUser() async {
+    if (isClosed) return; // ✅ Cegah update jika controller sudah dispose
+
     try {
       print("get detail user");
       final response = await Api.getDetailUser();
+
+      if (isClosed) return; // ✅ Cek lagi setelah await
+
       if (response.status == "success") {
+        // Update reactive variable
         username.value = response.data!.firstName ?? "";
         urlAvatar.value = response.data!.avatarPath ?? "";
+
+        // Update TextEditingController hanya jika controller masih aktif
         firstNameController.text = response.data!.firstName ?? "";
         lastNameController.text = response.data!.lastName ?? "";
         emailController.text = response.data!.email ?? "";
         ktpAddressController.text = response.data!.ktpAddress ?? "";
 
-        var filledCount = 0.obs;
-        if (firstNameController.text.trim().isNotEmpty && firstNameController.text.trim() != "") filledCount++;
-        if (lastNameController.text.trim().isNotEmpty && lastNameController.text.trim() != "") filledCount++;
-        if (emailController.text.trim().isNotEmpty && emailController.text.trim() != "") filledCount++;
-        if (ktpAddressController.text.trim().isNotEmpty && ktpAddressController.text.trim() != "") filledCount++;
+        // Hitung persentase kelengkapan data
+        int filledCount = 0;
+        if (firstNameController.text.trim().isNotEmpty) filledCount++;
+        if (lastNameController.text.trim().isNotEmpty) filledCount++;
+        if (emailController.text.trim().isNotEmpty) filledCount++;
+        if (ktpAddressController.text.trim().isNotEmpty) filledCount++;
 
         percentageData.value = (filledCount / 4) * 100;
         print("Terisi: $filledCount/4 (${percentageData.value.toStringAsFixed(0)}%)");
-        print(percentageData.value);
-        // bornPlaceController.text = response.data!.bornPlace ?? "";
-        // bodController.text = response.data!.bod ?? "";
-        // religionController.text = response.data!.religion ?? "";
-      }else{
-        SnackbarUtil.error("Gagal get detail user");
+
+      } else {
+        if (!isClosed) SnackbarUtil.error("Gagal get detail user");
       }
     } catch (e) {
-      print('Get Detail User Error: $e');
-      SnackbarUtil.error("Terjadi kesalahan: $e");
+      if (!isClosed) {
+        print('Get Detail User Error: $e');
+        SnackbarUtil.error("Terjadi kesalahan: $e");
+      }
     }
   }
 

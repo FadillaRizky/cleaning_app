@@ -34,11 +34,11 @@ class RegisterBindings extends Bindings {
 class HomeBindings extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => ControllerMenu());
-    Get.lazyPut(() => HomeController());
-    Get.lazyPut(() => BookingController());
-    Get.lazyPut(() => ProfileController());
-    Get.lazyPut(() => NotificationController());
+    Get.lazyPut(() => ControllerMenu(), fenix: true);
+    Get.lazyPut(() => HomeController(), fenix: true);
+    Get.lazyPut(() => BookingController(), fenix: true);
+    Get.lazyPut(() => ProfileController(), fenix: true);
+    Get.lazyPut(() => NotificationController(), fenix: true);
   }
 }
 

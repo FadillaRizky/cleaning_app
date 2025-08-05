@@ -8,32 +8,18 @@ import 'package:line_icons/line_icons.dart';
 
 import '../../controller/profile.dart';
 
-class ProfilePage extends StatelessWidget {
-  final ProfileController profileController = Get.find<ProfileController>();
+class ProfilePage extends GetView<ProfileController> {
+   ProfilePage({super.key});
+
 
   @override
   Widget build(BuildContext context) {
+    if (controller.username.value.isEmpty) {
+      // Jika controller baru dibuat (fenix), fetch data lagi
+      controller.getDetailUser();
+    }
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text("Akun"),
-      //   centerTitle: true,
-      //   // actions: [
-      //   //   IconButton(
-      //   //     icon: Icon(Icons.favorite_border),
-      //   //     onPressed: () {
-      //   //       print("Search clicked");
-      //   //     },
-      //   //   ),
-      //   //
-      //   //   // Notifications Icon
-      //   //   IconButton(
-      //   //     icon: Icon(Icons.chat_outlined),
-      //   //     onPressed: () {
-      //   //       print("Notifications clicked");
-      //   //     },
-      //   //   ),
-      //   // ],
-      // ),
+      key: const PageStorageKey('ProfileScaffold'),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Center(
@@ -57,7 +43,7 @@ class ProfilePage extends StatelessWidget {
                                     child: CircleAvatar(
                                       radius: 100,
                                       child: AvatarCircle(
-                                        imageUrl: profileController.urlAvatar
+                                        imageUrl: controller.urlAvatar
                                             .value,
                                         size: 200,
                                       ),
@@ -66,7 +52,7 @@ class ProfilePage extends StatelessWidget {
                             );
                           },
                           child: AvatarCircle(
-                            imageUrl: profileController.urlAvatar.value,
+                            imageUrl: controller.urlAvatar.value,
                             size: 80,
                           ),
                         );
@@ -86,7 +72,7 @@ class ProfilePage extends StatelessWidget {
                                   children: [
                                     Obx(() {
                                       return Text(
-                                        profileController.username.value,
+                                        controller.username.value,
                                         style: TextStyle(
                                             fontSize: 19,
                                             fontWeight: FontWeight.w500),
@@ -105,7 +91,7 @@ class ProfilePage extends StatelessWidget {
                                       var result =
                                       await Get.toNamed("/edit-profile");
                                       if (result == 'refresh') {
-                                        profileController.getDetailUser();
+                                        controller.getDetailUser();
                                       }
                                     },
                                     icon: Icon(Icons.edit, color: Colors.black))
@@ -122,7 +108,7 @@ class ProfilePage extends StatelessWidget {
                                     BorderRadius.circular(5), // Rounded corners
                                     child: Obx(() {
                                       return LinearProgressIndicator(
-                                        value: profileController.percentageData
+                                        value: controller.percentageData
                                             .value / 100,
                                         minHeight: 4,
                                         backgroundColor: Colors
@@ -149,7 +135,7 @@ class ProfilePage extends StatelessWidget {
                                   ),
                                   child: Obx(() {
                                     return Text(
-                                      "${profileController.percentageData.value
+                                      "${controller.percentageData.value
                                           .toStringAsFixed(0)}%",
                                       // Display percentage
                                       style: TextStyle(

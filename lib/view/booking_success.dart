@@ -58,7 +58,7 @@ class BookingSuccess extends StatelessWidget {
                       ),
                     ),
                     onPressed: (){
-                      Get.offNamed("/menu");
+                      Get.offAllNamed("/menu");
                     }, child: Text("Kembali ke Beranda",style: TextStyle(color: Colors.white),)),
               ),
             ],
