@@ -460,39 +460,99 @@ class Pemesanan extends GetView<PemesananController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          SizedBox(
+                            height: 10,
+                          ),
                           Text(
-                            "Catatan",
+                            "Pilih Metode Pembayaran",
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.bold),
                           ),
                           Divider(),
-                          TextField(
-                            maxLines: 3,
-                            controller: controller.noteController,
-                            decoration: InputDecoration(
-                              hintText: "Catatan (Opsional)",
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
+                          Obx(() {
+                            String saldoString =
+                                homeController.amountSaldo.value;
+                            int saldoInt = int.tryParse(saldoString) ?? 0;
+                            return GestureDetector(
+                              onTap: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.vertical(
+                                        top: Radius.circular(16)),
+                                  ),
+                                  builder: (_) {
+                                    return SafeArea(
+                                      child: Wrap(
+                                        children: [
+                                          ListTile(
+                                            leading: Icon(
+                                                Icons.account_balance_wallet,
+                                                color: Colors.green),
+                                            title: Text("Saldo"),
+                                            trailing: Text(
+                                                Utils.formatCurrency(saldoInt),
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.blue)),
+                                            onTap: () {
+                                              controller.selectedPayment.value =
+                                                  "Saldo";
+                                              Get.back();
+                                            },
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.qr_code_2,
+                                                color: Colors.blue),
+                                            title: Text("QRIS"),
+                                            onTap: () {
+                                              controller.selectedPayment.value =
+                                                  "QRIS";
+                                              Get.back();
+                                            },
+                                          ),
+                                          ListTile(
+                                            leading: Icon(Icons.account_balance,
+                                                color: Colors.orange),
+                                            title: Text("Bank Transfer"),
+                                            onTap: () {
+                                              controller.selectedPayment.value =
+                                                  "Bank Transfer";
+                                              Get.back();
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 14),
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.grey.shade400),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      controller.selectedPayment.value.isEmpty
+                                          ? "Belum dipilih"
+                                          : controller.selectedPayment.value,
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Icon(Icons.arrow_drop_down,
+                                        color: Colors.black54),
+                                  ],
+                                ),
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey, width: 1),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              disabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              filled: true,
-                              fillColor: Color(0xfff7f9fc),
-                            ),
-                          ),
+                            );
+                          }),
                           SizedBox(
                             height: 10,
                           ),
@@ -622,6 +682,42 @@ class Pemesanan extends GetView<PemesananController> {
                             height: 10,
                           ),
                           Text(
+                            "Catatan",
+                            style: TextStyle(
+                                fontSize: 17, fontWeight: FontWeight.bold),
+                          ),
+                          Divider(),
+                          TextField(
+                            maxLines: 3,
+                            controller: controller.noteController,
+                            decoration: InputDecoration(
+                              hintText: "Catatan (Opsional)",
+                              hintStyle: TextStyle(
+                                color: Colors.grey,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey, width: 1),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderSide:
+                                    BorderSide(color: Colors.grey.shade300),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              filled: true,
+                              fillColor: Color(0xfff7f9fc),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
                             "Tambahan",
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.bold),
@@ -693,249 +789,250 @@ class Pemesanan extends GetView<PemesananController> {
             ),
           ),
           Container(
-                width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
-                margin: const EdgeInsets.only(bottom: 15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: Obx(() {
-                  String saldoString = homeController.amountSaldo.value;
-                  int saldoInt = int.tryParse(saldoString) ?? 0;
-                  int total = 0;
-                  if (packController.category.value != "Daily Cleaning") {
-                    for (var pack in packController.resultDataObject) {
-                      final objects = pack["data_object"] as List;
-                      for (var obj in objects) {
-                        total += obj["object_price"] as int;
-                      }
+              width: double.infinity,
+              padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
+              margin: const EdgeInsets.only(bottom: 15),
+              decoration: BoxDecoration(
+                color: Colors.white,
+              ),
+              child: Obx(() {
+                String saldoString = homeController.amountSaldo.value;
+                int saldoInt = int.tryParse(saldoString) ?? 0;
+                int total = 0;
+                if (packController.category.value != "Daily Cleaning") {
+                  for (var pack in packController.resultDataObject) {
+                    final objects = pack["data_object"] as List;
+                    for (var obj in objects) {
+                      total += obj["object_price"] as int;
                     }
                   }
+                }
 
-                  return Column(
-                    children: [
-                      packController.resultDataObject.isNotEmpty ||
-                              packController.selectedPriceDuration.isNotEmpty
-                          ? Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Saldo",
+                return Column(
+                  children: [
+                    packController.resultDataObject.isNotEmpty ||
+                            packController.selectedPriceDuration.isNotEmpty
+                        ? Column(
+                            children: [
+                             controller.selectedPayment.value == "Saldo"
+                              ? Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Saldo",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.blue),
+                                  ),
+                                  Text(Utils.formatCurrency(saldoInt),
                                       style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.blue),
-                                    ),
-                                    Text(Utils.formatCurrency(saldoInt),
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.blue)),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Total Pesanan",
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.blue)),
+                                ],
+                              )
+                              : SizedBox.shrink(),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Total Pesanan",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey),
+                                  ),
+                                  Text(
+                                      packController.category.value !=
+                                              "Daily Cleaning"
+                                          ? Utils.formatCurrency(total)
+                                          : Utils.formatCurrency(int.parse(
+                                              packController
+                                                  .selectedDiscount.value)),
                                       style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.grey),
-                                    ),
-                                    Text(
-                                        packController.category.value !=
-                                                "Daily Cleaning"
-                                            ? Utils.formatCurrency(total)
-                                            : Utils.formatCurrency(int.parse(
-                                                packController
-                                                    .selectedDiscount.value)),
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Biaya Layanan",
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Biaya Layanan",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey),
+                                  ),
+                                  Text("Rp 2.000",
                                       style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.grey),
-                                    ),
-                                    Text("Rp 2.000",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold)),
-                                  ],
-                                ),
-                                packController.category.value == "Daily Cleaning"
-                                    ? Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            "Discount",
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w600,
-                                                color: Colors.grey),
-                                          ),
-                                          Text(
-                                              Utils.formatCurrency(int.parse(
-                                                      packController
-                                                          .selectedPriceDuration
-                                                          .value) -
-                                                  int.parse(packController
-                                                      .selectedDiscount.value)),
-                                              style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: Colors.red)),
-                                        ],
-                                      )
-                                    : SizedBox(),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      "Total",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    Text(
-                                        packController.category.value !=
-                                                "Daily Cleaning"
-                                            ? Utils.formatCurrency(total + 2000)
-                                            : Utils.formatCurrency(int.parse(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                              packController.category.value == "Daily Cleaning"
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Discount",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.grey),
+                                        ),
+                                        Text(
+                                            Utils.formatCurrency(int.parse(
                                                     packController
                                                         .selectedPriceDuration
-                                                        .value) +
-                                                2000),
-                                        style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold)),
+                                                        .value) -
+                                                int.parse(packController
+                                                    .selectedDiscount.value)),
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.red)),
+                                      ],
+                                    )
+                                  : SizedBox(),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Total",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(
+                                      packController.category.value !=
+                                              "Daily Cleaning"
+                                          ? Utils.formatCurrency(total + 2000)
+                                          : Utils.formatCurrency(int.parse(
+                                                  packController
+                                                      .selectedPriceDuration
+                                                      .value) +
+                                              2000),
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          )
+                        : SizedBox(),
+                    SizedBox(
+                        width: double.infinity,
+                        child: Obx(() {
+                          final enabled =
+                              controller.timeText.value.isNotEmpty &&
+                                  controller.dateText.value.isNotEmpty &&
+                                  controller.selectedGender.value != "";
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor:
+                                  enabled ? Colors.blue : Colors.grey,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                side: BorderSide.none,
+                              ),
+                            ),
+                            onPressed: () {
+                              if (packController.category.value !=
+                                  "Daily Cleaning") {
+                                if (saldoInt < total) {
+                                  SnackbarUtil.show("Saldo Tidak Mencukupi",
+                                      "Silakan Top up Saldo terlebih dahulu");
+                                  return;
+                                }
+                              } else {
+                                if (saldoInt <
+                                    int.parse(packController
+                                        .selectedPriceDuration.value)) {
+                                  SnackbarUtil.show("Saldo Tidak Mencukupi",
+                                      "Silakan top up saldo terlebih dahulu");
+                                  return;
+                                }
+                              }
+                              if (controller.dateText.value.isEmpty) {
+                                SnackbarUtil.show("Tanggal Layanan Kosong",
+                                    "Silakan pilih tanggal layanan terlebih dahulu");
+                                return;
+                              }
+                              if (controller.timeText.value.isEmpty) {
+                                SnackbarUtil.show("Waktu Layanan Kosong",
+                                    "Silakan pilih waktu layanan terlebih dahulu");
+                                return;
+                              }
+                              if (controller.selectedGender.value == "") {
+                                SnackbarUtil.show("Gender Mitra Kosong",
+                                    "Silakan pilih preferensi gender mitra yang diinginkan");
+                                return;
+                              }
+
+                              if (packController.category.value !=
+                                  "Daily Cleaning") {
+                                var dataDeep = {
+                                  "data_pack": controller.getListDataPack(),
+                                  "category": packController.category.value,
+                                  "due_date": controller.dateText.value,
+                                  "due_time": controller.timeText.value,
+                                  "discount": 2,
+                                  "order_notes": controller.noteController.text,
+                                  "property_id":
+                                      int.parse(controller.propertyId.value),
+                                  "property_city": Utils.extractSecondSentence(
+                                      controller.propertyAddress.value),
+                                  "mitra_gender":
+                                      controller.selectedGender.value
+                                };
+                                controller.orderPackage(dataDeep);
+                              } else {
+                                var dataDaily = {
+                                  "data_pack": [
+                                    {
+                                      "pack_id": int.parse(packController
+                                          .selectedPackageId.value),
+                                      "pack_category":
+                                          packController.category.value,
+                                      "pack_hour":
+                                          packController.selectedDuration.value,
+                                      "object_id": [],
+                                      "object_price": []
+                                    }
                                   ],
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                              ],
-                            )
-                          : SizedBox(),
-                      SizedBox(
-                          width: double.infinity,
-                          child: Obx(() {
-                            final enabled =
-                                controller.timeText.value.isNotEmpty &&
-                                    controller.dateText.value.isNotEmpty &&
-                                    controller.selectedGender.value != "";
-                            return ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    enabled ? Colors.blue : Colors.grey,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                  side: BorderSide.none,
-                                ),
+                                  "category": packController.category.value,
+                                  "due_date": controller.dateText.value,
+                                  "due_time": controller.timeText.value,
+                                  "discount":
+                                      packController.selectedDiscount.value,
+                                  "order_notes": controller.noteController.text,
+                                  "property_id":
+                                      int.parse(controller.propertyId.value),
+                                  "property_city": Utils.extractSecondSentence(
+                                      controller.propertyAddress.value),
+                                  "mitra_gender":
+                                      controller.selectedGender.value
+                                };
+                                controller.orderPackage(dataDaily);
+                              }
+                            },
+                            child: Text(
+                              "Bayar Sekarang",
+                              style: TextStyle(
+                                color: Colors.white,
                               ),
-                              onPressed: () {
-
-                                if (packController.category.value != "Daily Cleaning") {
-                                  if (saldoInt < total) {
-                                    SnackbarUtil.show("Saldo Tidak Mencukupi", "Silakan Top up Saldo terlebih dahulu");
-                                    return ;
-                                  }
-                                }else{
-                                  if (saldoInt < int.parse(
-                                      packController
-                                          .selectedPriceDuration
-                                          .value)) {
-                                    SnackbarUtil.show("Saldo Tidak Mencukupi", "Silakan top up saldo terlebih dahulu");
-                                    return ;
-                                  }
-                                }
-                                if (controller.dateText.value.isEmpty) {
-                                  SnackbarUtil.show("Tanggal Layanan Kosong", "Silakan pilih tanggal layanan terlebih dahulu");
-                                  return ;
-                                }
-                                if (controller.timeText.value.isEmpty) {
-                                  SnackbarUtil.show("Waktu Layanan Kosong", "Silakan pilih waktu layanan terlebih dahulu");
-                                  return ;
-                                }
-                                if (controller.selectedGender.value == "") {
-                                  SnackbarUtil.show("Gender Mitra Kosong", "Silakan pilih preferensi gender mitra yang diinginkan");
-                                  return ;
-                                }
-
-
-                                      if (packController.category.value !=
-                                          "Daily Cleaning") {
-                                        var dataDeep = {
-                                          "data_pack":
-                                          controller.getListDataPack(),
-                                          "category":
-                                          packController.category.value,
-                                          "due_date": controller.dateText.value,
-                                          "due_time": controller.timeText.value,
-                                          "discount": 2,
-                                          "order_notes":
-                                          controller.noteController.text,
-                                          "property_id": int.parse(
-                                              controller.propertyId.value),
-                                          "property_city": Utils.extractSecondSentence(controller.propertyAddress.value),
-                                          "mitra_gender":
-                                          controller.selectedGender.value
-                                        };
-                                        controller.orderPackage(dataDeep);
-                                      } else {
-                                        var dataDaily = {
-                                          "data_pack": [
-                                            {
-                                              "pack_id": int.parse(packController
-                                                  .selectedPackageId.value),
-                                              "pack_category":
-                                              packController.category.value,
-                                              "pack_hour": packController
-                                                  .selectedDuration.value,
-                                              "object_id": [],
-                                              "object_price": []
-                                            }
-                                          ],
-                                          "category":
-                                          packController.category.value,
-                                          "due_date": controller.dateText.value,
-                                          "due_time": controller.timeText.value,
-                                          "discount": packController
-                                              .selectedDiscount.value,
-                                          "order_notes":
-                                          controller.noteController.text,
-                                          "property_id": int.parse(
-                                              controller.propertyId.value),
-                                          "property_city": Utils.extractSecondSentence(controller.propertyAddress.value),
-                                          "mitra_gender":
-                                          controller.selectedGender.value
-                                        };
-                                        controller.orderPackage(dataDaily);
-                                      }
-                                    },
-                              child: Text(
-                                "Bayar Sekarang",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                ),
-                              ),
-                            );
-                          })),
-                    ],
-                  );
-                }))
+                            ),
+                          );
+                        })),
+                  ],
+                );
+              }))
         ],
       ),
     );

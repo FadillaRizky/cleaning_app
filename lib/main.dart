@@ -47,8 +47,7 @@ void main() async {
   print("init");
   final storage = GetStorage();
   final isFirstOpen = storage.read('isFirstOpen') ?? true;
-  final token = storage.read('token');
-  final isLoggedIn = token != null;
+  final isLoggedIn = storage.read('token') != null;
   runApp(MyApp(
     isLoggedIn: isLoggedIn,
     isFirstOpen: isFirstOpen,

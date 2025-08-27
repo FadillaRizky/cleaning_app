@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cleaning_app/model/BannerResponse.dart';
 import 'package:cleaning_app/model/CancelOrderResponse.dart';
 import 'package:cleaning_app/model/DetailOrderResponse.dart';
 import 'package:cleaning_app/model/DetailPackageResponse.dart';
@@ -764,8 +765,38 @@ print("Status code : ${response.statusCode}");
     } on TimeoutException {
       throw 'Request Time Out. Silakan periksa koneksi Anda.';
     } catch (e) {
-      print('Error Get Saldo: $e');
+      print('Error Get Notification: $e');
       throw 'Terjadi kesalahan saat mengambil data Get Notification.';
+    }
+  }
+
+  static Future<BannerResponse> getBanner() async {
+    try {
+      final url = "$baseUrl/packages/banners";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ).timeout(const Duration(seconds: 20));
+      });
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return BannerResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Get Banner: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Banner: $e');
+      throw 'Terjadi kesalahan saat mengambil data Get Banner.';
     }
   }
 

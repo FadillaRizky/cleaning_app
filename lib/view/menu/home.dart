@@ -17,11 +17,7 @@ import '../../controller/menu.dart';
 import '../../model/ListCategoryPackageResponse.dart';
 
 class Home extends GetView<HomeController> {
-   Home({super.key});
-  final CarouselSliderController _carouselController =
-      CarouselSliderController();
-
-
+  Home({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +91,7 @@ class Home extends GetView<HomeController> {
                                         controller.notifLength.value.toString(),
                                         style: TextStyle(color: Colors.white),
                                       ),
-                                      onTap: (){
+                                      onTap: () {
                                         Get.find<ControllerMenu>().goToTab(2);
                                         print("asdasd");
                                       },
@@ -190,28 +186,76 @@ class Home extends GetView<HomeController> {
                                 );
                               },
                             )),
-                        CarouselSlider.builder(
-                          carouselController: _carouselController,
-                          itemCount: 2,
-                          itemBuilder: (context, index, realIndex) {
-                            return Image.asset("assets/promo.png");
-                          },
-                          options: CarouselOptions(
-                            viewportFraction: 1,
-                            enlargeCenterPage: false,
-                            autoPlay: true,
-                            autoPlayInterval: const Duration(seconds: 3),
-                            onPageChanged: (index, reason) {
-                              controller.currentIndex.value = index;
-                            },
-                          ),
+                        SizedBox(
+                          height: 10,
                         ),
                         Obx(() {
-                          return Container(
+                          return CarouselSlider.builder(
+                            carouselController: controller.carouselController,
+                            itemCount: controller.isBannerLoading.value ||
+                                    controller.banner.isEmpty
+                                ? 1
+                                : controller.banner.length,
+                            itemBuilder: (context, index, realIndex) {
+                              if (controller.isLoading.value) {
+                                // Loading state
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              } else if (controller.banner.isEmpty) {
+                                // Empty state (placeholder)
+                                return Placeholder();
+                              } else {
+                                // Data tersedia
+                                final imageUrl = controller.banner[index];
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(12),
+                                    child: Image.network(
+                                      imageUrl,
+                                      fit: BoxFit.cover,
+                                      width: double.infinity,
+                                      loadingBuilder:
+                                          (context, child, loadingProgress) {
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return const Center(
+                                            child: CircularProgressIndicator());
+                                      },
+                                      errorBuilder:
+                                          (context, error, stackTrace) {
+                                        return Placeholder();
+                                      },
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            options: CarouselOptions(
+                              viewportFraction: 1,
+                              enlargeCenterPage: false,
+                              autoPlay: true,
+                              autoPlayInterval: const Duration(seconds: 3),
+                              onPageChanged: (index, reason) {
+                                controller.currentIndex.value = index;
+                              },
+                            ),
+                          );
+                        }),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        Obx(() {
+                          return 
+                          controller.banner.isEmpty
+                         ? SizedBox.shrink()
+                         :  Container(
                             child: Center(
                               child: AnimatedSmoothIndicator(
                                 activeIndex: controller.currentIndex.value,
-                                count: 2,
+                                count: controller.banner.length,
                                 effect: const WormEffect(
                                     dotHeight: 10, dotWidth: 10),
                               ),
@@ -219,7 +263,7 @@ class Home extends GetView<HomeController> {
                           );
                         }),
                         const SizedBox(
-                          height: 15,
+                          height: 8,
                         ),
                         Container(
                           padding: EdgeInsets.all(10),

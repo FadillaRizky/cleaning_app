@@ -71,7 +71,7 @@ class RegisterController extends GetxController {
           );
         },
         codeAutoRetrievalTimeout: (verificationId) {
-          print("error");
+          print("eror");
         },
       );
 

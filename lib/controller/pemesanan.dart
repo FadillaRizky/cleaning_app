@@ -19,6 +19,8 @@ class PemesananController extends GetxController {
   var timeController = TextEditingController();
   var noteController = TextEditingController();
 
+  var selectedPayment = "".obs;
+
   @override
   void onInit() {
     super.onInit();

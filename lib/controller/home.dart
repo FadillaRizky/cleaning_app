@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:cleaning_app/model/ListCategoryPackageResponse.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -19,6 +20,12 @@ class HomeController extends GetxController {
 
   late Future<ListCategoryPackageResponse> futurePackageList;
   var options = <Map<String, dynamic>>[].obs;
+
+  ///Banner
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
+  var isBannerLoading = false.obs;
+  var banner = <String>[].obs;
 
   ///keterangan Notif
   var notifLength = 0.obs;
@@ -120,7 +127,7 @@ class HomeController extends GetxController {
 
       final response = await Api.getSaldo();
       if (response.status == true) {
-      amountSaldo.value = response.data!.totalBalance.toString() ?? "";
+        amountSaldo.value = response.data!.totalBalance.toString() ?? "";
       }
     } catch (e) {
       print("gagal get saldo : $e");
@@ -140,9 +147,13 @@ class HomeController extends GetxController {
 
     if (hour >= 5 && (hour < 9 || (hour == 9 && minute == 0))) {
       return "Pagi";
-    } else if ((hour == 9 && minute >= 1) || (hour > 9 && hour < 14) || (hour == 14 && minute == 0)) {
+    } else if ((hour == 9 && minute >= 1) ||
+        (hour > 9 && hour < 14) ||
+        (hour == 14 && minute == 0)) {
       return "Siang";
-    } else if ((hour == 14 && minute >= 1) || (hour > 14 && hour < 18) || (hour == 18 && minute == 0)) {
+    } else if ((hour == 14 && minute >= 1) ||
+        (hour > 14 && hour < 18) ||
+        (hour == 18 && minute == 0)) {
       return "Sore";
     } else {
       return "Malam";
@@ -155,12 +166,31 @@ class HomeController extends GetxController {
 
       final response = await Api.getNotification();
       if (response.status == true) {
-        notifLength.value = response.data!.where((item) => item.status == "0").length;
+        notifLength.value =
+            response.data!.where((item) => item.status == "0").length;
       }
     } catch (e) {
-      print("gagal get saldo : $e");
+      print("gagal get notif : $e");
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<void> getBanner() async {
+    try {
+      isBannerLoading.value = true;
+
+      final response = await Api.getBanner();
+      if (response.status == true) {
+        // banner.value = response.data!
+        //     .where((item) => item.bannerStatus == "active")
+        //     .map<String>((item) => item.bannerPath.toString())
+        //     .toList();
+      }
+    } catch (e) {
+      print("gagal get banner : $e");
+    } finally {
+      isBannerLoading.value = false;
     }
   }
 
@@ -171,5 +201,6 @@ class HomeController extends GetxController {
     fetchSaldo();
     userName.value = _storage.read('name') ?? 'Anonymous';
     fetchNotif();
+    getBanner();
   }
 }

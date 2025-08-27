@@ -12,6 +12,60 @@ class SupportPage extends StatelessWidget {
   final String emailCS = "fadillarizky294@gmail.com";
   final String usernameIgCS = "fadillarizky294";
 
+  Future<void> openWhatsApp({
+    required String phone,
+    String message = '',
+  }) async {
+    final url = Uri.parse(
+      "https://wa.me/$phone?text=${Uri.encodeComponent(message)}",
+    );
+
+    try {
+      final canLaunchIt = await canLaunchUrl(url);
+      if (canLaunchIt) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        Get.snackbar(
+          'Gagal',
+          'WhatsApp tidak terinstal atau tidak bisa dibuka',
+        );
+      }
+    } catch (e) {
+      print('Error launching WhatsApp: $e');
+      Get.snackbar('Error', 'Gagal membuka WhatsApp');
+    }
+  }
+
+  Future<void> openEmail({
+  required String email,
+  String subject = '',
+  String body = '',
+}) async {
+  final Uri url = Uri(
+    scheme: 'mailto',
+    path: email,
+    queryParameters: {
+      'subject': subject,
+      'body': body,
+    },
+  );
+
+  try {
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      Get.snackbar(
+        'Gagal',
+        'Tidak ada aplikasi email yang tersedia di perangkat Anda',
+      );
+    }
+  } catch (e) {
+    print('Error launching Email: $e');
+    Get.snackbar('Error', 'Gagal membuka aplikasi Email');
+  }
+}
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,47 +96,37 @@ class SupportPage extends StatelessWidget {
                       title: "WhatsApp",
                       subtitle: phoneNumberCS,
                       icon: LineIcons.whatSApp,
-                      ontap: ()async{
-                        final url = Uri.parse("whatsapp://send?phone=$phoneNumberCS&text=Hi, I need some help");
-
-                        if (await canLaunchUrl(url)) {
-                        await launchUrl(url);
-                        } else {
-                          SnackbarUtil.error("Gagal akses Whatsapp");
-                        print("Could not launch WhatsApp");
-                        }
+                      ontap: () {
+                        openWhatsApp(
+                          phone: phoneNumberCS,
+                          message: 'Hallo,...,',
+                        );
                       },
                     ),
                     TileSupport(
                       title: "Email",
                       subtitle: emailCS,
                       icon: LineIcons.envelope,
-                      ontap: ()async{
-                        final Uri emailUri = Uri(
-                          scheme: 'mailto',
-                          path: emailCS,
-                          // query: 'subject=Hello&body=I want to contact you',
+                      ontap: () {
+                        openEmail(
+                          email: "admin@contoh.com",
+                          subject: "Permintaan Informasi",
+                          body:
+                              "Halo, saya ingin bertanya mengenai layanan Anda...",
                         );
-
-                        if (await canLaunchUrl(emailUri)) {
-                        await launchUrl(emailUri);
-                        } else {
-                          SnackbarUtil.error("Gagal akses Email");
-                        print('Could not launch email client');
-                        }
                       },
                     ),
                     TileSupport(
                       title: "Call Center",
                       subtitle: "Senin - Minggu jam 07.00 - 22.00",
                       icon: LineIcons.headset,
-                      ontap: (){},
+                      ontap: () {},
                     ),
                     TileSupport(
                       title: "Cakupan Area",
                       subtitle: "Jakarta, Bogor, Depok, Tangerang",
                       icon: LineIcons.mapMarker,
-                      ontap: (){},
+                      ontap: () {},
                     ),
                   ],
                 ),
@@ -106,11 +150,13 @@ class SupportPage extends StatelessWidget {
                       title: "Instagram",
                       subtitle: "@$usernameIgCS",
                       icon: LineIcons.instagram,
-                      ontap: ()async {
-                        final Uri url = Uri.parse('https://www.instagram.com/$usernameIgCS');
+                      ontap: () async {
+                        final Uri url = Uri.parse(
+                            'https://www.instagram.com/$usernameIgCS');
 
                         if (await canLaunchUrl(url)) {
-                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                          await launchUrl(url,
+                              mode: LaunchMode.externalApplication);
                         } else {
                           SnackbarUtil.error("Gagal akses Instagram");
                           throw 'Could not launch $url';
@@ -121,10 +167,11 @@ class SupportPage extends StatelessWidget {
                       title: "Facebook",
                       subtitle: "@fadillarizky294",
                       icon: LineIcons.facebookSquare,
-                      ontap: ()async {
+                      ontap: () async {
                         final url = Uri.parse('https://www.facebook.com/');
                         if (await canLaunchUrl(url)) {
-                          await launchUrl(url, mode: LaunchMode.externalApplication);
+                          await launchUrl(url,
+                              mode: LaunchMode.externalApplication);
                         } else {
                           SnackbarUtil.error("Gagal akses Facebook");
                           throw 'Could not launch $url';
@@ -151,7 +198,8 @@ class TileSupport extends StatelessWidget {
     super.key,
     required this.title,
     required this.subtitle,
-    required this.icon, required this.ontap,
+    required this.icon,
+    required this.ontap,
   });
 
   @override
