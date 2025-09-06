@@ -27,6 +27,7 @@ class InfoSaldo extends GetView<HomeController> {
           ),
           SizedBox(height: 10),
           Text("Riwayat Transaksi", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+          SizedBox(height: 10),
           FutureBuilder(
             future: controller.fetchHistoryTransaksi(),
             builder: (context, AsyncSnapshot<HistoryTransaksiResponse> snapshot) {
@@ -39,7 +40,7 @@ class InfoSaldo extends GetView<HomeController> {
               } else if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               } else if (!snapshot.hasData || snapshot.data!.data!.isEmpty) {
-                return const Text('No packages found.');
+                return Center(child: const Text('Belum ada riwayat transaksi.'));
               }
           
               return ListView.builder(

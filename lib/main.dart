@@ -2,6 +2,7 @@ import 'package:cleaning_app/controller/home.dart';
 import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/view/booking_success.dart';
 import 'package:cleaning_app/view/info_saldo.dart';
+import 'package:cleaning_app/view/instruksi_pembayaran.dart';
 import 'package:cleaning_app/view/introduction.dart';
 import 'package:cleaning_app/view/isi_saldo.dart';
 import 'package:cleaning_app/view/kebijakan_privasi.dart';
@@ -17,6 +18,7 @@ import 'package:cleaning_app/view/menu/booking/order_detail.dart';
 import 'package:cleaning_app/view/menu/pembayaran.dart';
 import 'package:cleaning_app/view/menu/pemesanan.dart';
 import 'package:cleaning_app/view/menu/profile.dart';
+import 'package:cleaning_app/view/menu/tagihan.dart';
 import 'package:cleaning_app/view/menu/tambah_alamat.dart';
 import 'package:cleaning_app/view/register.dart';
 import 'package:cleaning_app/view/register_verify.dart';
@@ -46,8 +48,9 @@ void main() async {
   );
   print("init");
   final storage = GetStorage();
-  final isFirstOpen = storage.read('isFirstOpen') ?? true;
-  final isLoggedIn = storage.read('token') != null;
+  final isFirstOpen = await storage.read('isFirstOpen') ?? true;
+  final isLoggedIn = await storage.read('token') != null;
+  print(isLoggedIn);
   runApp(MyApp(
     isLoggedIn: isLoggedIn,
     isFirstOpen: isFirstOpen,
@@ -153,6 +156,10 @@ class MyApp extends StatelessWidget {
               binding: PemesananBindings()
             ),
             GetPage(
+              name: '/tagihan',
+              page: () =>  TagihanPage.fromArguments(),
+            ),
+            GetPage(
               name: '/pembayaran',
               page: () =>  Pembayaran(),
             ),
@@ -207,6 +214,10 @@ class MyApp extends StatelessWidget {
             GetPage(
               name: '/privacy_policy',
               page: () =>  KebijakanPrivasi(),
+            ),
+            GetPage(
+              name: '/instruksi_pembayaran',
+              page: () =>  InstructionPage.fromArguments(),
             ),
           ],
         );

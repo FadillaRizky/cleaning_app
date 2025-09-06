@@ -33,10 +33,13 @@ class LoginPage extends StatelessWidget {
                   controller: controller.controllerphoneNumber,
                   hintText: 'Masukan Nomor Hp',
                   inputType: TextInputType.number,
-                  prefixIcon: Text(
-                    '+62',
-                    style: TextStyle(fontSize: 43.sp),
-                  ),
+                  prefixIcon: Padding(
+                      padding: EdgeInsets.only(right: 15.w),
+                      child: Icon(
+                        Icons.phone_android,
+                        color: Colors.black54,
+                      ),
+                    ),
                 ),
               SizedBox(height: 25.h),
               Obx(() {

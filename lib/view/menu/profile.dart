@@ -216,11 +216,11 @@ class ProfilePage extends GetView<ProfileController> {
                           Get.toNamed("/info-saldo");
                         },
                       ),
-                      buildListTile(
-                        title: 'Hubungi Kami',
-                        icon: Icon(LineIcons.phone,),
-                        ontap: () {},
-                      ),
+                      // buildListTile(
+                      //   title: 'Hubungi Kami',
+                      //   icon: Icon(LineIcons.phone,),
+                      //   ontap: () {},
+                      // ),
                       buildListTile(
                         title: 'Ketentuan Layanan',
                         icon: Icon(LineIcons.clipboardList,),

@@ -49,17 +49,6 @@ class DetailCategory extends GetView<PackageController> {
                         itemCount: img_url.length,
                         itemBuilder: (context, index, realIndex) {
                           return CachedImage(imgUrl: img_url[index], height: 200, width: double.infinity);
-                          //   CachedNetworkImage(
-                          //   imageUrl: img_url[index],
-                          //   fit: BoxFit.cover,
-                          //   placeholder: (context, url) =>
-                          //       Center(child: const CircularProgressIndicator()),
-                          //   errorWidget: (context, url, error) => const Icon(
-                          //     Icons.image,
-                          //     size: 60,
-                          //     color: Colors.grey,
-                          //   ),
-                          // );
                         },
                         options: CarouselOptions(
                           viewportFraction: 1,

@@ -271,7 +271,7 @@ class Pemesanan extends GetView<PemesananController> {
                                           style: TextStyle(fontSize: 14),
                                         ),
                                         subtitle: Text(
-                                          "alamat belum ditambahkan",
+                                          "Alamat belum ditambahkan",
                                           style: TextStyle(fontSize: 13),
                                         ),
                                         trailing: ElevatedButton.icon(
@@ -512,6 +512,16 @@ class Pemesanan extends GetView<PemesananController> {
                                               Get.back();
                                             },
                                           ),
+                                          // ListTile(
+                                          //   leading: Icon(Icons.monetization_on,
+                                          //       color: Colors.blue),
+                                          //   title: Text("Bayar Tunai ke Mitra"),
+                                          //   onTap: () {
+                                          //     controller.selectedPayment.value =
+                                          //         "Bayar Tunai ke Mitra";
+                                          //     Get.back();
+                                          //   },
+                                          // ),
                                           ListTile(
                                             leading: Icon(Icons.account_balance,
                                                 color: Colors.orange),
@@ -814,25 +824,25 @@ class Pemesanan extends GetView<PemesananController> {
                             packController.selectedPriceDuration.isNotEmpty
                         ? Column(
                             children: [
-                             controller.selectedPayment.value == "Saldo"
-                              ? Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Saldo",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.blue),
-                                  ),
-                                  Text(Utils.formatCurrency(saldoInt),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.blue)),
-                                ],
-                              )
-                              : SizedBox.shrink(),
+                              controller.selectedPayment.value == "Saldo"
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Saldo",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              color: Colors.blue),
+                                        ),
+                                        Text(Utils.formatCurrency(saldoInt),
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.blue)),
+                                      ],
+                                    )
+                                  : SizedBox.shrink(),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -850,22 +860,6 @@ class Pemesanan extends GetView<PemesananController> {
                                           : Utils.formatCurrency(int.parse(
                                               packController
                                                   .selectedDiscount.value)),
-                                      style: TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    "Biaya Layanan",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.grey),
-                                  ),
-                                  Text("Rp 2.000",
                                       style: TextStyle(
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold)),
@@ -896,6 +890,22 @@ class Pemesanan extends GetView<PemesananController> {
                                       ],
                                     )
                                   : SizedBox(),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Biaya Platform",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.grey),
+                                  ),
+                                  Text("Rp 2.000",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -943,21 +953,10 @@ class Pemesanan extends GetView<PemesananController> {
                               ),
                             ),
                             onPressed: () {
-                              if (packController.category.value !=
-                                  "Daily Cleaning") {
-                                if (saldoInt < total) {
-                                  SnackbarUtil.show("Saldo Tidak Mencukupi",
-                                      "Silakan Top up Saldo terlebih dahulu");
-                                  return;
-                                }
-                              } else {
-                                if (saldoInt <
-                                    int.parse(packController
-                                        .selectedPriceDuration.value)) {
-                                  SnackbarUtil.show("Saldo Tidak Mencukupi",
-                                      "Silakan top up saldo terlebih dahulu");
-                                  return;
-                                }
+                              if (controller.propertyId.value.isEmpty) {
+                                SnackbarUtil.show("Alamat Kosong",
+                                    "Silakan tambahkan alamat terlebih dahulu");
+                                return;
                               }
                               if (controller.dateText.value.isEmpty) {
                                 SnackbarUtil.show("Tanggal Layanan Kosong",
@@ -974,52 +973,105 @@ class Pemesanan extends GetView<PemesananController> {
                                     "Silakan pilih preferensi gender mitra yang diinginkan");
                                 return;
                               }
+                              if (controller.selectedPayment.value == "") {
+                                SnackbarUtil.show("Pilih metode pembayaran",
+                                    "Silakan pilih metode pembayaran yang diinginkan");
+                                return;
+                              }
 
-                              if (packController.category.value !=
-                                  "Daily Cleaning") {
-                                var dataDeep = {
-                                  "data_pack": controller.getListDataPack(),
-                                  "category": packController.category.value,
-                                  "due_date": controller.dateText.value,
-                                  "due_time": controller.timeText.value,
-                                  "discount": 2,
-                                  "order_notes": controller.noteController.text,
-                                  "property_id":
-                                      int.parse(controller.propertyId.value),
-                                  "property_city": Utils.extractSecondSentence(
-                                      controller.propertyAddress.value),
-                                  "mitra_gender":
-                                      controller.selectedGender.value
-                                };
-                                controller.orderPackage(dataDeep);
-                              } else {
-                                var dataDaily = {
-                                  "data_pack": [
-                                    {
-                                      "pack_id": int.parse(packController
-                                          .selectedPackageId.value),
-                                      "pack_category":
-                                          packController.category.value,
-                                      "pack_hour":
-                                          packController.selectedDuration.value,
-                                      "object_id": [],
-                                      "object_price": []
-                                    }
-                                  ],
-                                  "category": packController.category.value,
-                                  "due_date": controller.dateText.value,
-                                  "due_time": controller.timeText.value,
-                                  "discount":
-                                      packController.selectedDiscount.value,
-                                  "order_notes": controller.noteController.text,
-                                  "property_id":
-                                      int.parse(controller.propertyId.value),
-                                  "property_city": Utils.extractSecondSentence(
-                                      controller.propertyAddress.value),
-                                  "mitra_gender":
-                                      controller.selectedGender.value
-                                };
-                                controller.orderPackage(dataDaily);
+                              final isDaily = packController.category.value ==
+                                  "Daily Cleaning";
+                              final int totalHarga = isDaily
+                                  ? int.parse(packController
+                                          .selectedPriceDuration.value) +
+                                      2000
+                                  : total + 2000;
+
+                              if (controller.selectedPayment.value == "Saldo") {
+                                if (saldoInt < totalHarga) {
+                                  SnackbarUtil.show(
+                                    "Saldo Tidak Mencukupi",
+                                    "Silakan top up saldo terlebih dahulu",
+                                  );
+                                  return;
+                                }
+
+                                // if (packController.category.value !=
+                                //     "Daily Cleaning") {
+                                //   if (saldoInt < total) {
+                                //     SnackbarUtil.show("Saldo Tidak Mencukupi",
+                                //         "Silakan Top up Saldo terlebih dahulu");
+                                //     return;
+                                //   }
+                                // } else {
+                                //   if (saldoInt <
+                                //       int.parse(packController
+                                //           .selectedPriceDuration.value)) {
+                                //     SnackbarUtil.show("Saldo Tidak Mencukupi",
+                                //         "Silakan top up saldo terlebih dahulu");
+                                //     return;
+                                //   }
+                                // }
+
+                                if (packController.category.value !=
+                                    "Daily Cleaning") {
+                                  Map<String, dynamic> dataPackMap =
+                                      controller.getListDataPack();
+
+                                  var dataDeep = {
+                                    // "data_pack": controller.getListDataPack(),
+                                    ...dataPackMap,
+                                    "category": packController.category.value,
+                                    "due_date": controller.dateText.value,
+                                    "due_time": controller.timeText.value,
+                                    "discount": "2",
+                                    "order_notes":
+                                        controller.noteController.text,
+                                    "property_id":
+                                        controller.propertyId.value,
+                                    "property_city":
+                                        Utils.extractSecondSentence(
+                                            controller.propertyAddress.value),
+                                    "mitra_gender":
+                                        controller.selectedGender.value,
+                                    "payment_type": "balance"
+                                  };
+                                  print(dataDeep);
+                                  controller.confirmPayment(dataDeep);
+                                } else {
+                                  var dataDaily = {
+                                    "data_pack[0][pack_id]": packController.selectedPackageId.value,
+                                    "data_pack[0][pack_category]": packController.category.value,
+                                    "data_pack[0][pack_hour]": packController.selectedDuration.value,
+                                    "data_pack[0][object_id]" : "",
+                                    "data_pack[0][object_price]" : "",
+                                    "category": packController.category.value,
+                                    "due_date": controller.dateText.value,
+                                    "due_time": controller.timeText.value,
+                                    "discount": "2",
+                                    "order_notes":
+                                        controller.noteController.text,
+                                    "property_id":
+                                        controller.propertyId.value,
+                                    "property_city":
+                                        Utils.extractSecondSentence(
+                                            controller.propertyAddress.value),
+                                    "mitra_gender":
+                                        controller.selectedGender.value,
+                                        "payment_type": "balance"
+                                  };
+                                  print(dataDaily);
+                                  controller.confirmPayment(dataDaily);
+                                }
+                              } else if (controller.selectedPayment.value ==
+                                      "QRIS" ||
+                                  controller.selectedPayment.value ==
+                                      "Bank Transfer") {
+                                Get.toNamed("/tagihan", arguments: {
+                                  'metode_pembayaran':
+                                      controller.selectedPayment.value,
+                                  'total_harga': totalHarga
+                                });
                               }
                             },
                             child: Text(

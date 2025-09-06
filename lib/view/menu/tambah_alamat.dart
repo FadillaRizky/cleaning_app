@@ -151,8 +151,9 @@ class DaftarAlamat extends GetView<AlamatController> {
                                     Text(
                                         "${snapshot.data!.data![index].picName!} (${snapshot.data!.data![index].picPhone})"),
                                     Text(
-                                      snapshot
-                                          .data!.data![index].propertyAddress!,
+                                      snapshot.data!.data![index]
+                                              .propertyAddress ??
+                                          "",
                                       style: TextStyle(fontSize: 13),
                                     ),
                                     Text(
@@ -187,7 +188,14 @@ class TambahAlamat extends GetView<AlamatController> {
   Widget build(BuildContext context) {
     final data = Get.arguments;
     final isDetail = data != null;
-    print("latitude : ${controller.longLocation.value}");
+    if (!isDetail) {
+      controller.detailLocation.value =
+          "Daerah khusus Ibukota Jakarta, Kota Jakarta Pusat, Kecamatan Gambir, Gambir";
+      controller.specificLocation.value = "Gambir";
+      controller.latlongLocation.value = "-6.1754, , 106.8272";
+      controller.latLocation.value = "-6.1754";
+      controller.longLocation.value = "106.8272";
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text("Alamat"),
@@ -233,7 +241,7 @@ class TambahAlamat extends GetView<AlamatController> {
                               children: [
                                 TileLayer(
                                   urlTemplate:
-                                  'https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.png?key=jgR9RzmD0bqJ3JFDMu0u',
+                                      'https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.png?key=jgR9RzmD0bqJ3JFDMu0u',
                                   additionalOptions: {
                                     'key': 'jgR9RzmD0bqJ3JFDMu0u',
                                   },
@@ -400,30 +408,11 @@ class TambahAlamat extends GetView<AlamatController> {
                           keyboardType: TextInputType.number,
                           readOnly: isDetail,
                         ),
-                        // Obx(() {
-                        //   return FieldAlamat(
-                        //     label: "Provinsi, Kota, Kecamatan",
-                        //     controller: TextEditingController(
-                        //         text: controller.detailLocation.value),
-                        //     readOnly: isDetail,
-                        //     maxlines: 2,
-                        //     onTap: !isDetail
-                        //         ? () async {
-                        //       buildDialogLocation(context);
-                        //     }
-                        //         : null,
-                        //   );
-                        // }),
                         FieldAlamat(
                           label: "Detail Alamat (Nama Jalan / No Rumah)",
                           controller: controller.detailAddressController,
                           readOnly: isDetail,
                         ),
-                        // FieldAlamat(
-                        //   label: "Type Property (contoh : Rumah / Kontrakan)",
-                        //   controller: controller.typePropertyController,
-                        //   readOnly: isDetail,
-                        // ),
                         Obx(() {
                           return DropdownButtonFormField<String>(
                               decoration: InputDecoration(
@@ -520,145 +509,145 @@ class TambahAlamat extends GetView<AlamatController> {
     );
   }
 
-  Future<dynamic> buildDialogLocation(BuildContext context) {
-    return showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: () async => !controller.isLoading.value,
-          child: Dialog(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
-            ),
-            elevation: 0,
-            backgroundColor: Colors.transparent,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  height: 400,
-                  // Set the height of the map inside the dialog
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: FlutterMap(
-                    mapController: controller.mapController,
-                    options: MapOptions(
-                      initialCenter: LatLng(-6.1754, 106.8272),
-                      initialZoom: 13,
-                      onTap: (tapPosition, latLng) {
-                        controller.pickedLocation.value = latLng;
-                        controller.latlongLocation.value =
-                            "${latLng.latitude} , ${latLng.longitude}";
-                        controller.latLocation.value =
-                            latLng.latitude.toString();
-                        controller.longLocation.value =
-                            latLng.longitude.toString();
-                        controller.getDetailLocation(latLng);
-                      },
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate:
-                            'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?key=b3e1d25f-8792-4ae7-a599-a93a01e9b84b',
-                        additionalOptions: {
-                          'key': 'b3e1d25f-8792-4ae7-a599-a93a01e9b84b',
-                        },
-                        userAgentPackageName: 'com.example.myapp',
-                      ),
-                      Obx(() {
-                        final loc = controller.pickedLocation.value;
-                        if (loc != null) {
-                          // Centerkan map ke lokasi baru
-                          Future.microtask(() {
-                            controller.mapController
-                                .move(loc, 15); // Zoom 15 (atau sesuaikan)
-                          });
-                        }
+  // Future<dynamic> buildDialogLocation(BuildContext context) {
+  //   return showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //       return WillPopScope(
+  //         onWillPop: () async => !controller.isLoading.value,
+  //         child: Dialog(
+  //           shape: RoundedRectangleBorder(
+  //             borderRadius: BorderRadius.circular(15),
+  //           ),
+  //           elevation: 0,
+  //           backgroundColor: Colors.transparent,
+  //           child: Column(
+  //             mainAxisAlignment: MainAxisAlignment.center,
+  //             mainAxisSize: MainAxisSize.min,
+  //             children: [
+  //               Container(
+  //                 height: 400,
+  //                 // Set the height of the map inside the dialog
+  //                 decoration: BoxDecoration(
+  //                   color: Colors.white,
+  //                   borderRadius: BorderRadius.circular(15),
+  //                 ),
+  //                 child: FlutterMap(
+  //                   mapController: controller.mapController,
+  //                   options: MapOptions(
+  //                     initialCenter: LatLng(-6.1754, 106.8272),
+  //                     initialZoom: 13,
+  //                     onTap: (tapPosition, latLng) {
+  //                       controller.pickedLocation.value = latLng;
+  //                       controller.latlongLocation.value =
+  //                           "${latLng.latitude} , ${latLng.longitude}";
+  //                       controller.latLocation.value =
+  //                           latLng.latitude.toString();
+  //                       controller.longLocation.value =
+  //                           latLng.longitude.toString();
+  //                       controller.getDetailLocation(latLng);
+  //                     },
+  //                   ),
+  //                   children: [
+  //                     TileLayer(
+  //                       urlTemplate:
+  //                           'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?key=b3e1d25f-8792-4ae7-a599-a93a01e9b84b',
+  //                       additionalOptions: {
+  //                         'key': 'b3e1d25f-8792-4ae7-a599-a93a01e9b84b',
+  //                       },
+  //                       userAgentPackageName: 'com.example.myapp',
+  //                     ),
+  //                     Obx(() {
+  //                       final loc = controller.pickedLocation.value;
+  //                       if (loc != null) {
+  //                         // Centerkan map ke lokasi baru
+  //                         Future.microtask(() {
+  //                           controller.mapController
+  //                               .move(loc, 15); // Zoom 15 (atau sesuaikan)
+  //                         });
+  //                       }
 
-                        return MarkerLayer(
-                          markers: loc != null
-                              ? [
-                                  Marker(
-                                    point: loc,
-                                    width: 40,
-                                    height: 40,
-                                    child: Icon(Icons.location_on,
-                                        color: Colors.red, size: 40),
-                                  )
-                                ]
-                              : [],
-                        );
-                      }),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(onPressed: () async {
-                      controller.isLoading.value = true;
+  //                       return MarkerLayer(
+  //                         markers: loc != null
+  //                             ? [
+  //                                 Marker(
+  //                                   point: loc,
+  //                                   width: 40,
+  //                                   height: 40,
+  //                                   child: Icon(Icons.location_on,
+  //                                       color: Colors.red, size: 40),
+  //                                 )
+  //                               ]
+  //                             : [],
+  //                       );
+  //                     }),
+  //                   ],
+  //                 ),
+  //               ),
+  //               SizedBox(
+  //                 height: 5,
+  //               ),
+  //               SizedBox(
+  //                   width: double.infinity,
+  //                   child: ElevatedButton(onPressed: () async {
+  //                     controller.isLoading.value = true;
 
-                      final location = Location();
-                      final hasPermission =
-                          await controller.checkLocationPermission(location);
-                      if (!hasPermission) {
-                        controller.isLoading.value = false;
-                        return;
-                      }
+  //                     final location = Location();
+  //                     final hasPermission =
+  //                         await controller.checkLocationPermission(location);
+  //                     if (!hasPermission) {
+  //                       controller.isLoading.value = false;
+  //                       return;
+  //                     }
 
-                      try {
-                        final currentLocation = await location.getLocation();
+  //                     try {
+  //                       final currentLocation = await location.getLocation();
 
-                        if (currentLocation.latitude == null ||
-                            currentLocation.longitude == null) {
-                          throw Exception('Latitude or Longitude is null.');
-                        }
+  //                       if (currentLocation.latitude == null ||
+  //                           currentLocation.longitude == null) {
+  //                         throw Exception('Latitude or Longitude is null.');
+  //                       }
 
-                        final lat = currentLocation.latitude!;
-                        final lng = currentLocation.longitude!;
+  //                       final lat = currentLocation.latitude!;
+  //                       final lng = currentLocation.longitude!;
 
-                        final latLng = LatLng(lat, lng);
-                        controller.pickedLocation.value = latLng;
-                        controller.latlongLocation.value = '$lat,$lng';
-                        controller.latLocation.value = lat.toString();
-                        controller.longLocation.value = lng.toString();
+  //                       final latLng = LatLng(lat, lng);
+  //                       controller.pickedLocation.value = latLng;
+  //                       controller.latlongLocation.value = '$lat,$lng';
+  //                       controller.latLocation.value = lat.toString();
+  //                       controller.longLocation.value = lng.toString();
 
-                        await controller.getDetailLocation(latLng);
-                      } catch (e) {
-                        print('Error getting location: $e');
-                        controller.isLoading.value = false;
-                        return;
-                      } finally {
-                        controller.isLoading.value = false;
-                      }
-                    }, child: Obx(() {
-                      return controller.isLoading.value
-                          ? CircularProgressIndicator()
-                          : Text("Gunakan lokasi saat ini");
-                    }))),
-                SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white),
-                      onPressed: () async {
-                        Get.back();
-                      },
-                      child: Text("Simpan"),
-                    ))
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+  //                       await controller.getDetailLocation(latLng);
+  //                     } catch (e) {
+  //                       print('Error getting location: $e');
+  //                       controller.isLoading.value = false;
+  //                       return;
+  //                     } finally {
+  //                       controller.isLoading.value = false;
+  //                     }
+  //                   }, child: Obx(() {
+  //                     return controller.isLoading.value
+  //                         ? CircularProgressIndicator()
+  //                         : Text("Gunakan lokasi saat ini");
+  //                   }))),
+  //               SizedBox(
+  //                   width: double.infinity,
+  //                   child: ElevatedButton(
+  //                     style: ElevatedButton.styleFrom(
+  //                         backgroundColor: Colors.blue,
+  //                         foregroundColor: Colors.white),
+  //                     onPressed: () async {
+  //                       Get.back();
+  //                     },
+  //                     child: Text("Simpan"),
+  //                   ))
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }
 
 class FieldAlamat extends StatelessWidget {

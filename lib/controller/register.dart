@@ -7,18 +7,17 @@ import 'package:get_storage/get_storage.dart';
 
 import '../api.dart';
 import '../model/LoginResponse.dart' as LoginModel;
-import '../view/login.dart';
-import '../view/menu.dart';
-import '../view/register_verify.dart';
-import '../view/menu/home.dart';
 
 class RegisterController extends GetxController {
   final RxBool isPasswordVisible = true.obs;
-  final RxBool isConfirmPasswordVisible = false.obs;
+  final RxBool isConfirmPasswordVisible = true.obs;
   final RxBool isLoading = false.obs;
+  final RxBool isAgree = false.obs;
+
   final RxBool isLoadingVerify = false.obs;
   final GetStorage _storage = GetStorage();
-  final Rx<LoginModel.LoginResponse?> loginResponse = Rx<LoginModel.LoginResponse?>(null);
+  final Rx<LoginModel.LoginResponse?> loginResponse =
+      Rx<LoginModel.LoginResponse?>(null);
 
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -31,92 +30,129 @@ class RegisterController extends GetxController {
   final otpControllers = List.generate(6, (index) => TextEditingController());
   final focusNodes = List.generate(6, (index) => FocusNode());
 
+  void validateFields(Map<String, dynamic> fields) {
+    fields.forEach((fieldName, value) {
+      if (value.isEmpty) {
+        throw ValidationException(
+          "$fieldName wajib diisi sebelum melanjutkan.",
+        );
+      }
+    });
+  }
+
+  bool isValidEmail(String email) {
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    return emailRegex.hasMatch(email);
+  }
+
   Future<void> verifyRegister() async {
     isLoading.value = true;
     try {
-      if (firstNameController.text.isEmpty) {
-        throw "First Name Kosong";
+      validateFields({
+        "Nama Depan": firstNameController.text,
+        "Nama Belakang": lastNameController.text,
+        "Email": emailController.text,
+        "Nomor HP": phoneNumberController.text,
+        "Password": passwordController.text,
+        "Konfirmasi Password": confirmPasswordController.text,
+      });
+
+      if (!isValidEmail(emailController.text.trim())) {
+        SnackbarUtil.show(
+          "Email tidak valid",
+          "Silakan masukkan email dengan format yang benar, contoh: nama@email.com",
+        );
+        throw Exception("Validation Failed");
       }
-      if (lastNameController.text.isEmpty) {
-        throw "Last Name Kosong";
-      }
-      if (phoneNumberController.text.isEmpty) {
-        throw "Nomor HP Kosong";
-      }
-      if (emailController.text.isEmpty) {
-        throw "Email Kosong";
-      }
-      if (passwordController.text.isEmpty) {
-        throw "Password Kosong";
-      }
-      if (confirmPasswordController.text.isEmpty) {
-        throw "Password Konfirmasi Kosong";
+      if (phoneNumberController.text.length <= 10) {
+        SnackbarUtil.show(
+          "Nomor HP tidak valid",
+          "Nomor HP harus lebih dari 10 digit",
+        );
+        throw Exception("Validation Failed");
       }
       if (passwordController.text != confirmPasswordController.text) {
-        throw "Password dan konfirmasi password tidak cocok";
+        SnackbarUtil.show(
+          "Field Tidak Cocok",
+          "Password dan konfirmasi password tidak cocok",
+        );
+        throw Exception("Validation Failed");
       }
 
-      FirebaseAuth.instance.verifyPhoneNumber(
-        phoneNumber: '+62${phoneNumberController.text.trim()}',
-        verificationCompleted: (phoneAuthCredential) {},
-        verificationFailed: (error) {},
-        codeSent: (verificationId, forceResendingToken) {
+      var data = {
+        "first_name": firstNameController.text.trim(),
+        "last_name": lastNameController.text.trim(),
+        "phone_number": phoneNumberController.text.trim(),
+        "email": emailController.text.trim(),
+        "password": passwordController.text.trim(),
+      };
 
-          Get.toNamed(
-            '/register-verify',
-            arguments: {
-              'noHp': '+62${phoneNumberController.text}',
-              'verificationId': verificationId,
-            },
-          );
-        },
-        codeAutoRetrievalTimeout: (verificationId) {
-          print("eror");
-        },
-      );
+      final response = await Api.register(data);
+      if (response.status == "success" && response.data != null) {
+        SnackbarUtil.success("Akun berhasil dibuat, Silahkan Login..");
+        Get.offAllNamed('/login');
+      } else {
+        SnackbarUtil.error("Registrasi gagal. Silakan coba lagi.");
+      }
+      // FirebaseAuth.instance.verifyPhoneNumber(
+      //   phoneNumber: '+62${phoneNumberController.text.trim()}',
+      //   verificationCompleted: (phoneAuthCredential) {},
+      //   verificationFailed: (error) {},
+      //   codeSent: (verificationId, forceResendingToken) {
 
-
-
+      //     Get.toNamed(
+      //       '/register-verify',
+      //       arguments: {
+      //         'noHp': '+62${phoneNumberController.text}',
+      //         'verificationId': verificationId,
+      //       },
+      //     );
+      //   },
+      //   codeAutoRetrievalTimeout: (verificationId) {
+      //     print("eror");
+      //   },
+      // );
     } catch (e) {
       SnackbarUtil.error(e.toString());
       print(e);
-    }finally {
+    } finally {
       isLoading.value = false;
-    };
+    }
+    ;
   }
 
-
-  Future<void> register(String verificationId)async{
+  Future<void> register(String verificationId) async {
     isLoading.value = true;
 
     try {
-      if (!otpControllers.every((controller) => controller.text.trim().isNotEmpty)) {
+      if (!otpControllers
+          .every((controller) => controller.text.trim().isNotEmpty)) {
         throw "Otp Belum Terisi";
       }
 
-      String otp = otpControllers
-          .map((controller) => controller.text)
-          .join();
+      String otp = otpControllers.map((controller) => controller.text).join();
       final cred = PhoneAuthProvider.credential(
           verificationId: verificationId, smsCode: otp);
       await FirebaseAuth.instance.signInWithCredential(cred);
 
-      var firstName = firstNameController.text.trim(); // Added trim() to remove leading/trailing whitespace
-      var lastName = lastNameController.text.trim(); // Added trim() to remove leading/trailing whitespace
+      var firstName = firstNameController.text
+          .trim(); // Added trim() to remove leading/trailing whitespace
+      var lastName = lastNameController.text
+          .trim(); // Added trim() to remove leading/trailing whitespace
       var phoneNumber = phoneNumberController.text.trim();
       var email = emailController.text.trim();
       var password = passwordController.text.trim();
 
       var data = {
-        "first_name" : firstName,
-        "last_name" : lastName,
+        "first_name": firstName,
+        "last_name": lastName,
         "phone_number": "+62${phoneNumber}",
         "email": email,
         "password": password,
       };
 
       var loginData = {
-        "phone_number":"+62${phoneNumber}",
+        "phone_number": "+62${phoneNumber}",
         "password": password,
       };
       // print(data);
@@ -133,22 +169,19 @@ class RegisterController extends GetxController {
           EasyLoading.showSuccess("Akun berhasil dibuat, Silahkan Login..");
           Get.offAllNamed('/login');
         }
-      }
-     else if (response.status == "error") {
+      } else if (response.status == "error") {
         SnackbarUtil.error("Nomor atau Email tersebut sudah terpakai");
-      }  
-      else {
+      } else {
         throw "Terjadi Kesalahan Coba Lagi...";
       }
-
-
     } catch (e) {
-      if (e.toString() == "[firebase_auth/invalid-verification-code] The verification code from SMS/TOTP is invalid. Please check and enter the correct verification code again.") {
+      if (e.toString() ==
+          "[firebase_auth/invalid-verification-code] The verification code from SMS/TOTP is invalid. Please check and enter the correct verification code again.") {
         SnackbarUtil.error("Otp Invalid");
       }
       print(e);
       SnackbarUtil.error("$e");
-    }finally{
+    } finally {
       isLoading.value = false;
     }
   }
@@ -156,4 +189,12 @@ class RegisterController extends GetxController {
   Future<void> _saveInitialLoginData(LoginModel.LoginResponse userData) async {
     await _storage.write('token', userData.token);
   }
+}
+
+class ValidationException implements Exception {
+  final String message;
+  ValidationException(this.message);
+
+  @override
+  String toString() => message;
 }

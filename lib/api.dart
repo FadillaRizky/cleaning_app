@@ -140,17 +140,21 @@ class Api {
 
       final result = RegisterResponse.fromJson(jsonDecode(response.body));
       print("ssss $dataUser");
-      if (response.statusCode == 200 || response.statusCode == 201 || response.statusCode == 400) {
+      if (response.statusCode == 200 ||
+          response.statusCode == 201 ||
+          response.statusCode == 400) {
         print(result.status);
         return result;
+      } else if (response.statusCode == 401) {
+        throw 'Email atau nomor HP ini sudah digunakan. Silakan gunakan data lain.';
       } else {
         throw 'HTTP error: ${response.statusCode} - ${result.message ?? "Unable to submit Register"}';
       }
     } on TimeoutException catch (_) {
       throw 'Connection timeout. Please check your internet connection.';
     } catch (e) {
-      print('Register API Error: $e');
-      throw 'An unexpected error occurred during login.';
+      print('Registrasi gagal: $e');
+      throw 'Registrasi gagal: $e';
     }
   }
 
@@ -335,20 +339,21 @@ class Api {
     }
   }
 
-  static Future<StoreAddressResponse> storeAddress(Map<String,dynamic> data) async {
+  static Future<StoreAddressResponse> storeAddress(
+      Map<String, dynamic> data) async {
     try {
       final url = "$baseUrl/client/property/store";
 
       final response = await safeApiCall(() async {
         final token = await storage.read('token');
-        return await http.post(
-          Uri.parse(url),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-          body: jsonEncode(data)
-        ).timeout(const Duration(seconds: 20));
+        return await http
+            .post(Uri.parse(url),
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer $token',
+                },
+                body: jsonEncode(data))
+            .timeout(const Duration(seconds: 20));
       });
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -366,20 +371,21 @@ class Api {
     }
   }
 
-  static Future<DeleteAddressResponse> deleteAddress(Map<String,dynamic> data) async {
+  static Future<DeleteAddressResponse> deleteAddress(
+      Map<String, dynamic> data) async {
     try {
       final url = "$baseUrl/client/property/delete";
 
       final response = await safeApiCall(() async {
         final token = await storage.read('token');
-        return await http.post(
-            Uri.parse(url),
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer $token',
-            },
-            body: jsonEncode(data)
-        ).timeout(const Duration(seconds: 20));
+        return await http
+            .post(Uri.parse(url),
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer $token',
+                },
+                body: jsonEncode(data))
+            .timeout(const Duration(seconds: 20));
       });
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -396,7 +402,6 @@ class Api {
       throw 'Terjadi kesalahan saat Delete data Address .';
     }
   }
-
 
   static Future<UpdatePhotoProfileResponse> updateAvatar(
       File avatarFile) async {
@@ -430,22 +435,24 @@ class Api {
     }
   }
 
-  static Future<UpdateDetailUserResponse> updateDetailUser(Map<String, String> dataUser) async {
+  static Future<UpdateDetailUserResponse> updateDetailUser(
+      Map<String, String> dataUser) async {
     try {
       var url = "$baseUrl/user/update";
       final response = await safeApiCall(() async {
         final token = await storage.read('token');
-        return await http.put(
-          Uri.parse(url),
-          headers: {
-            // 'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-            body: dataUser
-        ).timeout(const Duration(seconds: 20));
+        return await http
+            .put(Uri.parse(url),
+                headers: {
+                  // 'Content-Type': 'application/json',
+                  'Authorization': 'Bearer $token',
+                },
+                body: dataUser)
+            .timeout(const Duration(seconds: 20));
       });
 
-      final result = UpdateDetailUserResponse.fromJson(jsonDecode(response.body));
+      final result =
+          UpdateDetailUserResponse.fromJson(jsonDecode(response.body));
       print("data $dataUser");
       if (response.statusCode == 200 || response.statusCode == 400) {
         print(result.status);
@@ -464,7 +471,7 @@ class Api {
   static Future<DetailUserResponse> getDetailUser() async {
     try {
       final url = "$baseUrl/user";
-print("---");
+      print("---");
       final response = await safeApiCall(() async {
         final token = await storage.read('token');
         return await http.get(
@@ -491,8 +498,8 @@ print("---");
     }
   }
 
-  static Future<UploadBuktiTopupResponse> uploadBuktiTopup(String date, String nominal,
-      File documentFile) async {
+  static Future<UploadBuktiTopupResponse> uploadBuktiTopup(
+      String date, String nominal, File documentFile) async {
     try {
       final token = await storage.read('token');
       var url = "$baseUrl/client/topup";
@@ -514,8 +521,7 @@ print("---");
       print('Status code: ${response.statusCode}');
       print('Response body: ${responseJson.body}');
       if (response.statusCode == 200) {
-        return UploadBuktiTopupResponse.fromJson(
-            jsonDecode(responseJson.body));
+        return UploadBuktiTopupResponse.fromJson(jsonDecode(responseJson.body));
       } else {
         throw "Unable to upload Image";
       }
@@ -555,25 +561,51 @@ print("---");
     }
   }
 
-
-
-  static Future<OrderPackageResponse> orderPackage(Map<String,dynamic> data) async {
+  static Future<OrderPackageResponse> orderPackage(
+    Map<String, dynamic> data,
+    File? images,
+  ) async {
     try {
-      final url = "$baseUrl/orders/store";
-
+      var url = "$baseUrl/orders/store";
       final response = await safeApiCall(() async {
         final token = await storage.read('token');
-        print(token);
-        return await http.post(
-          Uri.parse(url),
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
-          },
-          body: jsonEncode(data)
-        ).timeout(const Duration(seconds: 20));
+
+        var request = http.MultipartRequest('POST', Uri.parse(url))
+          ..headers['Authorization'] = 'Bearer $token';
+
+        data.forEach((key, value) {
+          // if (value != null && value.toString().isNotEmpty) {
+          //   request.fields[key] = value.toString();
+          // }
+          request.fields[key] = value.toString();
+        });
+
+        if (images != null) {
+          request.files.add(
+          await http.MultipartFile.fromPath('receipt_document', images.path),
+        );
+        }
+
+        final streamedResponse = await request.send().timeout(
+              const Duration(seconds: 20),
+            );
+
+        return await http.Response.fromStream(streamedResponse);
       });
-print(response.statusCode);
+
+      // final response = await safeApiCall(() async {
+      //   final token = await storage.read('token');
+      //   print(token);
+      //   return await http
+      //       .post(Uri.parse(url),
+      //           headers: {
+      //             'Content-Type': 'application/json',
+      //             'Authorization': 'Bearer $token',
+      //           },
+      //           body: jsonEncode(data))
+      //       .timeout(const Duration(seconds: 20));
+      // });
+      print(response.statusCode);
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
         return OrderPackageResponse.fromJson(data);
@@ -619,20 +651,21 @@ print(response.statusCode);
     }
   }
 
-  static Future<CancelOrderResponse> cancelOrder(Map<String,dynamic> data) async {
+  static Future<CancelOrderResponse> cancelOrder(
+      Map<String, dynamic> data) async {
     try {
       final url = "$baseUrl/orders/cancel";
 
       final response = await safeApiCall(() async {
         final token = await storage.read('token');
-        return await http.post(
-            Uri.parse(url),
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer $token',
-            },
-            body: jsonEncode(data)
-        ).timeout(const Duration(seconds: 20));
+        return await http
+            .post(Uri.parse(url),
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer $token',
+                },
+                body: jsonEncode(data))
+            .timeout(const Duration(seconds: 20));
       });
 
       if (response.statusCode == 200 || response.statusCode == 201) {
@@ -664,7 +697,7 @@ print(response.statusCode);
           },
         ).timeout(const Duration(seconds: 20));
       });
-print("Status code : ${response.statusCode}");
+      print("Status code : ${response.statusCode}");
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print(data);
@@ -740,7 +773,9 @@ print("Status code : ${response.statusCode}");
       throw 'Terjadi kesalahan saat mengambil data Get Notification.';
     }
   }
-  static Future<UpdateNotificationResponse> updateNotification(String id) async {
+
+  static Future<UpdateNotificationResponse> updateNotification(
+      String id) async {
     try {
       final url = "$baseUrl/notif/status/update?id=$id";
 
@@ -799,6 +834,4 @@ print("Status code : ${response.statusCode}");
       throw 'Terjadi kesalahan saat mengambil data Get Banner.';
     }
   }
-
-
 }

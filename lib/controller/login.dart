@@ -43,7 +43,7 @@ class LoginController extends GetxController {
     var password = controllerPassword.text.trim();
 
     var data = {
-      "phone_number": "+62${phoneNumber}",
+      "phone_number": phoneNumber,
       "password": password,
     };
 

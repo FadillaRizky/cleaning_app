@@ -162,6 +162,7 @@ class UploadBuktiTopup extends GetView<HomeController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(height: 10,),
                       Image.asset(
                         "assets/icon/bca.png",
                         height: 25,

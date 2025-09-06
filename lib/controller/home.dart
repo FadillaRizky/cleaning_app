@@ -87,7 +87,7 @@ class HomeController extends GetxController {
       }
       imageDocument.value = File(compressedFile!.path);
     } catch (e) {
-      print('Update Avatar Error: $e');
+      print('Upload Bukti Error: $e');
       SnackbarUtil.error("Terjadi kesalahan: $e");
     }
   }
@@ -126,8 +126,9 @@ class HomeController extends GetxController {
       isLoading.value = true;
 
       final response = await Api.getSaldo();
+      print(response.data!.totalBalance);
       if (response.status == true) {
-        amountSaldo.value = response.data!.totalBalance.toString() ?? "";
+        amountSaldo.value = response.data!.totalBalance == null ? "0" : response.data!.totalBalance.toString() ;
       }
     } catch (e) {
       print("gagal get saldo : $e");
@@ -182,10 +183,10 @@ class HomeController extends GetxController {
 
       final response = await Api.getBanner();
       if (response.status == true) {
-        // banner.value = response.data!
-        //     .where((item) => item.bannerStatus == "active")
-        //     .map<String>((item) => item.bannerPath.toString())
-        //     .toList();
+        banner.value = response.data!
+            .where((item) => item.bannerStatus == "active")
+            .map<String>((item) => item.bannerPath.toString())
+            .toList();
       }
     } catch (e) {
       print("gagal get banner : $e");

@@ -15,7 +15,7 @@ class NotificationPage extends GetView<NotificationController> {
     return Scaffold(
       key: const PageStorageKey('NotificationScaffold'),
       appBar: AppBar(
-        title: Text("Notification"),
+        title: Text("Notifikasi"),
       ),
       body: GetBuilder<NotificationController>(builder: (context) {
         return RefreshIndicator(
@@ -34,7 +34,7 @@ class NotificationPage extends GetView<NotificationController> {
                 } else if (snapshot.hasError) {
                   return Text('Error: ${snapshot.error}');
                 } else if (!snapshot.hasData || snapshot.data!.data!.isEmpty) {
-                  return const Text('No packages found.');
+                  return Center(child: const Text('Belum ada notifikasi.'));
                 }
                 var data = snapshot.data!.data!.reversed.toList();
                 return ListView.builder(

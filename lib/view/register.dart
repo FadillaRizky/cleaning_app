@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../controller/register.dart';
 import '../widget/glassmorphic_textfield.dart';
@@ -29,98 +30,150 @@ class RegisterPage extends GetView<RegisterController> {
                   "Sign Up",
                   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
                 ),
-                  Text(
-                    "Untuk memulai, kamu perlu membuat akun.",
-                    style: TextStyle(fontWeight: FontWeight.w500),
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  RegisterTextField(
-                    controller: controller.firstNameController,
-                    hint: "First Name",
-                    inputType: TextInputType.text,
-                  ),
-                  RegisterTextField(
-                    controller: controller.lastNameController,
-                    hint: "Last Name",
-                    inputType: TextInputType.text,
-                  ),
-                  PhoneTextField(
-                    controller: controller.phoneNumberController,
-                    hint: "Nomor Ponsel",
-                  ),
-                  RegisterTextField(
-                    controller: controller.emailController,
-                    hint: "Email",
-                    inputType: TextInputType.emailAddress,
-                  ),
-                  Obx(() {
-                    return RegisterTextField(
-                      controller: controller.passwordController,
-                      isShowPassword: controller.isPasswordVisible.value,
-                      hint: "Password",
-                      inputType: TextInputType.text,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          controller.isPasswordVisible.value
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Colors.black54,
-                        ),
-                        onPressed: () => controller.isPasswordVisible.toggle(),
+                Text(
+                  "Untuk memulai, kamu perlu membuat akun.",
+                  style: TextStyle(fontWeight: FontWeight.w500),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                RegisterTextField(
+                  controller: controller.firstNameController,
+                  hintText: 'Masukan Nama Depan',
+                  inputType: TextInputType.text,
+                ),
+                RegisterTextField(
+                  controller: controller.lastNameController,
+                  hintText: 'Masukan Nama Belakang',
+                  inputType: TextInputType.text,
+                ),
+                RegisterTextField(
+                  controller: controller.phoneNumberController,
+                  hintText: 'Masukan Nomor Hp',
+                  inputType: TextInputType.number,
+                ),
+                RegisterTextField(
+                  controller: controller.emailController,
+                  hintText: 'Masukan Email',
+                  inputType: TextInputType.emailAddress,
+                ),
+                Obx(() {
+                  return RegisterTextField(
+                    controller: controller.passwordController,
+                    hintText: 'Masukan Password',
+                    obscureText: !controller.isPasswordVisible.value,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        controller.isPasswordVisible.value
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Colors.black54,
                       ),
-                    );
-                  }),
-                  Obx(() {
-                    return RegisterTextField(
-                      controller: controller.confirmPasswordController,
-                      isShowPassword: controller.isConfirmPasswordVisible.value,
-                      hint: "Confirm Password",
-                      inputType: TextInputType.text,
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          controller.isConfirmPasswordVisible.value
-                              ? Icons.visibility
-                              : Icons.visibility_off,
-                          color: Colors.black54,
-                        ),
-                        onPressed: () =>
-                            controller.isConfirmPasswordVisible.toggle(),
+                      onPressed: () => controller.isPasswordVisible.toggle(),
+                    ),
+                  );
+                }),
+                Obx(() {
+                  return RegisterTextField(
+                    controller: controller.confirmPasswordController,
+                    hintText: 'Konfirmasi Password',
+                    obscureText: !controller.isConfirmPasswordVisible.value,
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        controller.isConfirmPasswordVisible.value
+                            ? Icons.visibility
+                            : Icons.visibility_off,
+                        color: Colors.black54,
                       ),
-                    );
-                  }),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Obx(() {
-                    return SizedBox(
-                      width: double.infinity,
-                      height: 45,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          controller.verifyRegister();
+                      onPressed: () =>
+                          controller.isConfirmPasswordVisible.toggle(),
+                    ),
+                  );
+                }),
+                SizedBox(
+                  height: 5,
+                ),
+                Row(
+                  children: [
+                    Obx(() {
+                      return Checkbox(
+                        value: controller.isAgree.value,
+                        onChanged: (value) {
+                          controller.isAgree.value = value ?? false;
                         },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          shape: RoundedRectangleBorder(
-                            borderRadius:
-                            BorderRadius.circular(50), // Rounded corners
-                          ), // Shadow color
-                        ),
-                        child: controller.isLoading.value
-                            ? CircularProgressIndicator(color: Colors.white)
-                            : Text(
-                          'Kirim OTP',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold, // Bold text
-                          ),
+                      );
+                    }),
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          style:
+                              TextStyle(fontSize: 11, color: Colors.grey[700]),
+                          children: [
+                            const TextSpan(text: "Saya menyetujui "),
+                            TextSpan(
+                              text: "Syarat & Ketentuan",
+                              style: const TextStyle(
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  // buka halaman S&K
+                                },
+                            ),
+                            const TextSpan(text: " dan "),
+                            TextSpan(
+                              text: "Kebijakan Privasi",
+                              style: const TextStyle(
+                                  color: Colors.blue,
+                                  decoration: TextDecoration.underline),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  // buka halaman Kebijakan Privasi
+                                },
+                            ),
+                          ],
                         ),
                       ),
-                    );
-                  }),
-                SizedBox(height: 20,),
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Obx(() {
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 45,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        controller.isAgree.value
+                            ? controller.verifyRegister()
+                            : null;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: controller.isAgree.value
+                            ? Colors.blue
+                            : Colors.grey,
+                        shape: RoundedRectangleBorder(
+                          borderRadius:
+                              BorderRadius.circular(50), // Rounded corners
+                        ), // Shadow color
+                      ),
+                      child: controller.isLoading.value
+                          ? CircularProgressIndicator(color: Colors.white)
+                          : Text(
+                              'Daftar',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold, // Bold text
+                              ),
+                            ),
+                    ),
+                  );
+                }),
+                SizedBox(
+                  height: 20,
+                ),
                 Center(
                   child: RichText(
                     textAlign: TextAlign.center,
@@ -154,147 +207,70 @@ class RegisterPage extends GetView<RegisterController> {
 }
 
 class RegisterTextField extends StatelessWidget {
-  final String hint;
-  final TextEditingController controller;
-  final TextInputType inputType;
-  final IconButton? suffixIcon;
-  final bool? isShowPassword;
+  final String hintText;
+  final TextEditingController? controller;
+  final TextInputType? inputType;
+  final bool obscureText;
+  final Widget? prefixIcon;
+  final Widget? suffixIcon;
 
-  const RegisterTextField(
-      {super.key,
-      required this.hint,
-      required this.controller,
-      required this.inputType,
-      this.suffixIcon, this.isShowPassword});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
-      child: TextField(
-        controller: controller,
-        obscureText: isShowPassword ?? false,
-        keyboardType: inputType,
-        style: const TextStyle(
-          color: Colors.black87,
-          fontSize: 15,
-        ),
-        decoration: InputDecoration(
-          suffixIcon: suffixIcon ?? null,
-          hintText: hint,
-          hintStyle: TextStyle(
-            color: Colors.black54,
-            fontSize: 13,
-          ),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(width: 1)),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 10,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class PhoneTextField extends StatelessWidget {
-  final String hint;
-  final TextEditingController controller;
-
-  const PhoneTextField(
-      {super.key,
-        required this.hint,
-        required this.controller});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 15),
-      child: TextField(
-        controller: controller,
-        // obscureText: obscureText,
-        keyboardType: TextInputType.number,
-        style: const TextStyle(
-          color: Colors.black87,
-          fontSize: 15,
-        ),
-        decoration: InputDecoration(
-          prefixIcon: Padding(
-            padding: const EdgeInsets.only(left: 12, right: 8),
-            child: Text(
-              '+62',
-              style: TextStyle(fontSize: 16),
-            ),
-          ),
-          hintText: hint,
-          hintStyle: TextStyle(
-            color: Colors.black54,
-            fontSize: 13,
-          ),
-          prefixIconConstraints: BoxConstraints(minWidth: 0, minHeight: 0),
-          border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10),
-              borderSide: BorderSide(width: 1)),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 10,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class RegisterField extends StatelessWidget {
-  final String label;
-  final TextEditingController controller;
-  final TextInputType inputType;
-  final Icon prefixIcon;
-  final IconButton? suffixIcon;
-
-  const RegisterField({
-    super.key,
-    required this.label,
-    required this.controller,
-    required this.inputType,
-    required this.prefixIcon,
+  const RegisterTextField({
+    Key? key,
+    required this.hintText,
+    this.controller,
+    this.obscureText = false,
+    this.prefixIcon,
     this.suffixIcon,
-  });
+    this.inputType,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        RichText(
-          text: TextSpan(
-            style: TextStyle(
-              color: Colors.black,
+        Text(hintText.replaceFirst("Masukan ", "")),
+        SizedBox(height: 5),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(35.r),
+            color: Colors.white,
+            border: Border.all(color: Colors.grey, width: 1),
+          ),
+          child: TextField(
+            controller: controller,
+            obscureText: obscureText,
+            keyboardType: inputType,
+            style: TextStyle(color: Colors.black87, fontSize: 43.sp),
+            //  inputFormatters: hintText == "Masukan Nomor Hp" ? [
+            //   RemoveLeadingZeroFormatter(),
+            //   FilteringTextInputFormatter.digitsOnly,
+            // ] : null ,
+            decoration: InputDecoration(
+              prefixIcon:
+                  prefixIcon != null
+                      ? Padding(
+                        padding: EdgeInsets.only(
+                          left: 15,
+                          right: 10,
+                          top: 10,
+                          bottom: 10,
+                        ),
+                        child: prefixIcon,
+                      )
+                      : null,
+              suffixIcon: suffixIcon,
+              hintText: hintText,
+              hintStyle: TextStyle(color: Colors.black54, fontSize: 36.sp),
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(
+                vertical: 14,
+                horizontal: 20,
+              ),
             ),
-            children: <TextSpan>[
-              TextSpan(text: '$label '),
-              TextSpan(
-                text: '*',
-                style: TextStyle(color: Colors.red),
-              )
-            ],
           ),
         ),
-        SizedBox(
-          height: 10,
-        ),
-        GlassmorphicTextField(
-          controller: controller,
-          hintText: 'Masukan $label',
-          inputType: inputType,
-          // prefixIcon: prefixIcon,
-          suffixIcon: suffixIcon,
-        ),
-        SizedBox(
-          height: 10,
-        ),
+        SizedBox(height: 8),
       ],
     );
   }

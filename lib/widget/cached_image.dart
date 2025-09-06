@@ -7,10 +7,12 @@ class CachedImage extends StatelessWidget {
   final double width;
   final double? iconHeight;
   const CachedImage({
-    super.key, required this.imgUrl, required this.height, required this.width, this.iconHeight = 60,
+    super.key,
+    required this.imgUrl,
+    required this.height,
+    required this.width,
+    this.iconHeight = 60,
   });
-
-  // final Data.Data data;
 
   @override
   Widget build(BuildContext context) {
@@ -19,17 +21,11 @@ class CachedImage extends StatelessWidget {
       fit: BoxFit.cover,
       height: height,
       width: width,
-      placeholder: (context,
-          url) =>
-          Center(
-            child: SizedBox(
-                height: 40,
-                width: 40,
-                child: const CircularProgressIndicator()),
-          ),
-      errorWidget:
-          (context, url, error) =>
-       Icon(
+      placeholder: (context, url) => Center(
+        child: SizedBox(
+            height: 40, width: 40, child: const CircularProgressIndicator()),
+      ),
+      errorWidget: (context, url, error) => Icon(
         Icons.image,
         size: iconHeight,
         color: Colors.grey,

@@ -59,7 +59,7 @@ class SnackbarUtil {
         icon: const Icon(
           LineIcons.timesCircle,
           size: 30,
-          color: Colors.redAccent,
+          color: Colors.white,
         ),
         backgroundColor: Colors.red[500],
         colorText: Colors.white,

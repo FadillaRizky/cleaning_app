@@ -47,7 +47,7 @@ class GlassmorphicTextField extends StatelessWidget {
           fontSize: 43.sp,
         ),
          inputFormatters: suffixIcon == null ? [
-          RemoveLeadingZeroFormatter(),
+          // RemoveLeadingZeroFormatter(),
           FilteringTextInputFormatter.digitsOnly,
         ] : null ,
         decoration: InputDecoration(

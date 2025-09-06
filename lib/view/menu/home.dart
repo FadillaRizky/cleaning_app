@@ -48,10 +48,31 @@ class Home extends GetView<HomeController> {
                           }
                         }, child: Obx(() {
                           return ClipOval(
-                            child: CachedImage(
-                                imgUrl: profileController.urlAvatar.value,
+                            child: CachedNetworkImage(
+                              imageUrl:  profileController.urlAvatar.value,
+                              fit: BoxFit.cover,
+                              height: 60,
+                              width: 60,
+                              placeholder: (context, url) => Center(
+                                child: SizedBox(
+                                  height: 40,
+                                  width: 40,
+                                  child: const CircularProgressIndicator(),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => Container(
+                                color: Colors
+                                    .grey[300], // biar ada background bulat
                                 height: 60,
-                                width: 60),
+                                width: 60,
+                                child: Icon(
+                                  Icons
+                                      .image, // ganti dengan avatar icon kalau mau
+                                  size: 60,
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
                           );
                         })),
                         SizedBox(
@@ -91,16 +112,18 @@ class Home extends GetView<HomeController> {
                                         controller.notifLength.value.toString(),
                                         style: TextStyle(color: Colors.white),
                                       ),
-                                      onTap: () {
-                                        Get.find<ControllerMenu>().goToTab(2);
-                                        print("asdasd");
-                                      },
                                       showBadge:
                                           controller.notifLength.value != 0,
-                                      child: Icon(
-                                        Icons.notifications_none,
-                                        color: Colors.black,
-                                        size: 26,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Get.find<ControllerMenu>().goToTab(2);
+                                          print("asdasd");
+                                        },
+                                        child: Icon(
+                                          Icons.notifications_none,
+                                          color: Colors.black,
+                                          size: 26,
+                                        ),
                                       ),
                                     );
                                   })
@@ -248,19 +271,19 @@ class Home extends GetView<HomeController> {
                           height: 8,
                         ),
                         Obx(() {
-                          return 
-                          controller.banner.isEmpty
-                         ? SizedBox.shrink()
-                         :  Container(
-                            child: Center(
-                              child: AnimatedSmoothIndicator(
-                                activeIndex: controller.currentIndex.value,
-                                count: controller.banner.length,
-                                effect: const WormEffect(
-                                    dotHeight: 10, dotWidth: 10),
-                              ),
-                            ),
-                          );
+                          return controller.banner.isEmpty
+                              ? SizedBox.shrink()
+                              : Container(
+                                  child: Center(
+                                    child: AnimatedSmoothIndicator(
+                                      activeIndex:
+                                          controller.currentIndex.value,
+                                      count: controller.banner.length,
+                                      effect: const WormEffect(
+                                          dotHeight: 10, dotWidth: 10),
+                                    ),
+                                  ),
+                                );
                         }),
                         const SizedBox(
                           height: 8,
@@ -524,7 +547,7 @@ class saldoSection extends StatelessWidget {
                 return SizedBox(
                   width: 100,
                   child: Text(
-                    saldoInt != 0 ? Utils.formatCurrency(saldoInt) : "Rp. -",
+                    saldoInt != 0 ? Utils.formatCurrency(saldoInt) : "Rp. 0",
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(color: Colors.white),
