@@ -6,7 +6,7 @@
     <application
     android:allowBackup="false"
     android:fullBackupContent="false"
-        android:label="cleaning_app"
+        android:label="Utilizes Go Cleaning"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         <activity

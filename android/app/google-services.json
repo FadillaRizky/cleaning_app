@@ -7,9 +7,28 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:277065975026:android:374c8d9c40125b75e57c6b",
+        "mobilesdk_app_id": "1:277065975026:android:e41c19ffd646ab13e57c6b",
         "android_client_info": {
-          "package_name": "com.example.cleaning_app"
+          "package_name": "com.example.cleaning_app_mitra"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3KJpjOC7Gw17KES7St96dWmQrfzO2BZQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:277065975026:android:e427b6005cf8b774e57c6b",
+        "android_client_info": {
+          "package_name": "com.utilizes.gocleaning"
         }
       },
       "oauth_client": [],

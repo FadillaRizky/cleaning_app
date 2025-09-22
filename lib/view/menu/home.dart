@@ -297,22 +297,22 @@ class Home extends GetView<HomeController> {
                             children: [
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.start,
                                 children: [
                                   const Text(
                                     "  DISCOVER SERVICES",
                                     style: TextStyle(fontSize: 16),
                                   ),
-                                  TextButton(
-                                      onPressed: () {},
-                                      child: const Text(
-                                        "Hide All",
-                                        style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          decorationColor: Colors.blue,
-                                          color: Colors.blue, // Text color
-                                        ),
-                                      ))
+                                  // TextButton(
+                                  //     onPressed: () {},
+                                  //     child: const Text(
+                                  //       "Hide All",
+                                  //       style: TextStyle(
+                                  //         decoration: TextDecoration.underline,
+                                  //         decorationColor: Colors.blue,
+                                  //         color: Colors.blue, // Text color
+                                  //       ),
+                                  //     ))
                                 ],
                               ),
                               FutureBuilder(
@@ -403,22 +403,22 @@ class Home extends GetView<HomeController> {
                             children: [
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.start,
                                 children: [
                                   const Text(
                                     "BEST SELLER SERVICES",
                                     style: TextStyle(fontSize: 16),
                                   ),
-                                  TextButton(
-                                      onPressed: () {},
-                                      child: const Text(
-                                        "Hide All",
-                                        style: TextStyle(
-                                          decoration: TextDecoration.underline,
-                                          decorationColor: Colors.blue,
-                                          color: Colors.blue, // Text color
-                                        ),
-                                      ))
+                                  // TextButton(
+                                  //     onPressed: () {},
+                                  //     child: const Text(
+                                  //       "Hide All",
+                                  //       style: TextStyle(
+                                  //         decoration: TextDecoration.underline,
+                                  //         decorationColor: Colors.blue,
+                                  //         color: Colors.blue, // Text color
+                                  //       ),
+                                  //     ))
                                 ],
                               ),
                               GridView.builder(
@@ -515,7 +515,7 @@ class saldoSection extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
             children: [
@@ -567,16 +567,16 @@ class saldoSection extends StatelessWidget {
                   )),
             ],
           ),
-          Row(
-            children: [
-              Icon(
-                Icons.star,
-                size: 22,
-                color: Colors.yellow,
-              ),
-              Text("1500 Point", style: TextStyle(color: Colors.white))
-            ],
-          )
+          // Row(
+          //   children: [
+          //     Icon(
+          //       Icons.star,
+          //       size: 22,
+          //       color: Colors.yellow,
+          //     ),
+          //     Text("1500 Point", style: TextStyle(color: Colors.white))
+          //   ],
+          // )
         ],
       ),
     );
