@@ -59,22 +59,22 @@ class CardSaldo extends GetView<HomeController> {
                     child: Icon(Icons.add_circle,color: Colors.white,size: 28,)),
                 SizedBox(width: 10,),
                 Expanded(child: Text("Top Up",style: TextStyle(color: Colors.white,fontWeight: FontWeight.w600,fontSize: 15))),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 10,vertical: 2),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.star,size: 18,color: Colors.yellow,),
-                      SizedBox(width: 5,),
-                      Text("$point points",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w600),),
-                      SizedBox(width: 10,),
-                      Icon(Icons.arrow_forward_ios,size: 18,color: Colors.blue,)
-                    ],
-                  ),
-                )
+                // Container(
+                //   padding: EdgeInsets.symmetric(horizontal: 10,vertical: 2),
+                //   decoration: BoxDecoration(
+                //     color: Colors.white,
+                //     borderRadius: BorderRadius.circular(20),
+                //   ),
+                //   child: Row(
+                //     children: [
+                //       Icon(Icons.star,size: 18,color: Colors.yellow,),
+                //       SizedBox(width: 5,),
+                //       Text("$point points",style: TextStyle(color: Colors.blue,fontWeight: FontWeight.w600),),
+                //       SizedBox(width: 10,),
+                //       Icon(Icons.arrow_forward_ios,size: 18,color: Colors.blue,)
+                //     ],
+                //   ),
+                // )
               ],
             )
           ],

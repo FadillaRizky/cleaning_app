@@ -9,12 +9,13 @@ import '../api.dart';
 import '../model/DetailOrderResponse.dart';
 
 class BookingController extends GetxController {
-  var selectedIndex = 0.obs;
+  var selectedIndex = 1.obs;
   var selectedStatus = "aktif".obs;
   var isLoading = false.obs;
   var listOrder = <Data.Data>[].obs;
 
   var status = <String>[
+    "Menunggu",
     "Aktif",
     "Completed",
     "Cancel",

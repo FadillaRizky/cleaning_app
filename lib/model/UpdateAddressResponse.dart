@@ -1,10 +1,10 @@
-class PropertyAddressResponse {
+class UpdateAddressResponse {
 final bool? status;
 final String? message;
-final List<Data>? data;
-const PropertyAddressResponse({this.status , this.message , this.data });
-PropertyAddressResponse copyWith({bool? status, String? message, List<Data>? data}){
-return PropertyAddressResponse(
+final Data? data;
+const UpdateAddressResponse({this.status , this.message , this.data });
+UpdateAddressResponse copyWith({bool? status, String? message, Data? data}){
+return UpdateAddressResponse(
             status:status ?? this.status,
 message:message ?? this.message,
 data:data ?? this.data
@@ -15,21 +15,21 @@ Map<String,Object?> toJson(){
     return {
             'status': status,
 'message': message,
-'data': data?.map<Map<String,dynamic>>((data)=> data.toJson()).toList()
+'data': data?.toJson()
     };
 }
 
-static PropertyAddressResponse fromJson(Map<String , Object?> json){
-    return PropertyAddressResponse(
+static UpdateAddressResponse fromJson(Map<String , Object?> json){
+    return UpdateAddressResponse(
             status:json['status'] == null ? null : json['status'] as bool,
 message:json['message'] == null ? null : json['message'] as String,
-data:json['data'] == null ? null : (json['data'] as List).map<Data>((data)=> Data.fromJson(data  as Map<String,Object?>)).toList()
+data:json['data'] == null ? null : Data.fromJson(json['data']  as Map<String,Object?>)
     );
 }
 
 @override
 String toString(){
-    return '''PropertyAddressResponse(
+    return '''UpdateAddressResponse(
                 status:$status,
 message:$message,
 data:${data.toString()}
@@ -38,7 +38,7 @@ data:${data.toString()}
 
 @override
 bool operator ==(Object other){
-    return other is PropertyAddressResponse && 
+    return other is UpdateAddressResponse && 
         other.runtimeType == runtimeType &&
         other.status == status && 
 other.message == message && 

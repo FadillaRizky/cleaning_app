@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/model/ListPackageResponse.dart' as Data;
 import 'package:cleaning_app/model/ObjectPackageResponse.dart';
+import 'package:cleaning_app/widget/count_number.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:readmore/readmore.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -27,7 +30,8 @@ class DetailCategory extends GetView<PackageController> {
     required this.description,
   });
   final CarouselSliderController _carouselController =
-  CarouselSliderController();
+      CarouselSliderController();
+  final ProfileController profileController = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +52,10 @@ class DetailCategory extends GetView<PackageController> {
                         carouselController: _carouselController,
                         itemCount: img_url.length,
                         itemBuilder: (context, index, realIndex) {
-                          return CachedImage(imgUrl: img_url[index], height: 200, width: double.infinity);
+                          return CachedImage(
+                              imgUrl: img_url[index],
+                              height: 200,
+                              width: double.infinity);
                         },
                         options: CarouselOptions(
                           viewportFraction: 1,
@@ -58,7 +65,6 @@ class DetailCategory extends GetView<PackageController> {
                           onPageChanged: (index, reason) {
                             controller.currentIndex.value = index;
                           },
-
                         ),
                       ),
                       Obx(() {
@@ -71,7 +77,11 @@ class DetailCategory extends GetView<PackageController> {
                               child: AnimatedSmoothIndicator(
                                 activeIndex: controller.currentIndex.value,
                                 count: img_url.length,
-                                effect: const WormEffect(dotHeight: 8, dotWidth: 8,activeDotColor: Colors.orange,dotColor: Colors.white),
+                                effect: const WormEffect(
+                                    dotHeight: 8,
+                                    dotWidth: 8,
+                                    activeDotColor: Colors.orange,
+                                    dotColor: Colors.white),
                               ),
                             ),
                           ),
@@ -80,7 +90,7 @@ class DetailCategory extends GetView<PackageController> {
                     ],
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(20,20,20,0),
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -88,6 +98,42 @@ class DetailCategory extends GetView<PackageController> {
                           title,
                           style: TextStyle(
                               fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(
+                          height: 8,
+                        ),
+                        profileController.hasVoucher.value != false
+                            ? Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 2),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: Colors.red.shade300, width: 1),
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      LineIcons.alternateTicket,
+                                      color: Colors.red,
+                                      size: 16,
+                                    ),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      "Voucher Member",
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        color: Colors.red.shade400,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : SizedBox.shrink(),
+                        SizedBox(
+                          height: 8,
                         ),
                         ReadMoreText(
                           description,
@@ -139,8 +185,8 @@ class DetailCategory extends GetView<PackageController> {
                                       title: "Jasa Borongan Cleaning",
                                       subtitle:
                                           "Tersedia pilihan jasa cleaning berdasarkan luas area, jumlah tenaga kerja, waktu pengerjaan atau jenis acara/kegiatan.",
+                                      discPercent: null,
                                       ontap: () {},
-                                      price: 0,
                                     ),
                                   ],
                                 ));
@@ -160,29 +206,35 @@ class DetailCategory extends GetView<PackageController> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
-                                            controller.selectPackageDeep[index] =
-                                                !controller
-                                                    .selectPackageDeep[index];
-                                            if (controller
-                                                .selectPackageDeep[index]) {
-                                              popupObjectPackage(context, data,
-                                                  () {
-                                                controller.selectPackageDeep[
-                                                    index] = false;
-                                              }, "tambah");
-                                            } else {
-                                              controller.resultDataObject
-                                                  .removeWhere((element) =>
-                                                      element["pack_id"] ==
-                                                      data.packId);
-                                            }
+                                            // controller
+                                            //         .selectPackageDeep[index] =
+                                            //     !controller
+                                            //         .selectPackageDeep[index];
+                                            // if (controller
+                                            //     .selectPackageDeep[index]) {
+                                            //   popupObjectPackage(context, data,
+                                            //       () {
+                                            //     controller.selectPackageDeep[
+                                            //         index] = false;
+                                            //   }, "tambah");
+                                            // } else {
+                                            //   controller.resultDataObject
+                                            //       .removeWhere((element) =>
+                                            //           element["pack_id"] ==
+                                            //           data.packId);
+                                            // }
                                           },
                                           child: Container(
-                                              padding: const EdgeInsets.fromLTRB(0,10,10,10),
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 10, 10, 10),
                                               decoration: BoxDecoration(
-                                                border: Border.all(color: Colors.grey.shade300),
-                                                borderRadius: BorderRadius.circular(12),
-                                                  ),
+                                                border: Border.all(
+                                                    color:
+                                                        Colors.grey.shade300),
+                                                borderRadius:
+                                                    BorderRadius.circular(12),
+                                              ),
                                               child: Row(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.center,
@@ -192,9 +244,13 @@ class DetailCategory extends GetView<PackageController> {
                                                         value: controller
                                                                 .selectPackageDeep[
                                                             index],
-                                                        activeColor: Colors.blue,
-                                                        side: BorderSide(color: Colors.grey[500]!),
-                                                        onChanged: (bool? value) {
+                                                        activeColor:
+                                                            Colors.blue,
+                                                        side: BorderSide(
+                                                            color: Colors
+                                                                .grey[500]!),
+                                                        onChanged:
+                                                            (bool? value) {
                                                           controller
                                                                   .selectPackageDeep[
                                                               index] = value!;
@@ -211,17 +267,64 @@ class DetailCategory extends GetView<PackageController> {
                                                           } else {
                                                             controller
                                                                 .resultDataObject
-                                                                .removeWhere((element) =>
-                                                                    element[
-                                                                        "pack_id"] ==
-                                                                    data.packId);
+                                                                .removeWhere(
+                                                                    (element) =>
+                                                                        element[
+                                                                            "pack_id"] ==
+                                                                        data.packId);
                                                           }
                                                         });
                                                   }),
-                                                  ClipRRect(
-                                                    borderRadius:
-                                                        BorderRadius.circular(8),
-                                                    child: CachedImage(imgUrl: data.packBannerPath ?? "",height: 70,width: 70,),
+                                                  Stack(
+                                                    children: [
+                                                      ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(8),
+                                                        child: CachedImage(
+                                                          imgUrl:
+                                                              data.packBannerPath ??
+                                                                  "",
+                                                          height: 70,
+                                                          width: 70,
+                                                        ),
+                                                      ),
+                                                      if (data.discPercentage !=
+                                                          null) // ✅ tambahkan flag promo dari model kamu
+                                                        Positioned(
+                                                          top: 4,
+                                                          left: 4,
+                                                          child: Container(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        6,
+                                                                    vertical:
+                                                                        2),
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: Colors
+                                                                  .redAccent,
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          6),
+                                                            ),
+                                                            child: const Text(
+                                                              "PROMO",
+                                                              style: TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 10,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                    ],
                                                   ),
                                                   SizedBox(
                                                     width: 14,
@@ -232,13 +335,40 @@ class DetailCategory extends GetView<PackageController> {
                                                           CrossAxisAlignment
                                                               .start,
                                                       children: [
-                                                        Text(
-                                                          data.packName! ?? "",
-                                                          style: TextStyle(
-                                                              fontSize: 17,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
+                                                        Row(
+                                                          children: [
+                                                            Text(
+                                                              data.packName! ??
+                                                                  "",
+                                                              style: TextStyle(
+                                                                  fontSize: 17,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                            SizedBox(
+                                                              width: 5,
+                                                            ),
+                                                            (data.packCategory != "Daily Cleaning" )
+                                                                ? GestureDetector(
+                                                                    onTap: () {
+                                                                      Get.toNamed(
+                                                                          "/package_description",
+                                                                          arguments: {
+                                                                            'globalDesc':
+                                                                                data.packGlobalDescription
+                                                                          });
+                                                                    },
+                                                                    child: Icon(
+                                                                      Icons
+                                                                          .info,
+                                                                      color: Colors
+                                                                          .grey,
+                                                                      size: 15,
+                                                                    ))
+                                                                : SizedBox
+                                                                    .shrink()
+                                                          ],
                                                         ),
                                                         Obx(() {
                                                           final count = controller
@@ -266,12 +396,7 @@ class DetailCategory extends GetView<PackageController> {
                                                                           height:
                                                                               25,
                                                                           child: ElevatedButton(
-                                                                              style: ElevatedButton.styleFrom(
-                                                                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                                                                                  backgroundColor: Colors.blue,
-                                                                                  foregroundColor: Colors.white,
-                                                                                  textStyle: TextStyle(fontSize: 12)),
+                                                                              style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)), backgroundColor: Colors.blue, foregroundColor: Colors.white, textStyle: TextStyle(fontSize: 12)),
                                                                               onPressed: () {
                                                                                 popupObjectPackage(context, data, () {
                                                                                   controller.selectPackageDeep[index] = false;
@@ -293,23 +418,31 @@ class DetailCategory extends GetView<PackageController> {
                                                                         Text(
                                                                           "Total Harga",
                                                                           style: TextStyle(
-                                                                              fontSize:
-                                                                                  12,
-                                                                              fontWeight:
-                                                                                  FontWeight.bold),
+                                                                              fontSize: 12,
+                                                                              fontWeight: FontWeight.bold),
                                                                         ),
                                                                         Text(
                                                                           Utils.formatCurrency(
                                                                               controller.amountPriceperPackage(data.packId!)),
-                                                                          style: TextStyle(
-                                                                              fontWeight:
-                                                                                  FontWeight.bold),
+                                                                          style:
+                                                                              TextStyle(fontWeight: FontWeight.bold),
                                                                         ),
                                                                       ],
                                                                     )
                                                                   ],
                                                                 )
-                                                              : Text("(ketuk untuk memilih paket)",style: TextStyle(fontStyle: FontStyle.italic,color: Colors.grey[500]!),);
+                                                              : SizedBox
+                                                                  .shrink();
+                                                          // : Text(
+                                                          //     "(ketuk untuk memilih paket)",
+                                                          //     style: TextStyle(
+                                                          //         fontStyle:
+                                                          //             FontStyle
+                                                          //                 .italic,
+                                                          //         color: Colors
+                                                          //                 .grey[
+                                                          //             500]!),
+                                                          //   );
                                                         }),
                                                       ],
                                                     ),
@@ -317,7 +450,9 @@ class DetailCategory extends GetView<PackageController> {
                                                 ],
                                               )),
                                         ),
-                                        SizedBox(height: 10,)
+                                        SizedBox(
+                                          height: 10,
+                                        )
                                       ],
                                     );
                                   } else {
@@ -325,18 +460,21 @@ class DetailCategory extends GetView<PackageController> {
                                       imgPath: snapshot.data!.data![index]
                                               .packBannerPath ??
                                           "",
-                                      title:
-                                          snapshot.data!.data![index].packName ??
-                                              "-",
+                                      title: snapshot
+                                              .data!.data![index].packName ??
+                                          "-",
                                       subtitle: snapshot.data!.data![index]
                                           .packGlobalDescription!,
-                                      price: snapshot.data!.data![index].packPrice
-                                              ?.toInt() ??
-                                          0,
+                                      discPercent: snapshot.data!.data![index]
+                                              .discPercentage ??
+                                          0.0,
                                       ontap: () {
-                                        print(controller.selectedPackageId.value);
+                                        print(
+                                            controller.selectedPackageId.value);
                                         controller.category.value = title;
-                                        controller.selectedPackageId.value = snapshot.data!.data![index].packId!.toString();
+                                        controller.selectedPackageId.value =
+                                            snapshot.data!.data![index].packId!
+                                                .toString();
                                         Get.toNamed(
                                           '/detail-daily',
                                           arguments: {
@@ -345,6 +483,10 @@ class DetailCategory extends GetView<PackageController> {
                                                 .toString(),
                                             'title': snapshot
                                                 .data!.data![index].packName!,
+                                            'discPercent': snapshot
+                                                .data!
+                                                .data![index]
+                                                .discPercentage, // biarkan null
                                           },
                                         );
                                       },
@@ -367,29 +509,90 @@ class DetailCategory extends GetView<PackageController> {
                   margin: const EdgeInsets.only(bottom: 15),
                   decoration: BoxDecoration(
                     color: Color(0xfff4f4f4),
+                    // color: Colors.transparent,
                   ),
                   child: Obx(() {
+                    int normalTotal = 0;
                     int total = 0;
+                    int qty = 0;
                     for (var pack in controller.resultDataObject) {
                       final objects = pack["data_object"] as List;
+
                       for (var obj in objects) {
-                        total += obj["object_price"] as int;
+                        final price = obj["object_price"] as int;
+                        final normalPrice = obj["object_normal_price"] as int;
+                        final amount = obj["object_amount"] as int;
+
+                        total += price * amount;
+                        normalTotal += normalPrice * amount;
+                        qty += amount;
                       }
                     }
+                    bool hasDiscount = controller.resultDataObject
+                        .any((pack) => pack["pack_disc"] != 0);
                     return Column(
                       children: [
                         controller.resultDataObject.isNotEmpty
                             ? Column(
                                 children: [
+                                  (profileController.hasVoucher.value ||
+                                          hasDiscount)
+                                      ? Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "Subtotal",
+                                                  style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
+                                                ),
+                                                Text(
+                                                    Utils.formatCurrency(
+                                                        normalTotal),
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  "${profileController.hasVoucher.value ? "Voucher Member" : ""}"
+                                                  "${profileController.hasVoucher.value && hasDiscount ? " + " : ""}"
+                                                  "${hasDiscount ? "Promo" : ""}",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                      color: Colors.red),
+                                                ),
+                                                Text(
+                                                    "- ${Utils.formatCurrency(normalTotal - total)}",
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.bold)),
+                                              ],
+                                            ),
+                                          ],
+                                        )
+                                      : SizedBox.shrink(),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Total Pesanan",
+                                        "Total",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.grey),
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
                                       Text(Utils.formatCurrency(total),
                                           style: TextStyle(
@@ -402,17 +605,33 @@ class DetailCategory extends GetView<PackageController> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
-                                        "Biaya Layanan",
+                                        "Qty",
                                         style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: Colors.grey),
+                                          fontWeight: FontWeight.w500,
+                                        ),
                                       ),
-                                      Text("Rp 2.000",
+                                      Text("$qty Item",
                                           style: TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold)),
                                     ],
                                   ),
+                                  // Row(
+                                  //   mainAxisAlignment:
+                                  //       MainAxisAlignment.spaceBetween,
+                                  //   children: [
+                                  //     Text(
+                                  //       "Biaya Layanan",
+                                  //       style: TextStyle(
+                                  //           fontWeight: FontWeight.w600,
+                                  //           color: Colors.grey),
+                                  //     ),
+                                  //     Text("Rp 2.000",
+                                  //         style: TextStyle(
+                                  //             fontSize: 14,
+                                  //             fontWeight: FontWeight.bold)),
+                                  //   ],
+                                  // ),
                                   // Row(
                                   //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   //   children: [
@@ -433,21 +652,21 @@ class DetailCategory extends GetView<PackageController> {
                                   //             color: Colors.red)),
                                   //   ],
                                   // ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Total",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                      Text(Utils.formatCurrency(total + 2000),
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
+                                  // Row(
+                                  //   mainAxisAlignment:
+                                  //       MainAxisAlignment.spaceBetween,
+                                  //   children: [
+                                  //     Text(
+                                  //       "Total",
+                                  //       style: TextStyle(
+                                  //           fontWeight: FontWeight.w600),
+                                  //     ),
+                                  //     Text(Utils.formatCurrency(total + 2000),
+                                  //         style: TextStyle(
+                                  //             fontSize: 16,
+                                  //             fontWeight: FontWeight.bold)),
+                                  //   ],
+                                  // ),
                                   SizedBox(
                                     height: 10,
                                   ),
@@ -591,8 +810,12 @@ class DetailCategory extends GetView<PackageController> {
                                                 options[index].objectId,
                                             "object_name":
                                                 options[index].objectName,
+                                            "object_normal_price":
+                                                options[index].objectPrice,
                                             "object_price":
                                                 options[index].objectPriceDisc,
+                                            "object_amount": controller
+                                                .amountObjectPackage[index],
                                           });
                                         } else {
                                           controller.tempDataObject.removeWhere(
@@ -622,9 +845,15 @@ class DetailCategory extends GetView<PackageController> {
                                                     "object_name":
                                                         options[index]
                                                             .objectName,
+                                                    "object_normal_price":
+                                                        options[index]
+                                                            .objectPrice,
                                                     "object_price":
                                                         options[index]
                                                             .objectPriceDisc,
+                                                    "object_amount": controller
+                                                            .amountObjectPackage[
+                                                        index],
                                                   });
                                                 } else {
                                                   controller.tempDataObject
@@ -664,12 +893,178 @@ class DetailCategory extends GetView<PackageController> {
                                               ],
                                             ),
                                           ),
-                                          SizedBox(width: 3,),
+                                          SizedBox(
+                                            width: 3,
+                                          ),
                                           Column(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.end,
                                             children: [
-                                              Text(Utils.formatCurrency(options[index].objectPriceDisc!)),
-                                              Text(Utils.formatCurrency(options[index].objectPrice!),style: TextStyle(fontSize: 12 ,decoration: TextDecoration.lineThrough,)),
+                                              (options[index].objectPriceDisc !=
+                                                      options[index]
+                                                          .objectPrice)
+                                                  ? Column(
+                                                      children: [
+                                                        Text(Utils.formatCurrency(
+                                                            options[index]
+                                                                .objectPriceDisc!)),
+                                                        Text(
+                                                            Utils.formatCurrency(
+                                                                options[index]
+                                                                    .objectPrice!),
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                              decoration:
+                                                                  TextDecoration
+                                                                      .lineThrough,
+                                                            )),
+                                                      ],
+                                                    )
+                                                  : Text(
+                                                      Utils.formatCurrency(
+                                                          options[index]
+                                                              .objectPrice!),
+                                                    ),
+                                              SizedBox(
+                                                height: 10,
+                                              ),
+                                              Obx(() {
+                                                return controller
+                                                            .selectObjectPackage[
+                                                        index]
+                                                    ? Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          InkWell(
+                                                            onTap: () {
+                                                              if (controller
+                                                                          .amountObjectPackage[
+                                                                      index] !=
+                                                                  1) {
+                                                                controller
+                                                                        .amountObjectPackage[
+                                                                    index]--;
+                                                                controller.updateObjectAmount(
+                                                                    options[index]
+                                                                        .objectId!
+                                                                        .toInt(),
+                                                                    controller
+                                                                            .amountObjectPackage[
+                                                                        index]);
+                                                              }
+                                                            },
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: 20,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                border: Border.all(
+                                                                    width: 1,
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .primary),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            100),
+                                                              ),
+                                                              child:
+                                                                  const Center(
+                                                                child: Icon(
+                                                                  Icons.remove,
+                                                                  size: 15,
+                                                                  color: Colors
+                                                                      .black,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 10),
+                                                          Container(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    horizontal:
+                                                                        10,
+                                                                    vertical:
+                                                                        5),
+                                                            alignment: Alignment
+                                                                .center,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          5),
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .colorScheme
+                                                                  .surface,
+                                                            ),
+                                                            child: Text(
+                                                                controller
+                                                                    .amountObjectPackage[
+                                                                        index]
+                                                                    .toString(),
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        12)),
+                                                          ),
+                                                          const SizedBox(
+                                                              width: 10),
+                                                          InkWell(
+                                                            onTap: () {
+                                                              controller
+                                                                      .amountObjectPackage[
+                                                                  index]++;
+                                                              controller.updateObjectAmount(
+                                                                  options[index]
+                                                                      .objectId!
+                                                                      .toInt(),
+                                                                  controller
+                                                                          .amountObjectPackage[
+                                                                      index]);
+                                                            },
+                                                            child: Container(
+                                                              height: 20,
+                                                              width: 20,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                border: Border.all(
+                                                                    width: 1,
+                                                                    color: Theme.of(
+                                                                            context)
+                                                                        .colorScheme
+                                                                        .primary),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            100),
+                                                              ),
+                                                              child:
+                                                                  const Center(
+                                                                child: Icon(
+                                                                  Icons.add,
+                                                                  size: 15,
+                                                                  color: Colors
+                                                                      .black,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      )
+                                                    : SizedBox.shrink();
+                                              })
                                             ],
                                           ),
                                         ],
@@ -697,7 +1092,8 @@ class DetailCategory extends GetView<PackageController> {
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text("Total Item"),
-                                      Text(controller.tempDataObject.length
+                                      Text(controller
+                                          .amountObjectQty()
                                           .toString()),
                                     ],
                                   ),
@@ -716,14 +1112,19 @@ class DetailCategory extends GetView<PackageController> {
                                             backgroundColor: Colors.blue,
                                             foregroundColor: Colors.white),
                                         onPressed: () {
+                                          // print(
+                                          //     "hasil : ${controller.tempDataObject}");
                                           controller.addResultDataObject(
-                                              data.packId!.toInt(),
-                                              data.packName ?? "",
-                                              data.packBannerPath ?? "",
-                                              controller.tempDataObject
-                                                  .toList());
-                                          print(controller.tempDataObject);
+                                            data.packId!.toInt(),
+                                            data.packName ?? "",
+                                            data.packBannerPath ?? "",
+                                            (data.discPercentage as num?)
+                                                    ?.toDouble() ??
+                                                0.0, // ✅ aman untuk int, double, null
+                                            controller.tempDataObject.toList(),
+                                          );
                                           controller.tempDataObject.clear();
+
                                           Get.back();
                                         },
                                         child: Text("Simpan")),
@@ -753,5 +1154,3 @@ class DetailCategory extends GetView<PackageController> {
     );
   }
 }
-
-

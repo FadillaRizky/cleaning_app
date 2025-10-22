@@ -93,12 +93,6 @@ class InfoSaldo extends GetView<HomeController> {
                     ),
                   );
           
-                  //   ListTile(
-                  //   title: Text((item.tractionType! == "EXPENSE") ? "Transaksi" : "Top Up" ),
-                  //   subtitle: Text("${(item.tractionType == "EXPENSE" ? "-" : "")} ${Utils.formatCurrency(item.tractionNominal!)}"),
-                  // trailing: Text(Utils.formatTanggal(item.tractionDate!)),
-                  //
-                  // );
                 },
               );
             },

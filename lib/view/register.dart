@@ -38,6 +38,12 @@ class RegisterPage extends GetView<RegisterController> {
                   height: 30,
                 ),
                 RegisterTextField(
+                  controller: controller.referalCodeController,
+                  hintText: 'Masukan Kode Referal',
+                  inputType: TextInputType.text,
+                  isOptional: true,
+                ),
+                RegisterTextField(
                   controller: controller.firstNameController,
                   hintText: 'Masukan Nama Depan',
                   inputType: TextInputType.text,
@@ -117,7 +123,7 @@ class RegisterPage extends GetView<RegisterController> {
                                   decoration: TextDecoration.underline),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  // buka halaman S&K
+                                   Get.toNamed("/syarat_ketentuan");
                                 },
                             ),
                             const TextSpan(text: " dan "),
@@ -128,7 +134,7 @@ class RegisterPage extends GetView<RegisterController> {
                                   decoration: TextDecoration.underline),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  // buka halaman Kebijakan Privasi
+                                   Get.toNamed("/privacy_policy");
                                 },
                             ),
                           ],
@@ -213,6 +219,7 @@ class RegisterTextField extends StatelessWidget {
   final bool obscureText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final bool? isOptional;
 
   const RegisterTextField({
     Key? key,
@@ -222,6 +229,7 @@ class RegisterTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.inputType,
+    this.isOptional = false,
   }) : super(key: key);
 
   @override
@@ -229,7 +237,15 @@ class RegisterTextField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(hintText.replaceFirst("Masukan ", "")),
+        Row(
+          children: [
+            Text(hintText.replaceFirst("Masukan ", "")),
+            SizedBox(width: 5,),
+            (isOptional == true)
+            ?Text("(opsional)",style: TextStyle(fontSize: 12,color: Colors.grey),)
+            : Text("*",style: TextStyle(fontSize: 12,color: Colors.red),)
+          ],
+        ),
         SizedBox(height: 5),
         Container(
           decoration: BoxDecoration(

@@ -18,6 +18,7 @@ import 'package:cleaning_app/model/PropertyAddressResponse.dart';
 import 'package:cleaning_app/model/RefreshTokenResponse.dart';
 import 'package:cleaning_app/model/RegisterResponse.dart';
 import 'package:cleaning_app/model/StoreAddressResponse.dart';
+import 'package:cleaning_app/model/UpdateAddressResponse.dart';
 import 'package:cleaning_app/model/UpdatePhotoProfileResponse.dart';
 import 'package:cleaning_app/model/UploadBuktiTopupResponse.dart';
 import 'package:get_storage/get_storage.dart';
@@ -361,13 +362,45 @@ class Api {
         return StoreAddressResponse.fromJson(data);
       } else {
         final errorData = jsonDecode(response.body);
-        throw 'Gagal request Address: ${errorData['message'] ?? 'Unknown error'}';
+        throw 'Gagal store Address: ${errorData['message'] ?? 'Unknown error'}';
       }
     } on TimeoutException {
       throw 'Request Time Out. Silakan periksa koneksi Anda.';
     } catch (e) {
-      print('Error Get Address Package: $e');
-      throw 'Terjadi kesalahan saat mengambil data Address Package.';
+      print('Error Store Address: $e');
+      throw 'Terjadi kesalahan saat kirim data Address.';
+    }
+  }
+
+  static Future<StoreAddressResponse> updateAddress(
+      Map<String, dynamic> data) async {
+    try {
+      final url = "$baseUrl/client/property/update";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http
+            .put(Uri.parse(url),
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer $token',
+                },
+                body: jsonEncode(data))
+            .timeout(const Duration(seconds: 20));
+      });
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return StoreAddressResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Update Address: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Update Address: $e');
+      throw 'Terjadi kesalahan saat update data Address.';
     }
   }
 
@@ -434,6 +467,7 @@ class Api {
       throw Exception("Failed to update issue: $e");
     }
   }
+  
 
   static Future<UpdateDetailUserResponse> updateDetailUser(
       Map<String, String> dataUser) async {
@@ -617,7 +651,7 @@ class Api {
       throw 'Request Time Out. Silakan periksa koneksi Anda.';
     } catch (e) {
       print('Error Order package: $e');
-      throw 'Terjadi kesalahan saat Order package.';
+      throw 'Terjadi kesalahan saat Order package : $e';
     }
   }
 
@@ -697,7 +731,7 @@ class Api {
           },
         ).timeout(const Duration(seconds: 20));
       });
-      print("Status code : ${response.statusCode}");
+      print("Status code 2: ${response.statusCode}");
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         print(data);
@@ -709,7 +743,7 @@ class Api {
     } on TimeoutException {
       throw 'Request Time Out. Silakan periksa koneksi Anda.';
     } catch (e) {
-      print('Error Get Saldo: $e');
+      print('Error Get Detail Order: $e');
       throw 'Terjadi kesalahan saat mengambil data Get Detail Order.';
     }
   }

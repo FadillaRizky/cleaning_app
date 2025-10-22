@@ -24,6 +24,8 @@ class AlamatController extends GetxController {
   var longLocation = "".obs;
   var idAddress = "".obs;
 
+  var isDefaultAddress = false.obs;
+
   var isLoading = false.obs;
   final mapController = MapController();
   var pickedLocation = Rxn<LatLng>(
@@ -39,10 +41,11 @@ class AlamatController extends GetxController {
   }
 
   resetForm() {
+    isDefaultAddress.value = false;
     nameController.clear();
     phoneNumberController.clear();
     detailAddressController.clear();
-    selectedProperty.value == "";
+    selectedProperty.value = "";
     detailLocation.value = "";
     specificLocation.value = "";
     latlongLocation.value = "";
@@ -51,68 +54,75 @@ class AlamatController extends GetxController {
     pickedLocation.value = LatLng(-6.1754, 106.8272);
   }
 
-    Future<bool> checkLocationPermission(loc.Location location) async {
-      bool serviceEnabled = await location.serviceEnabled();
+  Future<bool> checkLocationPermission(loc.Location location) async {
+    bool serviceEnabled = await location.serviceEnabled();
+
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+
+      await Future.delayed(Duration(seconds: 1));
+      serviceEnabled = await location.serviceEnabled();
 
       if (!serviceEnabled) {
-        serviceEnabled = await location.requestService();
-
-        await Future.delayed(Duration(seconds: 1));
-        serviceEnabled = await location.serviceEnabled();
-
-        if (!serviceEnabled) {
-          return false;
-        }
-      }
-
-      var permissionGranted = await location.hasPermission();
-      if (permissionGranted == loc.PermissionStatus.denied) {
-        permissionGranted = await location.requestPermission();
-        if (permissionGranted != loc.PermissionStatus.granted) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-
-    getDetailLocation(LatLng latLng) async {
-      try {
-        List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
-          latLng.latitude,
-          latLng.longitude,
-        );
-
-        if (placemarks.isNotEmpty) {
-          final place = placemarks.first;
-          final provinsi = place.administrativeArea; // Provinsi
-          final kabupaten = place.subAdministrativeArea; // Kabupaten / Kota
-          final kecamatan = place.locality ?? place.subLocality; // Kecamatan
-          final kelurahan = place.subLocality ?? place.name; // Kelurahan/Desa fallback ke name
-
-          detailLocation.value = "$provinsi, $kabupaten, $kecamatan, $kelurahan";
-          specificLocation.value = kelurahan!;
-        }
-      } catch (e) {
-        print('Error: $e');
+        return false;
       }
     }
 
-  Future<void> storeAddress(Map<String, dynamic> data) async {
+    var permissionGranted = await location.hasPermission();
+    if (permissionGranted == loc.PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != loc.PermissionStatus.granted) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  getDetailLocation(LatLng latLng) async {
+    try {
+      List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
+        latLng.latitude,
+        latLng.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        final place = placemarks.first;
+        final provinsi = place.administrativeArea; // Provinsi
+        final kabupaten = place.subAdministrativeArea; // Kabupaten / Kota
+        final kecamatan = place.locality ?? place.subLocality; // Kecamatan
+        final kelurahan =
+            place.subLocality ?? place.name; // Kelurahan/Desa fallback ke name
+
+        detailLocation.value = "$provinsi, $kabupaten, $kecamatan, $kelurahan";
+        specificLocation.value = kelurahan!;
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+ 
+  Future<void> fetchAddress(Map<String, dynamic> data, bool isDetail) async {
     try {
       EasyLoading.show();
-      var response = await Api.storeAddress(data);
+      final response = isDetail
+        ? await Api.updateAddress(data)
+        : await Api.storeAddress(data);
+
       if (response.status == true) {
-        Get.back(result: 'refresh');
-        EasyLoading.showSuccess("Berhasil Menambahkan Alamat");
+        
+        EasyLoading.showSuccess("Berhasil ${isDetail ? "Mengubah" : "Menambahkan"} Alamat");
         resetForm();
+        Get.back(result: 'refresh');
+        
       } else {
-        EasyLoading.showError("Gagal kirim data");
+        EasyLoading.showError("Gagal ${isDetail ? "update" : "kirim"} data");
       }
     } catch (e, stackTrace) {
       print("Error: $e");
       print("StackTrace: $stackTrace");
-      EasyLoading.showError("Gagal kirim data: $e");
+      EasyLoading.showError("Gagal ${isDetail ? "update" : "kirim"} data: $e");
     } finally {
       EasyLoading.dismiss();
     }
@@ -160,6 +170,7 @@ class AlamatController extends GetxController {
     double lng = double.parse(data.long ?? "0");
     pickedLocation.value = LatLng(lat, lng);
     idAddress.value = data.id.toString();
+    isDefaultAddress.value = data.isDefault == "1" ? true : false;
   }
 
   @override

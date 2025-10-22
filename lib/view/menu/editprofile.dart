@@ -6,9 +6,6 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditProfile extends GetView<ProfileController> {
-
-
-
   void _showPicker(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -42,144 +39,146 @@ class EditProfile extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Edit Profile'),
-        centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Get.back(result: 'refresh');
-          },
+    return WillPopScope(
+      onWillPop: ()async {
+        Get.back(result: 'refresh');
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Edit Profile'),
+          centerTitle: true,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Get.back(result: 'refresh');
+            },
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Profile picture
-              Obx(() {
-                return Center(
-                  child: Stack(
-                    children: [
-                      GestureDetector(
-                        onTap: (){
-                          showDialog(
-                            context: context,
-                            barrierColor: Colors.black12,
-                            builder: (_) =>
-                                Dialog(
-                                  backgroundColor: Colors.transparent,
-                                  elevation: 10,
-                                  child: CircleAvatar(
-                                    radius: 100,
-                                    child: AvatarCircle(
-                                      imageUrl: controller.urlAvatar.value,
-                                      size: 200,
-                                    ),
-                                  ),
-                                ),
-                          );
-                        },
-                        child: CircleAvatar(
-                            radius: 60,
-                            backgroundColor: Colors.grey[200],
-                            child: ClipOval(
-                              child: SizedBox(
-                                width: 120,
-                                height: 120,
-                                child: CachedNetworkImage(
-                                  imageUrl: controller.urlAvatar.value,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) =>
-                                  const CircularProgressIndicator(),
-                                  errorWidget: (context, url, error) =>
-                                  const Icon(
-                                    Icons.person,
-                                    size: 60,
-                                    color: Colors.grey,
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Profile picture
+                Obx(() {
+                  return Center(
+                    child: Stack(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              barrierColor: Colors.black12,
+                              builder: (_) => Dialog(
+                                backgroundColor: Colors.transparent,
+                                elevation: 10,
+                                child: CircleAvatar(
+                                  radius: 100,
+                                  child: AvatarCircle(
+                                    imageUrl: controller.urlAvatar.value,
+                                    size: 200,
                                   ),
                                 ),
                               ),
-                            )
+                            );
+                          },
+                          child: CircleAvatar(
+                              radius: 60,
+                              backgroundColor: Colors.grey[200],
+                              child: ClipOval(
+                                child: SizedBox(
+                                  width: 120,
+                                  height: 120,
+                                  child: CachedNetworkImage(
+                                    imageUrl: controller.urlAvatar.value,
+                                    fit: BoxFit.cover,
+                                    placeholder: (context, url) =>
+                                        const CircularProgressIndicator(),
+                                    errorWidget: (context, url, error) =>
+                                        const Icon(
+                                      Icons.person,
+                                      size: 60,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              )),
                         ),
-                      ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: Container(
-                          height: 40,
-                          width: 40,
-                          decoration: BoxDecoration(
-                            color: Theme
-                                .of(context)
-                                .primaryColor,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: IconButton(
-                            icon: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 20,
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            height: 40,
+                            width: 40,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(20),
                             ),
-                            onPressed: () => _showPicker(context),
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.camera_alt,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              onPressed: () => _showPicker(context),
+                            ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                );
-              }),
-              const SizedBox(height: 30),
-
-              ProfileTextField(
-                controller: controller.firstNameController,
-                hint: "first name",
-                label: "First Name",
-                inputType: TextInputType.text,
-              ),
-              ProfileTextField(
-                controller: controller.lastNameController,
-                hint: "last name",
-                label: "Last Name",
-                inputType: TextInputType.text,
-              ),
-              ProfileTextField(
-                controller: controller.emailController,
-                hint: "example@gmail.com",
-                label: "Email",
-                inputType: TextInputType.emailAddress,
-              ),
-              ProfileTextField(
-                controller: controller.ktpAddressController,
-                hint: "Alamat",
-                label: "Alamat",
-                inputType: TextInputType.text,
-              ),
-
-              Spacer(),
-
-              // Save Button
-              Obx(() {
-                return SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: controller.isLoading.value
-                        ? null
-                        : () => controller.updateDetailUser(),
-                    child: const Text(
-                      'Save Profile',
-                      style: TextStyle(fontSize: 16),
+                      ],
                     ),
-                  ),
-                );
-              }),
-              const SizedBox(height: 16),
-            ],
+                  );
+                }),
+                const SizedBox(height: 30),
+
+                ProfileTextField(
+                  controller: controller.firstNameController,
+                  hint: "first name",
+                  label: "First Name",
+                  inputType: TextInputType.text,
+                ),
+                ProfileTextField(
+                  controller: controller.lastNameController,
+                  hint: "last name",
+                  label: "Last Name",
+                  inputType: TextInputType.text,
+                ),
+                ProfileTextField(
+                  controller: controller.emailController,
+                  hint: "example@gmail.com",
+                  label: "Email",
+                  inputType: TextInputType.emailAddress,
+                ),
+                ProfileTextField(
+                  controller: controller.ktpAddressController,
+                  hint: "Alamat",
+                  label: "Alamat",
+                  inputType: TextInputType.text,
+                ),
+
+                Spacer(),
+
+                // Save Button
+                Obx(() {
+                  return SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ElevatedButton(
+                      onPressed: controller.isLoading.value
+                          ? null
+                          : () => controller.updateDetailUser(),
+                      child: const Text(
+                        'Save Profile',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  );
+                }),
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),
@@ -200,7 +199,9 @@ class ProfileTextField extends StatelessWidget {
     required this.label,
     required this.hint,
     required this.inputType,
-    required this.controller, this.readOnly, this.ontap,
+    required this.controller,
+    this.readOnly,
+    this.ontap,
   });
 
   @override
@@ -217,7 +218,12 @@ class ProfileTextField extends StatelessWidget {
               fontWeight: FontWeight.bold,
               fontSize: 13,
             ),
-            suffixIcon: readOnly != null ? Icon(Icons.calendar_month_rounded,color: Colors.grey,) : null,
+            suffixIcon: readOnly != null
+                ? Icon(
+                    Icons.calendar_month_rounded,
+                    color: Colors.grey,
+                  )
+                : null,
             hintStyle: TextStyle(
               color: Colors.grey,
               // fontSize: 14,

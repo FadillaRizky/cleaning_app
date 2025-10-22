@@ -126,7 +126,7 @@ class DaftarAlamat extends GetView<AlamatController> {
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold)),
                                     SizedBox(width: 8),
-                                    index == 0
+                                    snapshot.data!.data![index].isDefault == "1"
                                         ? Container(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 8, vertical: 2),
@@ -199,6 +199,13 @@ class TambahAlamat extends GetView<AlamatController> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Alamat"),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Get.back();
+            controller.resetForm();
+          },
+        ),
       ),
       body: Column(
         children: [
@@ -243,7 +250,7 @@ class TambahAlamat extends GetView<AlamatController> {
                                   urlTemplate:
                                       'https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.png?key=jgR9RzmD0bqJ3JFDMu0u',
                                   additionalOptions: {
-                                    'key': 'jgR9RzmD0bqJ3JFDMu0u',
+                                    'key': '1gNKYIfx6aHHTUGgvDgW',
                                   },
                                   userAgentPackageName: 'com.example.myapp',
                                 ),
@@ -400,42 +407,60 @@ class TambahAlamat extends GetView<AlamatController> {
                       children: [
                         FieldAlamat(
                             label: "Nama",
-                            controller: controller.nameController,
-                            readOnly: isDetail),
+                            controller: controller.nameController,),
                         FieldAlamat(
                           label: "Nomor Telepon",
                           controller: controller.phoneNumberController,
                           keyboardType: TextInputType.number,
-                          readOnly: isDetail,
                         ),
                         FieldAlamat(
                           label: "Detail Alamat (Nama Jalan / No Rumah)",
                           controller: controller.detailAddressController,
-                          readOnly: isDetail,
                         ),
                         Obx(() {
                           return DropdownButtonFormField<String>(
                               decoration: InputDecoration(
                                 labelText: 'Type Property',
-                                labelStyle: TextStyle(color: Colors.grey),
+                                labelStyle: TextStyle(color: Colors.black),
                                 border: InputBorder.none,
                               ),
                               value: controller.selectedProperty.value == ''
                                   ? null
                                   : controller.selectedProperty.value,
                               style:
-                                  TextStyle(color: Colors.grey, fontSize: 15),
+                                  TextStyle(color: Colors.black, fontSize: 15),
                               items: controller.typeProperty.map((property) {
                                 return DropdownMenuItem<String>(
                                   value: property,
                                   child: Text(property),
                                 );
                               }).toList(),
-                              onChanged: !isDetail
-                                  ? (val) =>
-                                      controller.selectedProperty.value = val!
-                                  : null);
+                              onChanged: (val) =>
+                                      controller.selectedProperty.value = val!);
                         }),
+                        Obx(() {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "Jadikan Alamat Utama",
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color:
+                                        Colors.black),
+                              ),
+                              Switch(
+                                value: controller.isDefaultAddress.value,
+                                activeColor: Colors.blue,
+                                inactiveThumbColor: Colors.grey,
+                                onChanged:(value) {
+                                        controller.isDefaultAddress.value =
+                                            !controller.isDefaultAddress.value;
+                                      },
+                              ),
+                            ],
+                          );
+                        })
                       ],
                     ),
                   ),
@@ -449,205 +474,76 @@ class TambahAlamat extends GetView<AlamatController> {
           Container(
             padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(color: Colors.white),
-            child: (data != "detail-alamat")
-                ? SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white),
-                      onPressed: () async {
-                        if (controller.nameController.text.isEmpty) {
-                          EasyLoading.showError("Nama Kosong");
-                          return;
-                        }
-                        if (controller.phoneNumberController.text.isEmpty) {
-                          EasyLoading.showError("Nomor Telepon Kosong");
-                          return;
-                        }
-                        if (controller.detailAddressController.text.isEmpty) {
-                          EasyLoading.showError("Detail Alamat Kosong");
-                          return;
-                        }
-                        if (controller.selectedProperty.value == "") {
-                          EasyLoading.showError("Type Property Kosong");
-                          return;
-                        }
-                        if (controller.latlongLocation.value.isEmpty) {
-                          EasyLoading.showError("Silahkan Pilih Titik Lokasi");
-                          return;
-                        }
-
-                        var data = {
-                          "pic_name": controller.nameController.text,
-                          "pic_phone": controller.phoneNumberController.text,
-                          "property_type": controller.selectedProperty.value,
-                          "lat": controller.latLocation.value,
-                          "long": controller.longLocation.value,
-                          "property_address": controller.detailLocation.value,
-                          "description": controller.detailAddressController.text
-                        };
-                        controller.storeAddress(data);
-                      },
-                      child: Text("Simpan"),
-                    ))
-                : SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white),
-                        onPressed: () {
-                          var data = {"id": controller.idAddress.value};
-                          controller.deleteAddress(data);
-                        },
-                        child: Text("Hapus Alamat")),
-                  ),
+            child: Column(
+              children: [
+                SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              foregroundColor: Colors.white),
+                          onPressed: () async {
+                            if (controller.nameController.text.isEmpty) {
+                              EasyLoading.showError("Nama Kosong");
+                              return;
+                            }
+                            if (controller.phoneNumberController.text.isEmpty) {
+                              EasyLoading.showError("Nomor Telepon Kosong");
+                              return;
+                            }
+                            if (controller.detailAddressController.text.isEmpty) {
+                              EasyLoading.showError("Detail Alamat Kosong");
+                              return;
+                            }
+                            if (controller.selectedProperty.value == "") {
+                              EasyLoading.showError("Type Property Kosong");
+                              return;
+                            }
+                            if (controller.latlongLocation.value.isEmpty) {
+                              EasyLoading.showError("Silahkan Pilih Titik Lokasi");
+                              return;
+                            }
+                
+                            var data = {
+                              "pic_name": controller.nameController.text,
+                              "pic_phone": controller.phoneNumberController.text,
+                              "property_type": controller.selectedProperty.value,
+                              "lat": controller.latLocation.value,
+                              "long": controller.longLocation.value,
+                              "property_address": controller.detailLocation.value,
+                              "description":
+                                  controller.detailAddressController.text,
+                              "is_default":
+                                  controller.isDefaultAddress.value ? "1" : "0"
+                            };
+                            if (isDetail) {
+                               data["id"] = controller.idAddress.value;
+                            }
+                            controller.fetchAddress(data,isDetail);
+                          },
+                          child: Text("Simpan"),
+                        )),
+                    (isDetail)
+                    ?  SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.red,
+                                foregroundColor: Colors.white),
+                            onPressed: () {
+                              var data = {"id": controller.idAddress.value};
+                              controller.deleteAddress(data);
+                            },
+                            child: Text("Hapus Alamat")),
+                      )
+                      : SizedBox.shrink()
+              ],
+            ),
           )
         ],
       ),
     );
   }
-
-  // Future<dynamic> buildDialogLocation(BuildContext context) {
-  //   return showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return WillPopScope(
-  //         onWillPop: () async => !controller.isLoading.value,
-  //         child: Dialog(
-  //           shape: RoundedRectangleBorder(
-  //             borderRadius: BorderRadius.circular(15),
-  //           ),
-  //           elevation: 0,
-  //           backgroundColor: Colors.transparent,
-  //           child: Column(
-  //             mainAxisAlignment: MainAxisAlignment.center,
-  //             mainAxisSize: MainAxisSize.min,
-  //             children: [
-  //               Container(
-  //                 height: 400,
-  //                 // Set the height of the map inside the dialog
-  //                 decoration: BoxDecoration(
-  //                   color: Colors.white,
-  //                   borderRadius: BorderRadius.circular(15),
-  //                 ),
-  //                 child: FlutterMap(
-  //                   mapController: controller.mapController,
-  //                   options: MapOptions(
-  //                     initialCenter: LatLng(-6.1754, 106.8272),
-  //                     initialZoom: 13,
-  //                     onTap: (tapPosition, latLng) {
-  //                       controller.pickedLocation.value = latLng;
-  //                       controller.latlongLocation.value =
-  //                           "${latLng.latitude} , ${latLng.longitude}";
-  //                       controller.latLocation.value =
-  //                           latLng.latitude.toString();
-  //                       controller.longLocation.value =
-  //                           latLng.longitude.toString();
-  //                       controller.getDetailLocation(latLng);
-  //                     },
-  //                   ),
-  //                   children: [
-  //                     TileLayer(
-  //                       urlTemplate:
-  //                           'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png?key=b3e1d25f-8792-4ae7-a599-a93a01e9b84b',
-  //                       additionalOptions: {
-  //                         'key': 'b3e1d25f-8792-4ae7-a599-a93a01e9b84b',
-  //                       },
-  //                       userAgentPackageName: 'com.example.myapp',
-  //                     ),
-  //                     Obx(() {
-  //                       final loc = controller.pickedLocation.value;
-  //                       if (loc != null) {
-  //                         // Centerkan map ke lokasi baru
-  //                         Future.microtask(() {
-  //                           controller.mapController
-  //                               .move(loc, 15); // Zoom 15 (atau sesuaikan)
-  //                         });
-  //                       }
-
-  //                       return MarkerLayer(
-  //                         markers: loc != null
-  //                             ? [
-  //                                 Marker(
-  //                                   point: loc,
-  //                                   width: 40,
-  //                                   height: 40,
-  //                                   child: Icon(Icons.location_on,
-  //                                       color: Colors.red, size: 40),
-  //                                 )
-  //                               ]
-  //                             : [],
-  //                       );
-  //                     }),
-  //                   ],
-  //                 ),
-  //               ),
-  //               SizedBox(
-  //                 height: 5,
-  //               ),
-  //               SizedBox(
-  //                   width: double.infinity,
-  //                   child: ElevatedButton(onPressed: () async {
-  //                     controller.isLoading.value = true;
-
-  //                     final location = Location();
-  //                     final hasPermission =
-  //                         await controller.checkLocationPermission(location);
-  //                     if (!hasPermission) {
-  //                       controller.isLoading.value = false;
-  //                       return;
-  //                     }
-
-  //                     try {
-  //                       final currentLocation = await location.getLocation();
-
-  //                       if (currentLocation.latitude == null ||
-  //                           currentLocation.longitude == null) {
-  //                         throw Exception('Latitude or Longitude is null.');
-  //                       }
-
-  //                       final lat = currentLocation.latitude!;
-  //                       final lng = currentLocation.longitude!;
-
-  //                       final latLng = LatLng(lat, lng);
-  //                       controller.pickedLocation.value = latLng;
-  //                       controller.latlongLocation.value = '$lat,$lng';
-  //                       controller.latLocation.value = lat.toString();
-  //                       controller.longLocation.value = lng.toString();
-
-  //                       await controller.getDetailLocation(latLng);
-  //                     } catch (e) {
-  //                       print('Error getting location: $e');
-  //                       controller.isLoading.value = false;
-  //                       return;
-  //                     } finally {
-  //                       controller.isLoading.value = false;
-  //                     }
-  //                   }, child: Obx(() {
-  //                     return controller.isLoading.value
-  //                         ? CircularProgressIndicator()
-  //                         : Text("Gunakan lokasi saat ini");
-  //                   }))),
-  //               SizedBox(
-  //                   width: double.infinity,
-  //                   child: ElevatedButton(
-  //                     style: ElevatedButton.styleFrom(
-  //                         backgroundColor: Colors.blue,
-  //                         foregroundColor: Colors.white),
-  //                     onPressed: () async {
-  //                       Get.back();
-  //                     },
-  //                     child: Text("Simpan"),
-  //                   ))
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 }
 
 class FieldAlamat extends StatelessWidget {
@@ -682,7 +578,7 @@ class FieldAlamat extends StatelessWidget {
         style: TextStyle(fontSize: 15, color: Colors.grey),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(fontSize: 15, color: Colors.grey),
+          labelStyle: TextStyle(fontSize: 15, color: Colors.black),
           suffixIcon: isCurrentLocation ? Icon(Icons.arrow_forward_ios) : null,
           border: InputBorder.none,
           focusedBorder:

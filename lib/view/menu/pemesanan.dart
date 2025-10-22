@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleaning_app/controller/home.dart';
 import 'package:cleaning_app/controller/package.dart';
+import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/model/PropertyAddressResponse.dart';
+import 'package:cleaning_app/view/menu/voucher.dart';
 import 'package:cleaning_app/widget/popup.dart';
 import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:day_night_time_picker/lib/state/time.dart';
@@ -16,6 +18,7 @@ import '../../widget/utils.dart';
 class Pemesanan extends GetView<PemesananController> {
   PackageController packController = Get.put(PackageController());
   HomeController homeController = Get.put(HomeController());
+  ProfileController profileController = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -63,14 +66,19 @@ class Pemesanan extends GetView<PemesananController> {
                               return Text('Error: ${snapshot.error}');
                             } else if (snapshot.hasData &&
                                 snapshot.data!.data!.isNotEmpty) {
-                              controller.picName.value =
-                                  snapshot.data!.data!.first.picName!;
-                              controller.propertyAddress.value =
-                                  snapshot.data!.data!.first.propertyAddress!;
-                              controller.propertyId.value =
-                                  snapshot.data!.data!.first.id.toString();
-                              controller.selectedProperty.value =
-                                  snapshot.data!.data!.first.id!.toInt();
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                final data = snapshot.data!.data!.first;
+                                controller.picName.value = data.picName!;
+                                controller.propertyAddress.value =
+                                    data.propertyAddress!;
+                                controller.propertyId.value =
+                                    data.id.toString();
+                                controller.propertyType.value =
+                                    data.propertyType.toString();
+                                controller.selectedProperty.value =
+                                    data.id!.toInt();
+                              });
+
                               return Container(
                                 padding: EdgeInsets.all(10),
                                 decoration: BoxDecoration(
@@ -82,8 +90,8 @@ class Pemesanan extends GetView<PemesananController> {
                                     Text(
                                       "Alamat",
                                       style: TextStyle(
-                                          fontSize: 17,
-                                          fontWeight: FontWeight.bold),
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600),
                                     ),
                                     Divider(),
                                     Obx(() {
@@ -106,138 +114,7 @@ class Pemesanan extends GetView<PemesananController> {
                                                     Colors.transparent),
                                           ),
                                           onPressed: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return Dialog(
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10.0), // Sudut membulat
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            15),
-                                                    child: Column(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
-                                                      children: [
-                                                        // Title for the dialog
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                              'Pilih Alamat',
-                                                              style: TextStyle(
-                                                                  fontSize: 18),
-                                                            ),
-                                                          ],
-                                                        ),
-
-                                                        SizedBox(height: 10),
-
-                                                        // ListView.builder for displaying the addresses
-                                                        SizedBox(
-                                                          height: 200,
-                                                          // Set the height of the list view
-                                                          child:
-                                                              ListView.builder(
-                                                            itemCount: snapshot
-                                                                .data!
-                                                                .data!
-                                                                .length,
-                                                            itemBuilder:
-                                                                (context,
-                                                                    index) {
-                                                              return Obx(() {
-                                                                return ListTile(
-                                                                  contentPadding:
-                                                                      EdgeInsets.only(
-                                                                          left:
-                                                                              5,
-                                                                          right:
-                                                                              0),
-                                                                  leading: Icon(
-                                                                      Icons
-                                                                          .home),
-                                                                  title: Text(
-                                                                    snapshot
-                                                                        .data!
-                                                                        .data![
-                                                                            index]
-                                                                        .picName!,
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            13),
-                                                                  ),
-                                                                  subtitle:
-                                                                      Text(
-                                                                    snapshot
-                                                                        .data!
-                                                                        .data![
-                                                                            index]
-                                                                        .propertyAddress!,
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            12),
-                                                                  ),
-                                                                  trailing:
-                                                                      Radio(
-                                                                          value: snapshot
-                                                                              .data!
-                                                                              .data![
-                                                                                  index]
-                                                                              .id,
-                                                                          groupValue: controller
-                                                                              .selectedProperty
-                                                                              .value,
-                                                                          onChanged:
-                                                                              (value) {
-                                                                            controller.selectedProperty.value =
-                                                                                value!.toInt();
-                                                                            controller.picName.value =
-                                                                                snapshot.data!.data![index].picName!;
-                                                                            controller.propertyAddress.value =
-                                                                                snapshot.data!.data![index].propertyAddress!;
-                                                                            controller.propertyId.value =
-                                                                                snapshot.data!.data![index].id.toString();
-                                                                          }),
-                                                                );
-                                                              });
-                                                            },
-                                                          ),
-                                                        ),
-
-                                                        // Button to close the dialog
-                                                        SizedBox(height: 20),
-                                                        SizedBox(
-                                                            width:
-                                                                double.infinity,
-                                                            child:
-                                                                ElevatedButton(
-                                                                    style: ElevatedButton.styleFrom(
-                                                                        backgroundColor:
-                                                                            Colors
-                                                                                .blue,
-                                                                        foregroundColor:
-                                                                            Colors
-                                                                                .white,
-                                                                        shape: RoundedRectangleBorder(
-                                                                            borderRadius: BorderRadius.circular(
-                                                                                10))),
-                                                                    onPressed:
-                                                                        () {
-                                                                      Navigator.pop(
-                                                                          context);
-                                                                    },
-                                                                    child: Text(
-                                                                        "Simpan")))
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
+                                            selectAddress(context, snapshot);
                                           },
                                           child: Text("Ubah"),
                                         ),
@@ -309,11 +186,11 @@ class Pemesanan extends GetView<PemesananController> {
                         children: [
                           Text("Pesanan Anda",
                               style: TextStyle(
-                                  fontSize: 17, fontWeight: FontWeight.bold)),
+                                  fontSize: 16, fontWeight: FontWeight.w600)),
                           Divider(),
                           Text(packController.category.value,
                               style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold)),
+                                  fontSize: 14, fontWeight: FontWeight.bold)),
                           SizedBox(
                             height: 10,
                           ),
@@ -330,64 +207,148 @@ class Pemesanan extends GetView<PemesananController> {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(8),
-                                              child: CachedNetworkImage(
-                                                imageUrl: packController
-                                                        .resultDataObject[index]
-                                                    ['pack_img'],
-                                                fit: BoxFit.cover,
-                                                height: 70,
-                                                width: 70,
-                                                placeholder: (context, url) =>
-                                                    const CircularProgressIndicator(),
-                                                errorWidget:
-                                                    (context, url, error) =>
-                                                        const Icon(
-                                                  Icons.person,
-                                                  size: 60,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 15,
-                                            ),
-                                            Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                            Stack(
                                               children: [
-                                                Text(
-                                                  packController
-                                                          .resultDataObject[
-                                                      index]['pack_name'],
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold),
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                  child: CachedNetworkImage(
+                                                    imageUrl: packController
+                                                            .resultDataObject[
+                                                        index]['pack_img'],
+                                                    fit: BoxFit.cover,
+                                                    height: 70,
+                                                    width: 70,
+                                                    placeholder: (context,
+                                                            url) =>
+                                                        const CircularProgressIndicator(),
+                                                    errorWidget:
+                                                        (context, url, error) =>
+                                                            const Icon(
+                                                      Icons.person,
+                                                      size: 60,
+                                                      color: Colors.grey,
+                                                    ),
+                                                  ),
                                                 ),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: packController
-                                                      .resultDataObject[index]
-                                                          ["data_object"]
-                                                      .map<Widget>((item) {
-                                                    return Text(
-                                                        "\u2022 ${item['object_name']}");
-                                                  }).toList(),
-                                                ),
+                                                if (packController
+                                                            .resultDataObject[
+                                                        index]['pack_disc'] !=
+                                                    0)
+                                                  Positioned(
+                                                    top: 4,
+                                                    left: 4,
+                                                    child: Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                        horizontal: 6,
+                                                        vertical: 2,
+                                                      ),
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.redAccent,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(6),
+                                                      ),
+                                                      child: Text(
+                                                        "- ${packController.resultDataObject[index]['pack_disc']} %",
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 10,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
                                               ],
+                                            ),
+                                            const SizedBox(width: 15),
+                                            // Gunakan Expanded di sini agar teks bisa wrap
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Flexible(
+                                                        child: Text(
+                                                          packController
+                                                                  .resultDataObject[
+                                                              index]['pack_name'],
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                          softWrap: true,
+                                                          overflow: TextOverflow
+                                                              .visible,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(width: 8),
+                                                      if (packController
+                                                                  .resultDataObject[
+                                                              index]['pack_disc'] !=
+                                                          0)
+                                                        Row(
+                                                          children: const [
+                                                            Icon(
+                                                              LineIcons
+                                                                  .alternateTicket,
+                                                              color: Colors.red,
+                                                              size: 13,
+                                                              weight: 10,
+                                                            ),
+                                                            SizedBox(width: 3),
+                                                            Text(
+                                                              "Dengan Promo",
+                                                              style: TextStyle(
+                                                                fontSize: 10,
+                                                                color:
+                                                                    Colors.red,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                    ],
+                                                  ),
+                                                  Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: packController
+                                                        .resultDataObject[index]
+                                                            ["data_object"]
+                                                        .map<Widget>((item) {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(top: 2),
+                                                        child: Text(
+                                                          "\u2022 ${item['object_name']}    x ${item['object_amount']}",
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 13),
+                                                          softWrap: true,
+                                                          overflow: TextOverflow
+                                                              .visible,
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
-                                        SizedBox(
-                                          height: 10,
-                                        )
+                                        const SizedBox(height: 10),
                                       ],
                                     );
-                                  })
+                                  },
+                                )
                               : Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -452,6 +413,67 @@ class Pemesanan extends GetView<PemesananController> {
                     SizedBox(
                       height: 10,
                     ),
+                    GestureDetector(
+                      onTap: () {
+                        voucherModal(context);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Icon(
+                                  LineIcons.alternateTicket,
+                                  color: Colors.red,
+                                  size: 18,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  "Voucher Anda",
+                                  style: TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                (profileController.hasVoucher.value)
+                                    ? Container(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 7, vertical: 0),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.red.shade300,
+                                              width: 1),
+                                          // borderRadius: BorderRadius.circular(4),
+                                        ),
+                                        child: Text(
+                                          "- ${profileController.valueVoucher.value} %",
+                                          style: TextStyle(
+                                              fontSize: 11, color: Colors.red),
+                                        ))
+                                    : SizedBox.shrink(),
+                                Icon(
+                                  Icons.arrow_right,
+                                  color: Colors.grey,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     Container(
                       padding: EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -460,130 +482,56 @@ class Pemesanan extends GetView<PemesananController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            height: 10,
-                          ),
                           Text(
-                            "Pilih Metode Pembayaran",
+                            "Metode Pembayaran",
                             style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
+                                fontSize: 15, fontWeight: FontWeight.w600),
                           ),
                           Divider(),
-                          Obx(() {
-                            String saldoString =
-                                homeController.amountSaldo.value;
-                            int saldoInt = int.tryParse(saldoString) ?? 0;
-                            return GestureDetector(
-                              onTap: () {
-                                showModalBottomSheet(
-                                  context: context,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(16)),
-                                  ),
-                                  builder: (_) {
-                                    return SafeArea(
-                                      child: Wrap(
-                                        children: [
-                                          ListTile(
-                                            leading: Icon(
-                                                Icons.account_balance_wallet,
-                                                color: Colors.green),
-                                            title: Text("Saldo"),
-                                            trailing: Text(
-                                                Utils.formatCurrency(saldoInt),
-                                                style: TextStyle(
-                                                    fontSize: 14,
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.blue)),
-                                            onTap: () {
-                                              controller.selectedPayment.value =
-                                                  "Saldo";
-                                              Get.back();
-                                            },
-                                          ),
-                                          ListTile(
-                                            leading: Icon(Icons.qr_code_2,
-                                                color: Colors.blue),
-                                            title: Text("QRIS"),
-                                            onTap: () {
-                                              controller.selectedPayment.value =
-                                                  "QRIS";
-                                              Get.back();
-                                            },
-                                          ),
-                                          // ListTile(
-                                          //   leading: Icon(Icons.monetization_on,
-                                          //       color: Colors.blue),
-                                          //   title: Text("Bayar Tunai ke Mitra"),
-                                          //   onTap: () {
-                                          //     controller.selectedPayment.value =
-                                          //         "Bayar Tunai ke Mitra";
-                                          //     Get.back();
-                                          //   },
-                                          // ),
-                                          ListTile(
-                                            leading: Icon(Icons.account_balance,
-                                                color: Colors.orange),
-                                            title: Text("Bank Transfer"),
-                                            onTap: () {
-                                              controller.selectedPayment.value =
-                                                  "Bank Transfer";
-                                              Get.back();
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 14),
-                                decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.grey.shade400),
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      controller.selectedPayment.value.isEmpty
-                                          ? "Belum dipilih"
-                                          : controller.selectedPayment.value,
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                    Icon(Icons.arrow_drop_down,
-                                        color: Colors.black54),
-                                  ],
-                                ),
-                              ),
-                            );
-                          }),
-                          SizedBox(
-                            height: 10,
+                          RadioPayment(
+                            controller: controller,
+                            value: 'Saldo',
+                            title: "Saldo",
+                            icon: Icons.account_balance_wallet,
                           ),
+                          RadioPayment(
+                            controller: controller,
+                            value: 'QRIS',
+                            title: "QRIS",
+                            icon: Icons.qr_code,
+                          ),
+                          RadioPayment(
+                            controller: controller,
+                            value: 'Bank Transfer',
+                            title: "Bank Transfer",
+                            icon: Icons.account_balance,
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            "Pilih Waktu Layanan",
+                            "Waktu Layanan",
                             style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
+                                fontSize: 15, fontWeight: FontWeight.w600),
                           ),
                           Divider(),
-                          Text(
-                            "Tanggal",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black54),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
                           TextField(
                             controller: controller.dateController,
+                            style: TextStyle(fontSize: 15),
                             decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 2, horizontal: 10),
                               hintText: "Pilih Tanggal",
                               hintStyle: TextStyle(
                                 color: Colors.grey,
@@ -591,6 +539,7 @@ class Pemesanan extends GetView<PemesananController> {
                               suffixIcon: Icon(
                                 Icons.calendar_month_rounded,
                                 color: Colors.grey,
+                                size: 23,
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide:
@@ -618,18 +567,12 @@ class Pemesanan extends GetView<PemesananController> {
                           SizedBox(
                             height: 10,
                           ),
-                          Text(
-                            "Waktu",
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black54),
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
                           TextField(
                             controller: controller.timeController,
+                            style: TextStyle(fontSize: 15),
                             decoration: InputDecoration(
+                              contentPadding: EdgeInsets.symmetric(
+                                  vertical: 2, horizontal: 10),
                               hintText: "Pilih Waktu",
                               hintStyle: TextStyle(
                                 color: Colors.grey,
@@ -637,6 +580,7 @@ class Pemesanan extends GetView<PemesananController> {
                               suffixIcon: Icon(
                                 Icons.access_time_outlined,
                                 color: Colors.grey,
+                                size: 23,
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderSide:
@@ -658,53 +602,37 @@ class Pemesanan extends GetView<PemesananController> {
                             ),
                             readOnly: true,
                             onTap: () {
-                              // controller.selectTime(context);
-                              Navigator.push(
-                                  context,
-                                  showPicker(
-                                    context: context,
-                                    value:
-                                        Time(hour: 11, minute: 30, second: 20),
-                                    sunrise: TimeOfDay(hour: 6, minute: 0),
-                                    // optional
-                                    sunset: TimeOfDay(hour: 18, minute: 0),
-                                    // optional
-                                    is24HrFormat: true,
-                                    duskSpanInMinutes: 120,
-                                    // optional
-                                    minHour: 8,
-                                    maxHour: 18,
-                                    onChange: (time) {
-                                      String formattedTimeUI =
-                                          '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
-                                      String formattedTimeData =
-                                          '${time.hour.toString().padLeft(2, '0')}:'
-                                          '${time.minute.toString().padLeft(2, '0')}:00';
-                                      controller.timeController.text =
-                                          formattedTimeUI;
-                                      controller.timeText.value =
-                                          formattedTimeData;
-                                    },
-                                  ));
+                              controller.selectTime(context);
                             },
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      padding: EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
                           Text(
-                            "Catatan",
+                            "Tambahan",
                             style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
+                                fontSize: 15, fontWeight: FontWeight.bold),
                           ),
                           Divider(),
                           TextField(
                             maxLines: 3,
                             controller: controller.noteController,
+                            style: TextStyle(fontSize: 15),
                             decoration: InputDecoration(
                               hintText: "Catatan (Opsional)",
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
-                              ),
+                              hintStyle:
+                                  TextStyle(color: Colors.grey, fontSize: 15),
                               focusedBorder: OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.grey, width: 1),
@@ -728,12 +656,6 @@ class Pemesanan extends GetView<PemesananController> {
                             height: 10,
                           ),
                           Text(
-                            "Tambahan",
-                            style: TextStyle(
-                                fontSize: 17, fontWeight: FontWeight.bold),
-                          ),
-                          Divider(),
-                          Text(
                             "Gender Mitra",
                             style: TextStyle(
                                 fontWeight: FontWeight.w600,
@@ -746,7 +668,10 @@ class Pemesanan extends GetView<PemesananController> {
                             return DropdownButtonFormField<String>(
                               decoration: InputDecoration(
                                 hintText: 'Pilih',
-                                hintStyle: TextStyle(color: Colors.grey),
+                                hintStyle:
+                                    TextStyle(color: Colors.red, fontSize: 15),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 2, horizontal: 10),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Colors.grey, width: 1),
@@ -771,7 +696,7 @@ class Pemesanan extends GetView<PemesananController> {
                                   : controller.selectedGender.value,
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 16,
+                                fontSize: 15,
                               ),
                               items: controller.genderMitra.map((fruit) {
                                 return DropdownMenuItem<String>(
@@ -808,12 +733,25 @@ class Pemesanan extends GetView<PemesananController> {
               child: Obx(() {
                 String saldoString = homeController.amountSaldo.value;
                 int saldoInt = int.tryParse(saldoString) ?? 0;
+
+                bool hasDiscount = packController.resultDataObject
+                    .any((pack) => pack["pack_disc"] != 0);
+
+                int normalTotal = 0;
                 int total = 0;
+
                 if (packController.category.value != "Daily Cleaning") {
                   for (var pack in packController.resultDataObject) {
-                    final objects = pack["data_object"] as List;
+                    final objects = pack["data_object"] as List? ?? [];
+
                     for (var obj in objects) {
-                      total += obj["object_price"] as int;
+                      final int amount = (obj["object_amount"] ?? 0) as int;
+                      final int price = (obj["object_price"] ?? 0) as int;
+                      final int normalPrice =
+                          (obj["object_normal_price"] ?? 0) as int;
+
+                      total += price * amount;
+                      normalTotal += normalPrice * amount;
                     }
                   }
                 }
@@ -824,47 +762,52 @@ class Pemesanan extends GetView<PemesananController> {
                             packController.selectedPriceDuration.isNotEmpty
                         ? Column(
                             children: [
-                              controller.selectedPayment.value == "Saldo"
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Saldo",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.blue),
-                                        ),
-                                        Text(Utils.formatCurrency(saldoInt),
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.blue)),
-                                      ],
-                                    )
-                                  : SizedBox.shrink(),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Total Pesanan",
+                                    "Sub Total",
                                     style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.grey),
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black),
                                   ),
                                   Text(
                                       packController.category.value !=
                                               "Daily Cleaning"
-                                          ? Utils.formatCurrency(total)
+                                          ? Utils.formatCurrency(normalTotal)
                                           : Utils.formatCurrency(int.parse(
                                               packController
                                                   .selectedDiscount.value)),
                                       style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 13,
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),
+                              (profileController.hasVoucher.value ||
+                                      hasDiscount)
+                                  ? Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "${profileController.hasVoucher.value ? "Voucher Member" : ""}"
+                                          "${profileController.hasVoucher.value && hasDiscount ? " + " : ""}"
+                                          "${hasDiscount ? "Promo" : ""}",
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.red),
+                                        ),
+                                        Text(
+                                            "- ${Utils.formatCurrency(normalTotal - total)}",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold)),
+                                      ],
+                                    )
+                                  : SizedBox.shrink(),
                               packController.category.value == "Daily Cleaning"
                                   ? Row(
                                       mainAxisAlignment:
@@ -873,8 +816,9 @@ class Pemesanan extends GetView<PemesananController> {
                                         Text(
                                           "Discount",
                                           style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              color: Colors.grey),
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black),
                                         ),
                                         Text(
                                             Utils.formatCurrency(int.parse(
@@ -884,12 +828,75 @@ class Pemesanan extends GetView<PemesananController> {
                                                 int.parse(packController
                                                     .selectedDiscount.value)),
                                             style: TextStyle(
-                                                fontSize: 14,
+                                                fontSize: 13,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.red)),
                                       ],
                                     )
-                                  : SizedBox(),
+                                  : SizedBox.shrink(),
+                              controller.propertyType.value == "Apartement"
+                                  ? Row(
+                                      children: [
+                                        Text(
+                                          "Biaya Layanan Apartemen",
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.black),
+                                        ),
+                                        SizedBox(
+                                          width: 8,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                shape: RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.circular(15),
+                                                ),
+                                                title: Text(
+                                                  "Biaya Layanan Apartemen",
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                content: Text(
+                                                  "Biaya ini diperlukan untuk mendukung operasional di area apartemen, seperti akses masuk, parkir petugas, dan aturan dari pihak pengelola gedung.",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      height: 1.5),
+                                                ),
+                                                actions: [
+                                                  TextButton(
+                                                    onPressed: () =>
+                                                        Navigator.pop(context),
+                                                    child: Text(
+                                                      "Oke",
+                                                      style: TextStyle(
+                                                          color: Colors.blue),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            );
+                                          },
+                                          child: Icon(
+                                            Icons.info_outline,
+                                            color: Colors.black,
+                                            size: 15,
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Text("Rp 20.000",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                fontWeight: FontWeight.bold)),
+                                      ],
+                                    )
+                                  : SizedBox.shrink(),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -897,35 +904,48 @@ class Pemesanan extends GetView<PemesananController> {
                                   Text(
                                     "Biaya Platform",
                                     style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.grey),
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black),
                                   ),
                                   Text("Rp 2.000",
                                       style: TextStyle(
-                                          fontSize: 14,
+                                          fontSize: 13,
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),
+                              Divider(),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "Total",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w600),
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black),
                                   ),
                                   Text(
                                       packController.category.value !=
                                               "Daily Cleaning"
-                                          ? Utils.formatCurrency(total + 2000)
+                                          ? Utils.formatCurrency(total +
+                                              2000 +
+                                              (controller.propertyType.value ==
+                                                      "Apartement"
+                                                  ? 20000
+                                                  : 0))
                                           : Utils.formatCurrency(int.parse(
                                                   packController
                                                       .selectedPriceDuration
                                                       .value) +
-                                              2000),
+                                              2000 +
+                                              (controller.propertyType.value ==
+                                                      "Apartement"
+                                                  ? 20000
+                                                  : 0)),
                                       style: TextStyle(
-                                          fontSize: 16,
+                                          fontSize: 15,
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),
@@ -968,6 +988,35 @@ class Pemesanan extends GetView<PemesananController> {
                                     "Silakan pilih waktu layanan terlebih dahulu");
                                 return;
                               }
+                              try {
+                                final selectedDate =
+                                    DateTime.parse(controller.dateText.value);
+                                final selectedTimeParts =
+                                    controller.timeText.value.split(':');
+                                final selectedDateTime = DateTime(
+                                  selectedDate.year,
+                                  selectedDate.month,
+                                  selectedDate.day,
+                                  int.parse(selectedTimeParts[0]),
+                                  int.parse(selectedTimeParts[1]),
+                                );
+
+                                final now = DateTime.now();
+
+                                if (selectedDateTime.isBefore(now)) {
+                                  SnackbarUtil.show(
+                                    "Waktu Tidak Valid",
+                                    "Waktu layanan yang dipilih sudah lewat. Silakan pilih waktu yang sesuai.",
+                                  );
+                                  return;
+                                }
+                              } catch (e) {
+                                SnackbarUtil.show(
+                                  "Data Tidak Valid",
+                                  e.toString(),
+                                );
+                                return;
+                              }
                               if (controller.selectedGender.value == "") {
                                 SnackbarUtil.show("Gender Mitra Kosong",
                                     "Silakan pilih preferensi gender mitra yang diinginkan");
@@ -981,11 +1030,18 @@ class Pemesanan extends GetView<PemesananController> {
 
                               final isDaily = packController.category.value ==
                                   "Daily Cleaning";
-                              final int totalHarga = isDaily
+                              final bool isApartment =
+                                  controller.propertyType.value == "Apartement";
+
+                              final int baseFee = 2000;
+                              final int apartmentFee = isApartment ? 20000 : 0;
+                              final int hargaPaket = isDaily
                                   ? int.parse(packController
-                                          .selectedPriceDuration.value) +
-                                      2000
-                                  : total + 2000;
+                                      .selectedPriceDuration.value)
+                                  : total;
+
+                              final int totalHarga =
+                                  hargaPaket + baseFee + apartmentFee;
 
                               if (controller.selectedPayment.value == "Saldo") {
                                 if (saldoInt < totalHarga) {
@@ -1027,8 +1083,7 @@ class Pemesanan extends GetView<PemesananController> {
                                     "discount": "2",
                                     "order_notes":
                                         controller.noteController.text,
-                                    "property_id":
-                                        controller.propertyId.value,
+                                    "property_id": controller.propertyId.value,
                                     "property_city":
                                         Utils.extractSecondSentence(
                                             controller.propertyAddress.value),
@@ -1040,25 +1095,24 @@ class Pemesanan extends GetView<PemesananController> {
                                   controller.confirmPayment(dataDeep);
                                 } else {
                                   var dataDaily = {
-                                    "data_pack[0][pack_id]": packController.selectedPackageId.value,
-                                    "data_pack[0][pack_category]": packController.category.value,
-                                    "data_pack[0][pack_hour]": packController.selectedDuration.value,
-                                    "data_pack[0][object_id]" : "",
-                                    "data_pack[0][object_price]" : "",
-                                    "category": packController.category.value,
-                                    "due_date": controller.dateText.value,
-                                    "due_time": controller.timeText.value,
-                                    "discount": "2",
-                                    "order_notes":
-                                        controller.noteController.text,
-                                    "property_id":
-                                        controller.propertyId.value,
-                                    "property_city":
-                                        Utils.extractSecondSentence(
-                                            controller.propertyAddress.value),
-                                    "mitra_gender":
-                                        controller.selectedGender.value,
-                                        "payment_type": "balance"
+                                    "data_pack[0][pack_id]":
+                                packController.selectedPackageId.value,
+                            "data_pack[0][pack_category]":
+                                packController.category.value,
+                            "data_pack[0][ph_id]":
+                                packController.selectedDuration.value,
+                            "data_pack[0][object_id]": "",
+                            "data_pack[0][object_price]": "",
+                            "category": packController.category.value,
+                            "due_date": controller.dateText.value,
+                            "due_time": controller.timeText.value,
+                            "discount": "2",
+                            "order_notes": controller.noteController.text,
+                            "property_id": controller.propertyId.value,
+                            "property_city": Utils.extractSecondSentence(
+                                controller.propertyAddress.value),
+                            "mitra_gender": controller.selectedGender.value,
+                                    "payment_type": "balance"
                                   };
                                   print(dataDaily);
                                   controller.confirmPayment(dataDaily);
@@ -1088,5 +1142,204 @@ class Pemesanan extends GetView<PemesananController> {
         ],
       ),
     );
+  }
+
+  Future<dynamic> selectAddress(
+      BuildContext context, AsyncSnapshot<PropertyAddressResponse> snapshot) {
+    return showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0), // Sudut membulat
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Title for the dialog
+                Row(
+                  children: [
+                    Text(
+                      'Pilih Alamat',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 10),
+
+                // ListView.builder for displaying the addresses
+                SizedBox(
+                  height: 200,
+                  // Set the height of the list view
+                  child: ListView.builder(
+                    itemCount: snapshot.data!.data!.length,
+                    itemBuilder: (context, index) {
+                      return Obx(() {
+                        return GestureDetector(
+                          onTap: () {
+                            controller.selectedProperty.value =
+                                snapshot.data!.data![index].id!.toInt();
+                            controller.picName.value =
+                                snapshot.data!.data![index].picName!;
+                            controller.propertyAddress.value =
+                                snapshot.data!.data![index].propertyAddress!;
+                            controller.propertyId.value =
+                                snapshot.data!.data![index].id.toString();
+                            controller.propertyType.value = snapshot
+                                .data!.data![index].propertyType
+                                .toString();
+                          },
+                          child: ListTile(
+                            contentPadding: EdgeInsets.only(left: 5, right: 0),
+                            leading: Icon(Icons.home),
+                            title: Text(
+                              snapshot.data!.data![index].picName!,
+                              style: TextStyle(fontSize: 13),
+                            ),
+                            subtitle: Text(
+                              snapshot.data!.data![index].propertyAddress!,
+                              style: TextStyle(fontSize: 12),
+                            ),
+                            trailing: Radio(
+                                value: snapshot.data!.data![index].id,
+                                groupValue: controller.selectedProperty.value,
+                                onChanged: (value) {
+                                  controller.selectedProperty.value =
+                                      value!.toInt();
+                                  controller.picName.value =
+                                      snapshot.data!.data![index].picName!;
+                                  controller.propertyAddress.value = snapshot
+                                      .data!.data![index].propertyAddress!;
+                                  controller.propertyId.value =
+                                      snapshot.data!.data![index].id.toString();
+                                  controller.propertyType.value = snapshot
+                                      .data!.data![index].propertyType
+                                      .toString();
+                                  print(controller.propertyType.value);
+                                }),
+                          ),
+                        );
+                      });
+                    },
+                  ),
+                ),
+
+                // Button to close the dialog
+                SizedBox(height: 20),
+                SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10))),
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text("Simpan")))
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Future<dynamic> voucherModal(BuildContext context) {
+    return showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      backgroundColor: Colors.white,
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min, // biar tinggi menyesuaikan isi
+            children: [
+              const Text(
+                "Voucher",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 20),
+              (profileController.hasVoucher.value)
+                  ? VoucherCard(
+      title: "Voucher Member",
+      subtitle: "Discount ${profileController.valueVoucher.value} %",
+      condition: "Voucher spesial member! Gunakan di semua layanan. Ayo tingkatkan jumlah pesananmu untuk meraih voucher yang lebih besar!",
+      buttonText: "Batalkan",
+    ) : Container(
+                      width: double.infinity,
+                      child: Column(
+                        children: [
+                          Text("Tidak Ada Voucher"),
+                        ],
+                      ),
+                    )
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class RadioPayment extends StatelessWidget {
+  RadioPayment({
+    super.key,
+    required this.controller,
+    required this.value,
+    required this.title,
+    required this.icon,
+  });
+
+  final PemesananController controller;
+  final String value;
+  final String title;
+  final IconData icon;
+
+  HomeController homeController = Get.put(HomeController());
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      String saldoString = homeController.amountSaldo.value;
+      int saldoInt = int.tryParse(saldoString) ?? 0;
+      return GestureDetector(
+        onTap: () {
+          controller.selectPayment(value);
+        },
+        child: Row(
+          children: [
+            Icon(
+              icon,
+              color: Colors.black,
+            ),
+            SizedBox(
+              width: 8,
+            ),
+            Text(title, style: TextStyle(fontSize: 14)),
+            (title == "Saldo")
+                ? Text(
+                    " (${Utils.formatCurrency(saldoInt)})",
+                    style: TextStyle(fontSize: 13, color: Colors.blue),
+                  )
+                : SizedBox.shrink(),
+            Spacer(),
+            Radio(
+                value: value,
+                groupValue: controller.selectedPayment.value,
+                onChanged: (value) => controller.selectPayment(value!))
+          ],
+        ),
+      );
+    });
   }
 }

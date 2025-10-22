@@ -1,394 +1,167 @@
-/// status : true
-/// message : "data founded"
-/// data : {"orderid":3,"property_type":"Rumah","pic_name":"okay","pic_phone":"08239444111","property_address":"Daerah Khusus Ibukota Jakarta, Kota Jakarta Pusat, Kecamatan Gambir, Gambir","property_city":"Jakarta","data_pack":[{"pack_id":31,"pack_name":"Sofa","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":495000,"data_object":[{"object_id":4,"object_name":"Sofa Medium (2 Seat)","object_price":"210000"},{"object_id":5,"object_name":"Sofa Large (3 Seat)","object_price":"285000"}]},{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":570000,"data_object":[{"object_id":9,"object_name":"Karpet Ukuran <5 m2","object_price":"120000"},{"object_id":12,"object_name":"Kasur King 180 x 200","object_price":"350000"},{"object_id":16,"object_name":"Kasur Single 90 x 200","object_price":"225000"}]},{"pack_id":31,"pack_name":"Sofa","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":495000,"data_object":[{"object_id":4,"object_name":"Sofa Medium (2 Seat)","object_price":"210000"},{"object_id":5,"object_name":"Sofa Large (3 Seat)","object_price":"285000"}]},{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":695000,"data_object":[{"object_id":9,"object_name":"Karpet Ukuran <5 m2","object_price":"120000"},{"object_id":12,"object_name":"Kasur King 180 x 200","object_price":"350000"},{"object_id":16,"object_name":"Kasur Single 90 x 200","object_price":"225000"}]}],"due_date":"2025-05-29","category":"Deep Cleaning","due_time":"10:00:00","discount":2,"order_notes":"aaaa","sub_total":1190000,"nominal_discount":23800,"nominal_after_discount":1166200,"tax":11,"nominal_tax":128282,"grand_total":1294482,"order_status":"open","mitra_gender":null,"partner_name":" ","partner_phone":null,"partner_photo":null}
-
 class DetailOrderResponse {
+  final bool? status;
+  final String? message;
+  final DetailOrderData? data;
+
   DetailOrderResponse({
-      bool? status, 
-      String? message, 
-      Data? data,}){
-    _status = status;
-    _message = message;
-    _data = data;
+    this.status,
+    this.message,
+    this.data,
+  });
+
+  factory DetailOrderResponse.fromJson(Map<String, dynamic> json) {
+    return DetailOrderResponse(
+      status: json['status'] as bool?,
+      message: json['message'] as String?,
+      data: json['data'] != null
+          ? DetailOrderData.fromJson(json['data'] as Map<String, dynamic>)
+          : null,
+    );
+  }
 }
 
-  DetailOrderResponse.fromJson(dynamic json) {
-    _status = json['status'];
-    _message = json['message'];
-    _data = json['data'] != null ? Data.fromJson(json['data']) : null;
-  }
-  bool? _status;
-  String? _message;
-  Data? _data;
-DetailOrderResponse copyWith({  bool? status,
-  String? message,
-  Data? data,
-}) => DetailOrderResponse(  status: status ?? _status,
-  message: message ?? _message,
-  data: data ?? _data,
-);
-  bool? get status => _status;
-  String? get message => _message;
-  Data? get data => _data;
+class DetailOrderData {
+  final int? orderId;
+  final String? paymentType;
+  final String? propertyType;
+  final String? picName;
+  final String? picPhone;
+  final String? propertyAddress;
+  final String? propertyCity;
+  final List<DataPack> dataPack;
+  final String? dueDate;
+  final String? category;
+  final String? dueTime;
+  final num? tax;
+  final num? nominalTax;
+  final num? ttlBasicPrice;
+  final num? platformCharge;
+  final num? propertyCharge;
+  final num? ttlDiscPercent;
+  final num? ttlDiscNominal;
+  final num? ttlSellingNominal;
+  final String? orderNotes;
+  final String? orderStatus;
+  final String? mitraGender;
+  final String? partnerName;
+  final String? partnerPhone;
+  final String? partnerPhoto;
 
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['status'] = _status;
-    map['message'] = _message;
-    if (_data != null) {
-      map['data'] = _data?.toJson();
-    }
-    return map;
-  }
+  DetailOrderData({
+    this.orderId,
+    this.paymentType,
+    this.propertyType,
+    this.picName,
+    this.picPhone,
+    this.propertyAddress,
+    this.propertyCity,
+    this.dataPack = const [],
+    this.dueDate,
+    this.category,
+    this.dueTime,
+    this.tax,
+    this.nominalTax,
+    this.ttlBasicPrice,
+    this.platformCharge,
+    this.propertyCharge,
+    this.ttlDiscPercent,
+    this.ttlDiscNominal,
+    this.ttlSellingNominal,
+    this.orderNotes,
+    this.orderStatus,
+    this.mitraGender,
+    this.partnerName,
+    this.partnerPhone,
+    this.partnerPhoto,
+  });
 
+  factory DetailOrderData.fromJson(Map<String, dynamic> json) {
+    return DetailOrderData(
+      orderId: json['orderid'] as int?,
+      paymentType: json['payment_type'] as String?,
+      propertyType: json['property_type'] as String?,
+      picName: json['pic_name'] as String?,
+      picPhone: json['pic_phone'] as String?,
+      propertyAddress: json['property_address'] as String?,
+      propertyCity: json['property_city'] as String?,
+      dataPack: (json['data_pack'] as List?)
+              ?.map((e) => DataPack.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+      dueDate: json['due_date'] as String?,
+      category: json['category'] as String?,
+      dueTime: json['due_time'] as String?,
+      tax: json['tax'],
+      nominalTax: json['nominal_tax'],
+      ttlBasicPrice: json['ttl_basic_price'],
+      platformCharge: json['platform_charge'],
+      propertyCharge: json['property_charge'],
+      ttlDiscPercent: json['ttl_disc_percent'],
+      ttlDiscNominal: json['ttl_disc_nominal'],
+      ttlSellingNominal: json['ttl_selling_nominal'],
+      orderNotes: json['order_notes'] as String?,
+      orderStatus: json['order_status'] as String?,
+      mitraGender: json['mitra_gender'] as String?,
+      partnerName: json['partner_name'] as String?,
+      partnerPhone: json['partner_phone'] as String?,
+      partnerPhoto: json['partner_photo'] as String?,
+    );
+  }
 }
-
-/// orderid : 3
-/// property_type : "Rumah"
-/// pic_name : "okay"
-/// pic_phone : "08239444111"
-/// property_address : "Daerah Khusus Ibukota Jakarta, Kota Jakarta Pusat, Kecamatan Gambir, Gambir"
-/// property_city : "Jakarta"
-/// data_pack : [{"pack_id":31,"pack_name":"Sofa","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":495000,"data_object":[{"object_id":4,"object_name":"Sofa Medium (2 Seat)","object_price":"210000"},{"object_id":5,"object_name":"Sofa Large (3 Seat)","object_price":"285000"}]},{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":570000,"data_object":[{"object_id":9,"object_name":"Karpet Ukuran <5 m2","object_price":"120000"},{"object_id":12,"object_name":"Kasur King 180 x 200","object_price":"350000"},{"object_id":16,"object_name":"Kasur Single 90 x 200","object_price":"225000"}]},{"pack_id":31,"pack_name":"Sofa","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":495000,"data_object":[{"object_id":4,"object_name":"Sofa Medium (2 Seat)","object_price":"210000"},{"object_id":5,"object_name":"Sofa Large (3 Seat)","object_price":"285000"}]},{"pack_id":30,"pack_name":"Kasur","pack_category":"Deep Cleaning","pack_hour":"0","pack_price":695000,"data_object":[{"object_id":9,"object_name":"Karpet Ukuran <5 m2","object_price":"120000"},{"object_id":12,"object_name":"Kasur King 180 x 200","object_price":"350000"},{"object_id":16,"object_name":"Kasur Single 90 x 200","object_price":"225000"}]}]
-/// due_date : "2025-05-29"
-/// category : "Deep Cleaning"
-/// due_time : "10:00:00"
-/// discount : 2
-/// order_notes : "aaaa"
-/// sub_total : 1190000
-/// nominal_discount : 23800
-/// nominal_after_discount : 1166200
-/// tax : 11
-/// nominal_tax : 128282
-/// grand_total : 1294482
-/// order_status : "open"
-/// mitra_gender : null
-/// partner_name : " "
-/// partner_phone : null
-/// partner_photo : null
-
-class Data {
-  Data({
-      num? orderid, 
-      String? propertyType, 
-      String? picName, 
-      String? picPhone, 
-      String? propertyAddress, 
-      String? propertyCity, 
-      List<DataPack>? dataPack, 
-      String? dueDate, 
-      String? category, 
-      String? dueTime, 
-      num? discount, 
-      String? orderNotes, 
-      num? subTotal, 
-      num? nominalDiscount, 
-      num? nominalAfterDiscount, 
-      num? tax, 
-      num? nominalTax, 
-      num? grandTotal, 
-      String? orderStatus, 
-      dynamic mitraGender, 
-      String? partnerName, 
-      dynamic partnerPhone, 
-      dynamic partnerPhoto,}){
-    _orderid = orderid;
-    _propertyType = propertyType;
-    _picName = picName;
-    _picPhone = picPhone;
-    _propertyAddress = propertyAddress;
-    _propertyCity = propertyCity;
-    _dataPack = dataPack;
-    _dueDate = dueDate;
-    _category = category;
-    _dueTime = dueTime;
-    _discount = discount;
-    _orderNotes = orderNotes;
-    _subTotal = subTotal;
-    _nominalDiscount = nominalDiscount;
-    _nominalAfterDiscount = nominalAfterDiscount;
-    _tax = tax;
-    _nominalTax = nominalTax;
-    _grandTotal = grandTotal;
-    _orderStatus = orderStatus;
-    _mitraGender = mitraGender;
-    _partnerName = partnerName;
-    _partnerPhone = partnerPhone;
-    _partnerPhoto = partnerPhoto;
-}
-
-  Data.fromJson(dynamic json) {
-    _orderid = json['orderid'];
-    _propertyType = json['property_type'];
-    _picName = json['pic_name'];
-    _picPhone = json['pic_phone'];
-    _propertyAddress = json['property_address'];
-    _propertyCity = json['property_city'];
-    if (json['data_pack'] != null) {
-      _dataPack = [];
-      json['data_pack'].forEach((v) {
-        _dataPack?.add(DataPack.fromJson(v));
-      });
-    }
-    _dueDate = json['due_date'];
-    _category = json['category'];
-    _dueTime = json['due_time'];
-    _discount = json['discount'];
-    _orderNotes = json['order_notes'];
-    _subTotal = json['sub_total'];
-    _nominalDiscount = json['nominal_discount'];
-    _nominalAfterDiscount = json['nominal_after_discount'];
-    _tax = json['tax'];
-    _nominalTax = json['nominal_tax'];
-    _grandTotal = json['grand_total'];
-    _orderStatus = json['order_status'];
-    _mitraGender = json['mitra_gender'];
-    _partnerName = json['partner_name'];
-    _partnerPhone = json['partner_phone'];
-    _partnerPhoto = json['partner_photo'];
-  }
-  num? _orderid;
-  String? _propertyType;
-  String? _picName;
-  String? _picPhone;
-  String? _propertyAddress;
-  String? _propertyCity;
-  List<DataPack>? _dataPack;
-  String? _dueDate;
-  String? _category;
-  String? _dueTime;
-  num? _discount;
-  String? _orderNotes;
-  num? _subTotal;
-  num? _nominalDiscount;
-  num? _nominalAfterDiscount;
-  num? _tax;
-  num? _nominalTax;
-  num? _grandTotal;
-  String? _orderStatus;
-  dynamic _mitraGender;
-  String? _partnerName;
-  dynamic _partnerPhone;
-  dynamic _partnerPhoto;
-Data copyWith({  num? orderid,
-  String? propertyType,
-  String? picName,
-  String? picPhone,
-  String? propertyAddress,
-  String? propertyCity,
-  List<DataPack>? dataPack,
-  String? dueDate,
-  String? category,
-  String? dueTime,
-  num? discount,
-  String? orderNotes,
-  num? subTotal,
-  num? nominalDiscount,
-  num? nominalAfterDiscount,
-  num? tax,
-  num? nominalTax,
-  num? grandTotal,
-  String? orderStatus,
-  dynamic mitraGender,
-  String? partnerName,
-  dynamic partnerPhone,
-  dynamic partnerPhoto,
-}) => Data(  orderid: orderid ?? _orderid,
-  propertyType: propertyType ?? _propertyType,
-  picName: picName ?? _picName,
-  picPhone: picPhone ?? _picPhone,
-  propertyAddress: propertyAddress ?? _propertyAddress,
-  propertyCity: propertyCity ?? _propertyCity,
-  dataPack: dataPack ?? _dataPack,
-  dueDate: dueDate ?? _dueDate,
-  category: category ?? _category,
-  dueTime: dueTime ?? _dueTime,
-  discount: discount ?? _discount,
-  orderNotes: orderNotes ?? _orderNotes,
-  subTotal: subTotal ?? _subTotal,
-  nominalDiscount: nominalDiscount ?? _nominalDiscount,
-  nominalAfterDiscount: nominalAfterDiscount ?? _nominalAfterDiscount,
-  tax: tax ?? _tax,
-  nominalTax: nominalTax ?? _nominalTax,
-  grandTotal: grandTotal ?? _grandTotal,
-  orderStatus: orderStatus ?? _orderStatus,
-  mitraGender: mitraGender ?? _mitraGender,
-  partnerName: partnerName ?? _partnerName,
-  partnerPhone: partnerPhone ?? _partnerPhone,
-  partnerPhoto: partnerPhoto ?? _partnerPhoto,
-);
-  num? get orderid => _orderid;
-  String? get propertyType => _propertyType;
-  String? get picName => _picName;
-  String? get picPhone => _picPhone;
-  String? get propertyAddress => _propertyAddress;
-  String? get propertyCity => _propertyCity;
-  List<DataPack>? get dataPack => _dataPack;
-  String? get dueDate => _dueDate;
-  String? get category => _category;
-  String? get dueTime => _dueTime;
-  num? get discount => _discount;
-  String? get orderNotes => _orderNotes;
-  num? get subTotal => _subTotal;
-  num? get nominalDiscount => _nominalDiscount;
-  num? get nominalAfterDiscount => _nominalAfterDiscount;
-  num? get tax => _tax;
-  num? get nominalTax => _nominalTax;
-  num? get grandTotal => _grandTotal;
-  String? get orderStatus => _orderStatus;
-  dynamic get mitraGender => _mitraGender;
-  String? get partnerName => _partnerName;
-  dynamic get partnerPhone => _partnerPhone;
-  dynamic get partnerPhoto => _partnerPhoto;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['orderid'] = _orderid;
-    map['property_type'] = _propertyType;
-    map['pic_name'] = _picName;
-    map['pic_phone'] = _picPhone;
-    map['property_address'] = _propertyAddress;
-    map['property_city'] = _propertyCity;
-    if (_dataPack != null) {
-      map['data_pack'] = _dataPack?.map((v) => v.toJson()).toList();
-    }
-    map['due_date'] = _dueDate;
-    map['category'] = _category;
-    map['due_time'] = _dueTime;
-    map['discount'] = _discount;
-    map['order_notes'] = _orderNotes;
-    map['sub_total'] = _subTotal;
-    map['nominal_discount'] = _nominalDiscount;
-    map['nominal_after_discount'] = _nominalAfterDiscount;
-    map['tax'] = _tax;
-    map['nominal_tax'] = _nominalTax;
-    map['grand_total'] = _grandTotal;
-    map['order_status'] = _orderStatus;
-    map['mitra_gender'] = _mitraGender;
-    map['partner_name'] = _partnerName;
-    map['partner_phone'] = _partnerPhone;
-    map['partner_photo'] = _partnerPhoto;
-    return map;
-  }
-
-}
-
-/// pack_id : 31
-/// pack_name : "Sofa"
-/// pack_category : "Deep Cleaning"
-/// pack_hour : "0"
-/// pack_price : 495000
-/// data_object : [{"object_id":4,"object_name":"Sofa Medium (2 Seat)","object_price":"210000"},{"object_id":5,"object_name":"Sofa Large (3 Seat)","object_price":"285000"}]
 
 class DataPack {
+  final int? packId;
+  final String? packName;
+  final String? packCategory;
+  final String? packHour;
+  final num? packPrice;
+  final List<DataObject> dataObject;
+
   DataPack({
-      num? packId, 
-      String? packName, 
-      String? packCategory, 
-      String? packHour, 
-      num? packPrice, 
-      List<DataObject>? dataObject,}){
-    _packId = packId;
-    _packName = packName;
-    _packCategory = packCategory;
-    _packHour = packHour;
-    _packPrice = packPrice;
-    _dataObject = dataObject;
-}
+    this.packId,
+    this.packName,
+    this.packCategory,
+    this.packHour,
+    this.packPrice,
+    this.dataObject = const [],
+  });
 
-  DataPack.fromJson(dynamic json) {
-    _packId = json['pack_id'];
-    _packName = json['pack_name'];
-    _packCategory = json['pack_category'];
-    _packHour = json['pack_hour'];
-    _packPrice = json['pack_price'];
-    if (json['data_object'] != null) {
-      _dataObject = [];
-      json['data_object'].forEach((v) {
-        _dataObject?.add(DataObject.fromJson(v));
-      });
-    }
+  factory DataPack.fromJson(Map<String, dynamic> json) {
+    return DataPack(
+      packId: json['pack_id'] as int?,
+      packName: json['pack_name'] as String?,
+      packCategory: json['pack_category'] as String?,
+      packHour: json['pack_hour']?.toString(),
+      packPrice: json['pack_price'],
+      dataObject: (json['data_object'] as List?)
+              ?.map((e) => DataObject.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          [],
+    );
   }
-  num? _packId;
-  String? _packName;
-  String? _packCategory;
-  String? _packHour;
-  num? _packPrice;
-  List<DataObject>? _dataObject;
-DataPack copyWith({  num? packId,
-  String? packName,
-  String? packCategory,
-  String? packHour,
-  num? packPrice,
-  List<DataObject>? dataObject,
-}) => DataPack(  packId: packId ?? _packId,
-  packName: packName ?? _packName,
-  packCategory: packCategory ?? _packCategory,
-  packHour: packHour ?? _packHour,
-  packPrice: packPrice ?? _packPrice,
-  dataObject: dataObject ?? _dataObject,
-);
-  num? get packId => _packId;
-  String? get packName => _packName;
-  String? get packCategory => _packCategory;
-  String? get packHour => _packHour;
-  num? get packPrice => _packPrice;
-  List<DataObject>? get dataObject => _dataObject;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['pack_id'] = _packId;
-    map['pack_name'] = _packName;
-    map['pack_category'] = _packCategory;
-    map['pack_hour'] = _packHour;
-    map['pack_price'] = _packPrice;
-    if (_dataObject != null) {
-      map['data_object'] = _dataObject?.map((v) => v.toJson()).toList();
-    }
-    return map;
-  }
-
 }
-
-/// object_id : 4
-/// object_name : "Sofa Medium (2 Seat)"
-/// object_price : "210000"
 
 class DataObject {
+  final int? objectId;
+  final int? qty;
+  final String? objectName;
+  final num? objectPrice;
+
   DataObject({
-      num? objectId, 
-      String? objectName, 
-      String? objectPrice,}){
-    _objectId = objectId;
-    _objectName = objectName;
-    _objectPrice = objectPrice;
-}
+    this.objectId,
+    this.qty,
+    this.objectName,
+    this.objectPrice,
+  });
 
-  DataObject.fromJson(dynamic json) {
-    _objectId = json['object_id'];
-    _objectName = json['object_name'];
-    _objectPrice = json['object_price'];
+  factory DataObject.fromJson(Map<String, dynamic> json) {
+    return DataObject(
+      objectId: json['object_id'] as int?,
+      qty: json['qty'] as int?,
+      objectName: json['object_name'] as String?,
+      objectPrice: json['object_price'] is String
+          ? num.tryParse(json['object_price'])
+          : json['object_price'],
+    );
   }
-  num? _objectId;
-  String? _objectName;
-  String? _objectPrice;
-DataObject copyWith({  num? objectId,
-  String? objectName,
-  String? objectPrice,
-}) => DataObject(  objectId: objectId ?? _objectId,
-  objectName: objectName ?? _objectName,
-  objectPrice: objectPrice ?? _objectPrice,
-);
-  num? get objectId => _objectId;
-  String? get objectName => _objectName;
-  String? get objectPrice => _objectPrice;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['object_id'] = _objectId;
-    map['object_name'] = _objectName;
-    map['object_price'] = _objectPrice;
-    return map;
-  }
-
 }

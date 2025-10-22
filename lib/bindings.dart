@@ -7,6 +7,7 @@ import 'package:cleaning_app/controller/notification.dart';
 import 'package:cleaning_app/controller/package.dart';
 import 'package:cleaning_app/controller/pemesanan.dart';
 import 'package:cleaning_app/controller/register.dart';
+import 'package:cleaning_app/controller/top_up.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
@@ -31,9 +32,11 @@ class RegisterBindings extends Bindings {
   }
 }
 
-class HomeBindings extends Bindings {
+
+class MenuBindings extends Bindings {
   @override
   void dependencies() {
+    
     Get.lazyPut(() => ControllerMenu(), fenix: true);
     Get.lazyPut(() => HomeController(), fenix: true);
     Get.lazyPut(() => BookingController(), fenix: true);
@@ -80,5 +83,12 @@ class InvoiceBindings extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => InvoiceController(), fenix: true);
+  }
+}
+
+class TopupBindings extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => TopUpController(), fenix: true);
   }
 }

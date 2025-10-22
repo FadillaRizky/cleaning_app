@@ -1,4 +1,6 @@
-import 'package:cleaning_app/controller/home.dart';
+
+import 'package:cleaning_app/controller/menu.dart';
+import 'package:cleaning_app/controller/top_up.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
@@ -8,7 +10,7 @@ import 'package:dotted_border/dotted_border.dart';
 
 import '../widget/utils.dart';
 
-class IsiSaldo extends GetView<HomeController> {
+class IsiSaldo extends GetView<TopUpController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,12 +28,14 @@ class IsiSaldo extends GetView<HomeController> {
                   children: [
                     Text(
                       "Nominal Isi Saldo",
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     ),
                     SizedBox(
                       height: 5,
                     ),
                     TextFormField(
+                      // key: controller.textFieldKey,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.grey.shade600,
@@ -83,7 +87,8 @@ class IsiSaldo extends GetView<HomeController> {
                     Obx(() => controller.showError.value
                             ? Text(
                                 'Saldo minimal 20.000',
-                                style: TextStyle(color: Colors.red, fontSize: 14),
+                                style:
+                                    TextStyle(color: Colors.red, fontSize: 14),
                               )
                             : SizedBox
                                 .shrink() // or Container() to render nothing
@@ -91,31 +96,47 @@ class IsiSaldo extends GetView<HomeController> {
                     Divider(),
                     Text(
                       "Pilih Bank",
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
-                    Obx(() {
-                      return Column(
-                        children: controller.listBank.map<Widget>((item) {
-                          final bankName = item['bank_name'] ?? '';
+                    ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Image.asset(
+                        "assets/icon/bca.png",
+                        height: 20,
+                      ),
+                      title: Text("BCA"),
+                      trailing: Radio(
+                        value: true,
+                        groupValue: true,
+                        onChanged: (value) {},
+                      ),
+                    )
 
-                          return ListTile(
-                            contentPadding: EdgeInsets.zero,
-                            leading: Image.asset(
-                              "assets/icon/${bankName.toLowerCase()}.png", // pastikan nama file lowercase
-                              height: 20,
-                            ),
-                            title: Text(bankName),
-                            trailing: Radio(
-                              value: item,
-                              groupValue: controller.selectBank.value,
-                              onChanged: (value) {
-                                controller.selectBank.value = value;
-                              },
-                            ),
-                          );
-                        }).toList(),
-                      );
-                    })
+                    ///JIKA BANK LEBIH DARI 1
+                    // Obx(() {
+                    //   return Column(
+                    //     children: controller.listBank.map<Widget>((item) {
+                    //       final bankName = item['bank_name'] ?? '';
+
+                    //       return ListTile(
+                    //         contentPadding: EdgeInsets.zero,
+                    //         leading: Image.asset(
+                    //           "assets/icon/${bankName.toLowerCase()}.png", // pastikan nama file lowercase
+                    //           height: 20,
+                    //         ),
+                    //         title: Text(bankName),
+                    //         trailing: Radio(
+                    //           value: item,
+                    //           groupValue: controller.selectBank.value,
+                    //           onChanged: (value) {
+                    //             controller.selectBank.value = value;
+                    //           },
+                    //         ),
+                    //       );
+                    //     }).toList(),
+                    //   );
+                    // })
                   ],
                 ),
               ),
@@ -123,7 +144,8 @@ class IsiSaldo extends GetView<HomeController> {
           ),
           Obx(() {
             var enable = controller.topupText.value.isNotEmpty &&
-                controller.showError.value == false && controller.selectBank.value != "";
+                controller.showError.value == false;
+            // controller.selectBank.value != "";
             return Container(
               width: double.infinity,
               padding: EdgeInsets.all(20),
@@ -131,9 +153,11 @@ class IsiSaldo extends GetView<HomeController> {
                   style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.blue,
                       foregroundColor: Colors.white),
-                  onPressed: enable ? () {
-                    Get.toNamed("/upload-bukti-topup");
-                  } : null,
+                  onPressed: enable
+                      ? () {
+                          Get.toNamed("/upload-bukti-topup");
+                        }
+                      : null,
                   child: Text("Lanjutkan")),
             );
           })
@@ -143,8 +167,9 @@ class IsiSaldo extends GetView<HomeController> {
   }
 }
 
-class UploadBuktiTopup extends GetView<HomeController> {
-  const UploadBuktiTopup({super.key});
+class UploadBuktiTopup extends StatelessWidget {
+  final TopUpController controller = Get.find<TopUpController>();
+   UploadBuktiTopup({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -162,7 +187,9 @@ class UploadBuktiTopup extends GetView<HomeController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 10,),
+                      SizedBox(
+                        height: 10,
+                      ),
                       Image.asset(
                         "assets/icon/bca.png",
                         height: 25,
@@ -171,18 +198,27 @@ class UploadBuktiTopup extends GetView<HomeController> {
                         height: 10,
                       ),
                       Text(
-                        "PT Utilizes International",
+                        "PT. KUSUMA WIJAYA SENTOSA",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       Text("Nomor Rekening"),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(controller.selectBank.value!["account_number"] ?? ""),
+                          // Text(controller.selectBank.value!["account_number"] ??
+                          //     ""),
+                          Text("168 0370 628"),
                           GestureDetector(
-                            onTap: (){
-                              Clipboard.setData(ClipboardData(text: controller.selectBank.value!["account_number"] ?? ""));
-                              IconSnackBar.show(context,snackBarType: SnackBarType.alert, label: 'Text berhasil di salin.');
+                            onTap: () {
+                              // Clipboard.setData(ClipboardData(
+                              //     text: controller.selectBank
+                              //             .value!["account_number"] ??
+                              //         ""));
+                              Clipboard.setData(
+                                  ClipboardData(text: "168 0370 628"));
+                              IconSnackBar.show(context,
+                                  snackBarType: SnackBarType.alert,
+                                  label: 'Text berhasil di salin.');
                             },
                             child: Text(
                               "Salin",
@@ -208,11 +244,13 @@ class UploadBuktiTopup extends GetView<HomeController> {
                                 fontSize: 33, fontWeight: FontWeight.bold),
                           ),
                           GestureDetector(
-                            onTap: (){
-                              Clipboard.setData(ClipboardData(text: controller
-                                  .topupText.value
-                                  .replaceAll(RegExp(r'[^0-9]'), '')));
-                              IconSnackBar.show(context,snackBarType: SnackBarType.alert, label: 'Text berhasil di salin.');
+                            onTap: () {
+                              Clipboard.setData(ClipboardData(
+                                  text: controller.topupText.value
+                                      .replaceAll(RegExp(r'[^0-9]'), '')));
+                              IconSnackBar.show(context,
+                                  snackBarType: SnackBarType.alert,
+                                  label: 'Text berhasil di salin.');
                             },
                             child: Text(
                               "Salin",
@@ -226,20 +264,15 @@ class UploadBuktiTopup extends GetView<HomeController> {
                         style: TextStyle(fontSize: 10),
                       ),
                       Text(
-                        "*Deposit yang akan anda terima sebesar Rp. 150.020",
+                        "*Deposit yang akan anda terima sebesar ${Utils.formatCurrency(int.parse(controller.topupText.value.replaceAll(RegExp(r'[^0-9]'), '')))}",
                         style: TextStyle(fontSize: 10),
                       ),
                       Divider(),
                       Text(
                         "Upload Bukti Pembayaran",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.bold),
                       ),
-                      Text(
-                          "*Transaksi Anda tidak akan kami proses sebelum menekan tombol Konfirmasi Pembayaran",
-                          style: TextStyle(fontSize: 10)),
-                      Text(
-                          "*Pastikan foto atau screenshot bukti transfer terbaca jelas",
-                          style: TextStyle(fontSize: 10)),
                       SizedBox(
                         height: 10,
                       ),
@@ -286,7 +319,16 @@ class UploadBuktiTopup extends GetView<HomeController> {
                                       ),
                               )),
                         );
-                      })
+                      }),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                          "*Transaksi Anda tidak akan kami proses sebelum menekan tombol Konfirmasi Pembayaran",
+                          style: TextStyle(fontSize: 10)),
+                      Text(
+                          "*Pastikan foto atau screenshot bukti transfer terbaca jelas",
+                          style: TextStyle(fontSize: 10)),
                     ],
                   ),
                 ),
@@ -297,19 +339,19 @@ class UploadBuktiTopup extends GetView<HomeController> {
               padding: EdgeInsets.all(20),
               child: Column(
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black12,
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: () {},
-                        child: Text("Batalkan Transaksi")),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
+                  // SizedBox(
+                  //   width: double.infinity,
+                  //   child: ElevatedButton(
+                  //       style: ElevatedButton.styleFrom(
+                  //         backgroundColor: Colors.black12,
+                  //         foregroundColor: Colors.white,
+                  //       ),
+                  //       onPressed: () {},
+                  //       child: Text("Batalkan Transaksi")),
+                  // ),
+                  // SizedBox(
+                  //   height: 10,
+                  // ),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
@@ -364,7 +406,9 @@ class TopupSuccess extends StatelessWidget {
               "assets/icon/loading.svg",
               height: 180,
             ),
-            SizedBox(height: 100,),
+            SizedBox(
+              height: 100,
+            ),
             Text(
               "Mohon Tunggu",
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -372,24 +416,24 @@ class TopupSuccess extends StatelessWidget {
             Text(
               "Kami akan segera memproses \n pembayaran anda.",
               textAlign: TextAlign.center,
-              style:
-                  TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
+              style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold),
             ),
             Spacer(),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
                   style: OutlinedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    foregroundColor: Colors.black,
-                    side: BorderSide(color: Colors.grey)
-                  ),
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.black,
+                      side: BorderSide(color: Colors.grey)),
                   onPressed: () {
-                    Get.toNamed("/info-saldo");
+                    Get.offNamed("/info-saldo");
                   },
                   child: Text("Riwayat Transaksi")),
             ),
-            SizedBox(height: 5,),
+            SizedBox(
+              height: 5,
+            ),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -398,11 +442,15 @@ class TopupSuccess extends StatelessWidget {
                     foregroundColor: Colors.white,
                   ),
                   onPressed: () {
-                    Get.offNamed("/menu");
+                    // Get.offNamed("/menu");
+                    Get.delete<ControllerMenu>();
+                    Get.offAllNamed('/menu');
                   },
                   child: Text("Kembali ke Beranda")),
             ),
-            SizedBox(height: 20,)
+            SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),

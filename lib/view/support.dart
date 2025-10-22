@@ -69,7 +69,7 @@ class SupportPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: const PageStorageKey('SupportScaffold'),
+      // key: const PageStorageKey('SupportScaffold'),
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

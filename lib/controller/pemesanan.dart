@@ -4,6 +4,8 @@ import 'dart:typed_data';
 import 'package:cleaning_app/controller/package.dart';
 import 'package:cleaning_app/model/PropertyAddressResponse.dart';
 import 'package:cleaning_app/widget/popup.dart';
+import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
+import 'package:day_night_time_picker/lib/state/time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -30,6 +32,10 @@ class PemesananController extends GetxController {
 
   var selectedPayment = "".obs;
 
+  void selectPayment(String select) {
+    selectedPayment.value = select;
+  }
+
   @override
   void onInit() {
     super.onInit();
@@ -40,12 +46,12 @@ class PemesananController extends GetxController {
   var picName = ''.obs;
   var propertyAddress = ''.obs;
   var propertyId = ''.obs;
+  var propertyType = ''.obs;
   var selectedProperty = 0.obs;
 
   ///Upload bukti tagihan
   final ImagePicker _picker = ImagePicker();
   var imageDocument = Rx<File?>(null);
-
 
   // Future<PropertyAddressResponse> getDetailPackage() {
   //   return Api.getAddress();
@@ -75,21 +81,48 @@ class PemesananController extends GetxController {
     }
   }
 
-  // List<Map<String, dynamic>> getListDataPack() {
-  //   return packController.resultDataObject.map((pack) {
-  //     return {
-  //       "pack_id": pack["pack_id"].toString(),
-  //       "pack_category": packController.category.value,
-  //       "pack_hour": "0", // Default value
-  //       "object_id": (pack["data_object"] as List)
-  //           .map((obj) => obj["object_id"].toString())
-  //           .toList(),
-  //       "object_price": (pack["data_object"] as List)
-  //           .map((obj) => obj["object_price"])
-  //           .toList(),
-  //     };
-  //   }).toList();
-  // }
+  void selectTime(BuildContext context) async {
+    Navigator.push(
+        context,
+        showPicker(
+          context: context,
+          value: Time(hour: 12, minute: 00, second: 00),
+          sunrise: TimeOfDay(hour: 6, minute: 0),
+          sunset: TimeOfDay(hour: 18, minute: 0),
+          is24HrFormat: true,
+          duskSpanInMinutes: 120,
+          minHour: 0,
+          maxHour: 23,
+          onChange: (time) {
+            String formattedTimeUI =
+                '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+            String formattedTimeData =
+                '${time.hour.toString().padLeft(2, '0')}:'
+                '${time.minute.toString().padLeft(2, '0')}:00';
+            timeController.text = formattedTimeUI;
+            timeText.value = formattedTimeData;
+          },
+        ));
+  }
+
+  Future<bool?> showConfirmDialog(String title, String message) async {
+    return await Get.dialog<bool>(
+      AlertDialog(
+        title: Text(title),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(result: false),
+            child: const Text("Ubah"),
+          ),
+          ElevatedButton(
+            onPressed: () => Get.back(result: true),
+            child: const Text("Ya"),
+          ),
+        ],
+      ),
+    );
+  }
 
   Map<String, dynamic> getListDataPack() {
     Map<String, dynamic> result = {};
@@ -109,13 +142,18 @@ class PemesananController extends GetxController {
             objects[j]["object_id"].toString();
       }
 
-      // object_price
+      // // object_price
+      // for (int j = 0; j < objects.length; j++) {
+      //   result["data_pack[$i][object_price][$j]"] =
+      //       objects[j]["object_price"].toString();
+      // }
+
       for (int j = 0; j < objects.length; j++) {
-        result["data_pack[$i][object_price][$j]"] =
-            objects[j]["object_price"].toString();
+        result["data_pack[$i][qty_object][$j]"] =
+            objects[j]["object_amount"].toString();
       }
     }
-
+    print("body : $result");
     return result;
   }
 
@@ -141,11 +179,8 @@ class PemesananController extends GetxController {
   }
 
   Future<void> orderPackage(Map<String, dynamic> data) async {
-    print(data);
-
     try {
       EasyLoading.show();
-      print("aaa");
       final response = await Api.orderPackage(data, imageDocument.value);
       if (response.status == true) {
         Get.offNamed("/booking-success", arguments: response.data!.orderid);
@@ -158,6 +193,7 @@ class PemesananController extends GetxController {
         EasyLoading.showInfo("Order Gagal");
       }
     } catch (e) {
+      EasyLoading.showInfo("$e");
       print("gagal order package : $e");
     } finally {
       EasyLoading.dismiss();

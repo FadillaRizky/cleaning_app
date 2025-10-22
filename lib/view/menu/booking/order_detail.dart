@@ -255,10 +255,10 @@ class OrderDetail extends GetView<BookingController> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Text("${items.objectName}"),
+                                                    Text("${items.objectName} x ${items.qty}"),
                                                     Text(Utils.formatCurrency(
-                                                        int.parse(items
-                                                            .objectPrice!))),
+                                                        items
+                                                            .objectPrice!)),
                                                   ],
                                                 );
                                               }).toList()),
@@ -327,49 +327,59 @@ class OrderDetail extends GetView<BookingController> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    "LAYANAN",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text("Harga Layanan"),
+                                      Text("Subtotal"),
                                       Text(
-                                          Utils.formatCurrency(data.subTotal!)),
+                                          Utils.formatCurrency(data.ttlBasicPrice!)),
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "BIAYA TRANSAKSI",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                  Row(
+                                  (data.ttlDiscPercent != 0)
+                                  ? Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text("Discount"),
+                                      Text("- ${Utils.formatCurrency(
+                                          data.ttlDiscNominal!)}",style: TextStyle(color: Colors.red),),
+                                    ],
+                                  )
+                                  : SizedBox.shrink(),
+                                  (data.propertyType == "Apartement")
+                                  ? Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Apartement Fee"),
                                       Text(Utils.formatCurrency(
-                                          data.nominalDiscount!)),
+                                          data.propertyCharge!)),
+                                    ],
+                            )
+                            : SizedBox.shrink(),
+                            Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text("Biaya Platform"),
+                                      Text(Utils.formatCurrency(
+                                          data.platformCharge!),),
                                     ],
                                   ),
-                                  Row(
+                            (data.tax != 0)
+                                  ? Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         "PPN ${data.tax}%",
-                                        style: TextStyle(color: Colors.red),
                                       ),
                                       Text(Utils.formatCurrency(
                                           data.nominalTax!)),
                                     ],
-                                  ),
+                                  )
+                                  : SizedBox.shrink(),
                                   Divider(),
                                   Row(
                                     mainAxisAlignment:
@@ -378,7 +388,7 @@ class OrderDetail extends GetView<BookingController> {
                                       Text("TOTAL PEMBAYARAN",style:
                                       TextStyle(fontWeight: FontWeight.bold)),
                                       Text(Utils.formatCurrency(
-                                          data.grandTotal!)),
+                                          data.ttlSellingNominal!)),
                                     ],
                                   ),
                                 ],
@@ -399,7 +409,7 @@ class OrderDetail extends GetView<BookingController> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20))),
                         onPressed: () {
-                          showCancelDialog(context, data.orderid!.toInt());
+                          showCancelDialog(context, data.orderId!.toInt());
                         },
                         child: Text("Batalkan Pesanan")),
                   )

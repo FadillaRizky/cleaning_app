@@ -20,7 +20,10 @@ class ProfileController extends GetxController {
   final RxString errorMessage = ''.obs;
 
   final RxString username = ''.obs;
+  final RxString email = ''.obs;
   final RxString urlAvatar = ''.obs;
+  final RxBool hasVoucher = false.obs;
+  final RxInt valueVoucher = 0.obs;
 
   var percentageData = 0.0.obs;
 
@@ -50,7 +53,10 @@ class ProfileController extends GetxController {
       if (response.status == "success") {
         // Update reactive variable
         username.value = response.data!.firstName ?? "";
+        email.value = response.data!.email ?? "";
         urlAvatar.value = response.data!.avatarPath ?? "";
+        hasVoucher.value = response.data!.discMember != 0 ? true : false;
+        valueVoucher.value = response.data!.discMember ?? 0;
 
         // Update TextEditingController hanya jika controller masih aktif
         firstNameController.text = response.data!.firstName ?? "";

@@ -13,7 +13,7 @@ class NotificationPage extends GetView<NotificationController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: const PageStorageKey('NotificationScaffold'),
+      // key: const PageStorageKey('NotificationScaffold'),
       appBar: AppBar(
         title: Text("Notifikasi"),
       ),

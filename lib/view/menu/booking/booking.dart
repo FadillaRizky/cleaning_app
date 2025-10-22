@@ -12,7 +12,7 @@ class Booking extends GetView<BookingController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: const PageStorageKey('BookingScaffold'),
+      // key: const PageStorageKey('BookingScaffold'),
       appBar: AppBar(
         title: Text("Booking"),
       ),
@@ -27,7 +27,8 @@ class Booking extends GetView<BookingController> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 child: Obx(() {
-                  return Row(
+                  return 
+                  Row(
                     children: List.generate(
                       controller.status.length,
                       (index) {
@@ -74,7 +75,10 @@ class Booking extends GetView<BookingController> {
                     if (controller.selectedStatus.value == "aktif") {
                       return ["open", "picked", "progress"]
                           .contains(item.orderStatus);
-                    } else if (controller.selectedStatus.value == "completed") {
+                    } else if (controller.selectedStatus.value == "menunggu") {
+                      return ["new"].contains(item.orderStatus);
+                    }
+                    else if (controller.selectedStatus.value == "completed") {
                       return ["finish"].contains(item.orderStatus);
                     }
                     return item.orderStatus == controller.selectedStatus.value;
@@ -86,16 +90,20 @@ class Booking extends GetView<BookingController> {
                   });
 
                   final statusLabel = {
+                    "new" : "Sedang Diverifikasi",
                     "open": "Menunggu",
                     "picked": "Sedang Menuju",
                     "progress": "Sedang Dikerjakan",
                     "finish": "Selesai",
+                    "cancel": "Dibatalkan",
                   };
                   final statusColor = {
+                    "new": Colors.orange.shade400,
                     "open": Colors.orange.shade400,
                     "picked": Colors.blue.shade400,
                     "progress": Colors.blue.shade400,
                     "finish": Colors.green.shade400,
+                    "cancel": Colors.red.shade400,
                   };
 
                   if (controller.isLoading.value) {
@@ -186,7 +194,7 @@ class Booking extends GetView<BookingController> {
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(5),
                                 child: CachedImage(
-                                  imgUrl: item.packBannerPath ?? "",
+                                  imgUrl: item.categoryImage ?? "",
                                   height: 80,
                                   width: 80,
                                 ),
@@ -198,9 +206,7 @@ class Booking extends GetView<BookingController> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      item.packCategory == "Deep Cleaning"
-                                          ? item.packCategory!
-                                          : item.packName!,
+                                      item.category!,
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: const TextStyle(
@@ -228,7 +234,7 @@ class Booking extends GetView<BookingController> {
                                             color: Colors.black54, size: 17),
                                         const SizedBox(width: 5),
                                         Text(
-                                          "${item.dueTime!.substring(0, 5)} - ${Utils.addHoursToTime(item.dueTime!, item.dueDate!, item.packHour!)}",
+                                          "${item.dueTime!.substring(0, 5)}",
                                           style: const TextStyle(fontSize: 12),
                                         ),
                                       ],

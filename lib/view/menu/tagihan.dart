@@ -378,7 +378,7 @@ class TagihanPage extends GetView<PemesananController> {
                                 packController.selectedPackageId.value,
                             "data_pack[0][pack_category]":
                                 packController.category.value,
-                            "data_pack[0][pack_hour]":
+                            "data_pack[0][ph_id]":
                                 packController.selectedDuration.value,
                             "data_pack[0][object_id]": "",
                             "data_pack[0][object_price]": "",

@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleaning_app/controller/login.dart';
 import 'package:cleaning_app/view/menu/editprofile.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
@@ -9,8 +10,7 @@ import 'package:line_icons/line_icons.dart';
 import '../../controller/profile.dart';
 
 class ProfilePage extends GetView<ProfileController> {
-   ProfilePage({super.key});
-
+  ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -18,16 +18,32 @@ class ProfilePage extends GetView<ProfileController> {
       // Jika controller baru dibuat (fenix), fetch data lagi
       controller.getDetailUser();
     }
-    return Scaffold(
-      key: const PageStorageKey('ProfileScaffold'),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Center(
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: Colors.blue, // warna status bar sama
+        statusBarIconBrightness: Brightness.light, // ikon status bar putih
+      ),
+      child: Scaffold(
+        // key: const PageStorageKey('ProfileScaffold'),
+        body: SafeArea(
+          child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: 10,),
-                SizedBox(
-                  width: 350,
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage(
+                        "assets/background1.png",
+                      ),
+                      fit: BoxFit.cover,
+                    ),
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(30),
+                      bottomRight: Radius.circular(30),
+                    ),
+                  ),
                   child: Row(
                     children: [
                       Obx(() {
@@ -36,19 +52,17 @@ class ProfilePage extends GetView<ProfileController> {
                             showDialog(
                               context: context,
                               barrierColor: Colors.black12,
-                              builder: (_) =>
-                                  Dialog(
-                                    backgroundColor: Colors.transparent,
-                                    elevation: 10,
-                                    child: CircleAvatar(
-                                      radius: 100,
-                                      child: AvatarCircle(
-                                        imageUrl: controller.urlAvatar
-                                            .value,
-                                        size: 200,
-                                      ),
-                                    ),
+                              builder: (_) => Dialog(
+                                backgroundColor: Colors.transparent,
+                                elevation: 10,
+                                child: CircleAvatar(
+                                  radius: 100,
+                                  child: AvatarCircle(
+                                    imageUrl: controller.urlAvatar.value,
+                                    size: 200,
                                   ),
+                                ),
+                              ),
                             );
                           },
                           child: AvatarCircle(
@@ -74,14 +88,16 @@ class ProfilePage extends GetView<ProfileController> {
                                       return Text(
                                         controller.username.value,
                                         style: TextStyle(
-                                            fontSize: 19,
+                                            fontSize: 22,
+                                            color: Colors.white,
                                             fontWeight: FontWeight.w500),
                                       );
                                     }),
                                     Text(
-                                      "Bergabung Sejak 2025",
+                                      controller.email.value,
                                       style: TextStyle(
                                           fontSize: 12,
+                                          color: Colors.white,
                                           fontWeight: FontWeight.w500),
                                     ),
                                   ],
@@ -89,12 +105,12 @@ class ProfilePage extends GetView<ProfileController> {
                                 IconButton(
                                     onPressed: () async {
                                       var result =
-                                      await Get.toNamed("/edit-profile");
+                                          await Get.toNamed("/edit-profile");
                                       if (result == 'refresh') {
                                         controller.getDetailUser();
                                       }
                                     },
-                                    icon: Icon(Icons.edit, color: Colors.black))
+                                    icon: Icon(Icons.edit, color: Colors.white))
                               ],
                             ),
                             SizedBox(
@@ -104,19 +120,18 @@ class ProfilePage extends GetView<ProfileController> {
                               children: [
                                 Expanded(
                                   child: ClipRRect(
-                                    borderRadius:
-                                    BorderRadius.circular(5), // Rounded corners
+                                    borderRadius: BorderRadius.circular(
+                                        5), // Rounded corners
                                     child: Obx(() {
                                       return LinearProgressIndicator(
-                                        value: controller.percentageData
-                                            .value / 100,
+                                        value: controller.percentageData.value /
+                                            100,
                                         minHeight: 4,
-                                        backgroundColor: Colors
-                                            .grey[300],
+                                        backgroundColor: Colors.grey[300],
                                         // Background track color
-                                        valueColor: AlwaysStoppedAnimation<
-                                            Color>(
-                                            Colors.black), // Progress color
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(Colors
+                                                .black54), // Progress color
                                       );
                                     }),
                                   ),
@@ -128,18 +143,18 @@ class ProfilePage extends GetView<ProfileController> {
                                   padding: EdgeInsets.all(5),
                                   decoration: BoxDecoration(
                                     border: Border.all(
-                                        color: Colors.black,
+                                        color: Colors.white,
                                         width: 1), // Border styling
-                                    borderRadius:
-                                    BorderRadius.circular(8), // Rounded corners
+                                    borderRadius: BorderRadius.circular(
+                                        8), // Rounded corners
                                   ),
                                   child: Obx(() {
                                     return Text(
-                                      "${controller.percentageData.value
-                                          .toStringAsFixed(0)}%",
+                                      "${controller.percentageData.value.toStringAsFixed(0)}%",
                                       // Display percentage
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
+                                          color: Colors.white,
                                           fontSize: 12),
                                     );
                                   }),
@@ -148,8 +163,8 @@ class ProfilePage extends GetView<ProfileController> {
                             ),
                             Text(
                               "Yuk lengkapi data diri kamu!",
-                              style: TextStyle(
-                                  fontSize: 10, color: Colors.grey),
+                              style:
+                                  TextStyle(fontSize: 10, color: Colors.white),
                             )
                           ],
                         ),
@@ -158,93 +173,126 @@ class ProfilePage extends GetView<ProfileController> {
                   ),
                 ),
                 SizedBox(
-                  height: 20,
-                ),
-                buildTileMenu(Icon(LineIcons.checkSquare, color: Colors.black,),
-                    "Berlangganan Prepaid Lebih Hemat Hingga 20%"),
-                buildTileMenu(
-                    Icon(LineIcons.user, color: Colors.black,), "Member Silver",
-                    subtitle: "Transaksi 35x lagi untuk naik ke Gold"),
-                SizedBox(
                   height: 10,
                 ),
-                SizedBox(
-                  width: 350,
-                  child: Row(
-                    children: [
-                      buildCardTile(
-                          Icon(LineIcons.alternateTicket, color: Colors.black,),
-                          "Kupon Hadiah", "1 Voucher"),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      buildCardTile(
-                          Icon(LineIcons.userPlus, color: Colors.black,),
-                          "Undang Teman", "0 Teman"),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: 350,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(color: Colors.black12, blurRadius: 5)
-                    ],
-                  ),
+                // buildTileMenu(Icon(LineIcons.checkSquare, color: Colors.black,),
+                //     "Berlangganan Prepaid Lebih Hemat Hingga 20%"),
+                Padding(
+                  padding: const EdgeInsets.all(15),
                   child: Column(
                     children: [
-                      // buildListTile(
-                      //   title: 'Dark Mode',
-                      //   icon: Icon(LineIcons.moon,),
-                      //   trailing: Switch(value: false, onChanged: (value) {}),
-                      //   ontap: () {},
-                      // ),
-                      buildListTile(
-                        title: 'Alamat',
-                        icon: Icon(LineIcons.mapMarker,),
-                        ontap: () {
-                          Get.toNamed("/alamat");
-                        },
+                      buildTileMenu(
+                          () {},
+                          Icon(
+                            LineIcons.user,
+                            color: Colors.black,
+                          ),
+                          "Member Silver",
+                          subtitle: "Transaksi 35x lagi untuk naik ke Gold"),
+                      SizedBox(
+                        height: 10,
                       ),
-                      buildListTile(
-                        title: 'Saldo',
-                        icon: Icon(LineIcons.wallet,),
-                        ontap: () {
-                          Get.toNamed("/info-saldo");
-                        },
+                      SizedBox(
+                        width: double.infinity,
+                        child: Row(
+                          children: [
+                            buildCardTile(
+                                () => Get.toNamed('/voucher'),
+                                Icon(
+                                  LineIcons.alternateTicket,
+                                  color: Colors.black,
+                                ),
+                                "Voucher",
+                                "0 Voucher"),
+                            SizedBox(
+                              width: 10,
+                            ),
+                            buildCardTile(
+                                () {},
+                                Icon(
+                                  LineIcons.userPlus,
+                                  color: Colors.black,
+                                ),
+                                "Undang Teman",
+                                "0 Teman"),
+                          ],
+                        ),
                       ),
-                      // buildListTile(
-                      //   title: 'Hubungi Kami',
-                      //   icon: Icon(LineIcons.phone,),
-                      //   ontap: () {},
-                      // ),
-                      buildListTile(
-                        title: 'Ketentuan Layanan',
-                        icon: Icon(LineIcons.clipboardList,),
-                        ontap: () {},
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(color: Colors.black12, blurRadius: 5)
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            // buildListTile(
+                            //   title: 'Dark Mode',
+                            //   icon: Icon(LineIcons.moon,),
+                            //   trailing: Switch(value: false, onChanged: (value) {}),
+                            //   ontap: () {},
+                            // ),
+                            buildListTile(
+                              title: 'Alamat',
+                              icon: Icon(
+                                LineIcons.mapMarker,
+                              ),
+                              ontap: () {
+                                Get.toNamed("/alamat");
+                              },
+                            ),
+                            buildListTile(
+                              title: 'Saldo',
+                              icon: Icon(
+                                LineIcons.wallet,
+                              ),
+                              ontap: () {
+                                Get.toNamed("/info-saldo");
+                              },
+                            ),
+                            // buildListTile(
+                            //   title: 'Hubungi Kami',
+                            //   icon: Icon(LineIcons.phone,),
+                            //   ontap: () {},
+                            // ),
+                            buildListTile(
+                              title: 'Ketentuan Layanan',
+                              icon: Icon(
+                                LineIcons.clipboardList,
+                              ),
+                              ontap: () {},
+                            ),
+                            buildListTile(
+                              title: 'Kebijakan Privasi',
+                              icon: Icon(
+                                LineIcons.userShield,
+                              ),
+                              ontap: () {
+                                Get.toNamed("/privacy_policy");
+                              },
+                            ),
+                            buildListTile(
+                              title: 'Keluar',
+                              icon: Icon(
+                                LineIcons.doorOpen,
+                              ),
+                              ontap: () {
+                                Get.find<LoginController>().logout();
+                              },
+                            ),
+                          ],
+                        ),
                       ),
-                      buildListTile(
-                        title: 'Kebijakan Privasi',
-                        icon: Icon(LineIcons.userShield,),
-                        ontap: () {
-                          Get.toNamed("/privacy_policy");
-                        },
-                      ),
-                      buildListTile(
-                        title: 'Keluar',
-                        icon: Icon(LineIcons.doorOpen,),
-                        ontap: () {
-                          Get.find<LoginController>().logout();
-                        },
-                      ),
-
                     ],
                   ),
                 ),
-                SizedBox(height: 10,)
+                SizedBox(
+                  height: 10,
+                )
               ],
             ),
           ),
@@ -253,72 +301,80 @@ class ProfilePage extends GetView<ProfileController> {
     );
   }
 
-  Expanded buildCardTile(Icon icon, String title, String value) {
+  Widget buildCardTile(
+      VoidCallback ontap, Icon icon, String title, String value) {
     return Expanded(
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-        margin: EdgeInsets.only(bottom: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(color: Colors.black12, blurRadius: 8)
-          ], // Rounded border
-          // border: Border.all(color: Colors.grey[300]!), // Light border color
-        ),
-        child: Column(
-          children: [
-            icon,
-            Text(title,
-                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13)),
-            Text(value, style: TextStyle(fontSize: 10)),
-          ],
+      child: GestureDetector(
+        onTap: ontap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+          margin: EdgeInsets.only(bottom: 10),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(color: Colors.black12, blurRadius: 8)
+            ], // Rounded border
+            // border: Border.all(color: Colors.grey[300]!), // Light border color
+          ),
+          child: Column(
+            children: [
+              icon,
+              Text(title,
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13)),
+              Text(value, style: TextStyle(fontSize: 10)),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Container buildTileMenu(Icon icon, String title, {String? subtitle}) {
-    return Container(
-      width: 350,
-      padding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-      margin: EdgeInsets.only(bottom: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12), // Rounded border
-        boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 5)
-        ], // Light border color
-      ),
-      child: Row(
-        children: [
-          Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  color: Colors.black12,
-                  borderRadius: BorderRadius.circular(8)),
-              child: icon),
-          SizedBox(
-            width: 15,
-          ),
-          Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
-                  ),
-                  subtitle != null
-                      ? Text(
-                    subtitle,
-                    style: TextStyle(fontSize: 10, color: Colors.grey),
-                  )
-                      : SizedBox()
-                ],
-              )),
-          Icon(Icons.chevron_right, color: Colors.black),
-        ],
+  Widget buildTileMenu(VoidCallback ontap, Icon icon, String title,
+      {String? subtitle}) {
+    return GestureDetector(
+      onTap: ontap,
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
+        margin: EdgeInsets.only(bottom: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12), // Rounded border
+          boxShadow: [
+            BoxShadow(color: Colors.black12, blurRadius: 5)
+          ], // Light border color
+        ),
+        child: Row(
+          children: [
+            Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(8)),
+                child: icon),
+            SizedBox(
+              width: 15,
+            ),
+            Expanded(
+                child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+                ),
+                subtitle != null
+                    ? Text(
+                        subtitle,
+                        style: TextStyle(fontSize: 10, color: Colors.grey),
+                      )
+                    : SizedBox()
+              ],
+            )),
+            Icon(Icons.chevron_right, color: Colors.black),
+          ],
+        ),
       ),
     );
   }
@@ -353,11 +409,13 @@ class buildListTile extends StatelessWidget {
 class AvatarCircle extends StatelessWidget {
   final String imageUrl;
   final double size;
+  final Color? color;
 
   const AvatarCircle({
     Key? key,
     required this.imageUrl,
     this.size = 80,
+    this.color = Colors.white,
   }) : super(key: key);
 
   @override
@@ -370,11 +428,10 @@ class AvatarCircle extends StatelessWidget {
           imageUrl: imageUrl,
           fit: BoxFit.cover,
           placeholder: (context, url) => const CircularProgressIndicator(),
-          errorWidget: (context, url, error) =>
-          const Icon(
+          errorWidget: (context, url, error) =>  Icon(
             Icons.person,
             size: 60,
-            color: Colors.grey,
+            color: color,
           ),
         ),
       ),

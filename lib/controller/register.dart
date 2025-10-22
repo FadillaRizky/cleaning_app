@@ -19,6 +19,7 @@ class RegisterController extends GetxController {
   final Rx<LoginModel.LoginResponse?> loginResponse =
       Rx<LoginModel.LoginResponse?>(null);
 
+  final TextEditingController referalCodeController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
@@ -86,6 +87,10 @@ class RegisterController extends GetxController {
         "email": emailController.text.trim(),
         "password": passwordController.text.trim(),
       };
+      
+      if (referalCodeController.text.trim().isNotEmpty) {
+        data["partner_referal_code"] = referalCodeController.text.trim();
+      }
 
       final response = await Api.register(data);
       if (response.status == "success" && response.data != null) {

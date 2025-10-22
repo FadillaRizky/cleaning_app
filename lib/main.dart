@@ -20,8 +20,11 @@ import 'package:cleaning_app/view/menu/pemesanan.dart';
 import 'package:cleaning_app/view/menu/profile.dart';
 import 'package:cleaning_app/view/menu/tagihan.dart';
 import 'package:cleaning_app/view/menu/tambah_alamat.dart';
+import 'package:cleaning_app/view/menu/voucher.dart';
+import 'package:cleaning_app/view/package_deskription.dart';
 import 'package:cleaning_app/view/register.dart';
 import 'package:cleaning_app/view/register_verify.dart';
+import 'package:cleaning_app/view/syarat_ketentuan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -133,7 +136,7 @@ class MyApp extends StatelessWidget {
             GetPage(
               name: '/menu',
               page: () => Menu(),
-              binding: HomeBindings(),
+              binding: MenuBindings(),
             ),
             GetPage(
               name: '/detail-category-daily',
@@ -175,10 +178,12 @@ class MyApp extends StatelessWidget {
             GetPage(
               name: '/isi-saldo',
               page: () =>  IsiSaldo(),
+              binding: TopupBindings(),
             ),
             GetPage(
               name: '/upload-bukti-topup',
               page: () =>  UploadBuktiTopup(),
+              binding: TopupBindings(),
             ),
             GetPage(
               name: '/topup-success',
@@ -218,6 +223,18 @@ class MyApp extends StatelessWidget {
             GetPage(
               name: '/instruksi_pembayaran',
               page: () =>  InstructionPage.fromArguments(),
+            ),
+            GetPage(
+              name: '/voucher',
+              page: () =>  VoucherPage(),
+            ),
+            GetPage(
+              name: '/package_description',
+              page: () =>  PackageDescription(),
+            ),
+            GetPage(
+              name: '/syarat_ketentuan',
+              page: () =>  SyaratKetentuan(),
             ),
           ],
         );

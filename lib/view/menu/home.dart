@@ -2,6 +2,7 @@ import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleaning_app/controller/home.dart';
 import 'package:cleaning_app/controller/profile.dart';
+import 'package:cleaning_app/view/menu/profile.dart';
 import 'package:cleaning_app/view/menu/tambah_alamat.dart';
 import 'package:cleaning_app/widget/cached_image.dart';
 import 'package:cleaning_app/widget/utils.dart';
@@ -23,7 +24,7 @@ class Home extends GetView<HomeController> {
   Widget build(BuildContext context) {
     final ProfileController profileController = Get.find<ProfileController>();
     return Scaffold(
-      key: const PageStorageKey('HomeScaffold'),
+      // key: const PageStorageKey('HomeScaffold'),
       body: SafeArea(
         child: GetBuilder<HomeController>(builder: (context) {
           return RefreshIndicator(
@@ -47,32 +48,10 @@ class Home extends GetView<HomeController> {
                             profileController.getDetailUser();
                           }
                         }, child: Obx(() {
-                          return ClipOval(
-                            child: CachedNetworkImage(
-                              imageUrl:  profileController.urlAvatar.value,
-                              fit: BoxFit.cover,
-                              height: 60,
-                              width: 60,
-                              placeholder: (context, url) => Center(
-                                child: SizedBox(
-                                  height: 40,
-                                  width: 40,
-                                  child: const CircularProgressIndicator(),
-                                ),
-                              ),
-                              errorWidget: (context, url, error) => Container(
-                                color: Colors
-                                    .grey[300], // biar ada background bulat
-                                height: 60,
-                                width: 60,
-                                child: Icon(
-                                  Icons
-                                      .image, // ganti dengan avatar icon kalau mau
-                                  size: 60,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                            ),
+                          return AvatarCircle(
+                            imageUrl: profileController.urlAvatar.value,
+                            size: 80,
+                            color: Colors.grey,
                           );
                         })),
                         SizedBox(
@@ -315,6 +294,7 @@ class Home extends GetView<HomeController> {
                                   //     ))
                                 ],
                               ),
+                              SizedBox(height: 8,),
                               FutureBuilder(
                                   future: controller.futurePackageList,
                                   builder: (context,
@@ -409,6 +389,7 @@ class Home extends GetView<HomeController> {
                                     "BEST SELLER SERVICES",
                                     style: TextStyle(fontSize: 16),
                                   ),
+                                  
                                   // TextButton(
                                   //     onPressed: () {},
                                   //     child: const Text(
@@ -421,6 +402,7 @@ class Home extends GetView<HomeController> {
                                   //     ))
                                 ],
                               ),
+                              SizedBox(height: 8,),
                               GridView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
@@ -567,16 +549,6 @@ class saldoSection extends StatelessWidget {
                   )),
             ],
           ),
-          // Row(
-          //   children: [
-          //     Icon(
-          //       Icons.star,
-          //       size: 22,
-          //       color: Colors.yellow,
-          //     ),
-          //     Text("1500 Point", style: TextStyle(color: Colors.white))
-          //   ],
-          // )
         ],
       ),
     );
