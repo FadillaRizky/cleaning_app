@@ -10,7 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
@@ -159,23 +161,45 @@ class PemesananController extends GetxController {
 
   confirmPayment(Map<String, dynamic> data) {
     Get.defaultDialog(
-      title: "Konfirmasi Pembayaran",
-      middleText:
-          "Apakah Anda yakin telah menyelesaikan pembayaran?\n Harap pastikan jumlah transfer dan nomor tujuan benar. Transaksi akan dibatalkan apabila terdapat kesalahan.",
-      textCancel: "Periksa Lagi",
-      textConfirm: "Ya, Kirim",
-      confirmTextColor: Colors.white,
-      barrierDismissible: true,
-      onCancel: () {},
-      onWillPop: () async {
-        return true;
-      },
-      onConfirm: () {
-        orderPackage(data);
-      },
-      buttonColor: Colors.blue,
-      radius: 10,
-    );
+  title: "Konfirmasi Pembayaran",
+  titleStyle:  TextStyle(
+    fontWeight: FontWeight.bold,
+    fontSize: 50.sp,
+    color: Colors.blueAccent,
+  ),
+  content: Column(
+    children:  [
+      Icon(
+        LineIcons.wallet,
+        color: Colors.blue,
+        size: 150.r,
+      ),
+      SizedBox(height: 12),
+      Text(
+        "Apakah Anda yakin ingin melanjutkan pembayaran?",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 45.sp, fontWeight: FontWeight.w500),
+      ),
+      SizedBox(height: 8),
+      Text(
+        "Pastikan nominal dan detail pesanan sudah benar sebelum melanjutkan.",
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 36.sp, color: Colors.grey),
+      ),
+    ],
+  ),
+  textCancel: "Periksa Lagi",
+  textConfirm: "Ya, Lanjutkan",
+  confirmTextColor: Colors.white,
+  buttonColor: Colors.blue,
+  barrierDismissible: true,
+  radius: 12,
+  onCancel: () {},
+  onConfirm: () {
+    orderPackage(data);
+  },
+);
+
   }
 
   Future<void> orderPackage(Map<String, dynamic> data) async {

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:carousel_slider/carousel_controller.dart';
+import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/model/ListCategoryPackageResponse.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -14,6 +15,7 @@ import '../model/HistoryTransaksiResponse.dart';
 import '../widget/popup.dart';
 
 class HomeController extends GetxController {
+  final userController = Get.find<ProfileController>();
   final RxInt currentIndex = 0.obs;
   final _storage = GetStorage();
   RxString userName = ''.obs;
@@ -39,6 +41,7 @@ class HomeController extends GetxController {
   Future<void> refreshPackage() async {
     // await Future.delayed(Duration(seconds: 2));
     futurePackageList = Api.getCategoryPackageList();
+    userController.getDetailUser();
     fetchSaldo();
     fetchNotif();
     update();

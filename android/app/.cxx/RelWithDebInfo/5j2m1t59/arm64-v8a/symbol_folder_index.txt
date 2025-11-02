@@ -1,0 +1,1 @@
+D:\AndroidStudioProjects\cleaning_app\build\app\intermediates\cxx\RelWithDebInfo\5j2m1t59\obj\arm64-v8a

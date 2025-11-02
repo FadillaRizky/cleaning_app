@@ -8,6 +8,7 @@ import 'package:cleaning_app/model/PropertyAddressResponse.dart';
 import 'package:cleaning_app/widget/cached_image.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:readmore/readmore.dart';
@@ -48,6 +49,7 @@ class DetailDailyCleaning extends GetView<PackageController> {
             },
           ),
         ),
+        backgroundColor: Colors.white,
         body: FutureBuilder(
             future: controller.getDetailPackage(id),
             builder: (context, snapshot) {
@@ -106,36 +108,39 @@ class DetailDailyCleaning extends GetView<PackageController> {
                   width: double.infinity,
                   placeholder: (context, url) =>
                       Center(child: const CircularProgressIndicator()),
-                  errorWidget: (context, url, error) => const Icon(
-                    Icons.person,
-                    size: 60,
+                  errorWidget: (context, url, error) => Icon(
+                    Icons.view_carousel,
+                    size: 150.r,
                     color: Colors.grey,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                  padding: EdgeInsets.all(43.r),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         detail.data!.pack!.packName!,
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 60.sp, fontWeight: FontWeight.bold),
+                      ),
+                      SizedBox(
+                        height: 10,
                       ),
                       ReadMoreText(
-                        detail.data!.pack!.packObjectDescription!,
+                        detail.data!.pack!.packGlobalDescription!,
                         trimLines: 10,
                         colorClickableText: Colors.blue,
                         trimMode: TrimMode.Line,
                         trimCollapsedText: 'Read more',
                         trimExpandedText: 'Read less',
-                        style: TextStyle(fontSize: 15),
+                        style: TextStyle(fontSize: 37.sp),
                         moreStyle: TextStyle(
-                            fontSize: 13,
+                            fontSize: 38.sp,
                             fontWeight: FontWeight.w500,
                             color: Colors.blue),
                         lessStyle: TextStyle(
-                            fontSize: 13,
+                            fontSize: 38.sp,
                             fontWeight: FontWeight.w500,
                             color: Colors.blue),
                       ),
@@ -144,9 +149,9 @@ class DetailDailyCleaning extends GetView<PackageController> {
                       ),
                       Divider(),
                       Text(
-                        "Durasi Pengerjaan",
+                        "Pilihan Durasi",
                         style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
+                            fontSize: 50.sp, fontWeight: FontWeight.bold),
                       ),
                       ListView.builder(
                         physics: NeverScrollableScrollPhysics(),
@@ -170,7 +175,7 @@ class DetailDailyCleaning extends GetView<PackageController> {
                       Text(
                         "Informasi Layanan",
                         style: TextStyle(
-                            fontSize: 17, fontWeight: FontWeight.bold),
+                            fontSize: 50.sp, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 10,
@@ -189,10 +194,20 @@ class DetailDailyCleaning extends GetView<PackageController> {
                                         borderRadius: BorderRadius.circular(8),
                                         child: CachedImage(
                                             imgUrl: data.pdescImgPath!,
-                                            height: 70,
-                                            width: 70)),
-                                    title: Text(data.pdescTitle!),
-                                    subtitle: Text(data.pdescDetail!),
+                                            height: 190.w,
+                                            width: 190.w)),
+                                    title: Text(
+                                      data.pdescTitle!,
+                                      style: TextStyle(
+                                          fontSize: 40.sp,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(
+                                      data.pdescDetail!,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(fontSize: 38.sp),
+                                    ),
                                   );
                                 }),
                           ),
@@ -203,8 +218,9 @@ class DetailDailyCleaning extends GetView<PackageController> {
                             path: '././assets/icon/detail_pengerjaan.svg',
                             title: 'Detail Pengerjaan',
                             widgetContent: SingleChildScrollView(
-                              child:
-                                  Text(detail.data!.pack!.packJobDescription!),
+                              child: Text(
+                                  detail.data!.pack!.packJobDescription!,
+                                  style: TextStyle(fontSize: 38.sp)),
                             ),
                           ),
                           SizedBox(
@@ -215,7 +231,8 @@ class DetailDailyCleaning extends GetView<PackageController> {
                             title: 'Peralatan',
                             widgetContent: SingleChildScrollView(
                               child: Text(
-                                  detail.data!.pack!.packObjectDescription!),
+                                  detail.data!.pack!.packObjectDescription!,
+                                  style: TextStyle(fontSize: 38.sp)),
                             ),
                           ),
                         ],
@@ -229,80 +246,100 @@ class DetailDailyCleaning extends GetView<PackageController> {
         ),
         Container(
             width: double.infinity,
-            padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
-            margin: const EdgeInsets.only(bottom: 15),
+            padding: EdgeInsets.all(45.r),
             decoration: BoxDecoration(
-              color: Color(0xfff4f4f4),
-            ),
-            child: Obx(() {
-  return Column(
-    children: [
-      ((discPercent != null && discPercent != 0.0) || profileController.hasVoucher.value ) && controller.selectedPriceDuration.value != ""
-          ? Column(
-              children: [
-                Obx(() {
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text(
-                        "Subtotal",
-                        style: TextStyle(fontWeight: FontWeight.w500),
-                      ),
-                      Text(
-                        Utils.formatCurrency(
-                          int.tryParse(controller.selectedDiscount.value) ?? 0,
-                        ),
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
-                  );
-                }),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "${profileController.hasVoucher.value ? "Voucher Member" : ""}"
-                      "${profileController.hasVoucher.value && discPercent != null && discPercent != 0.0 ? " + " : ""}"
-                      "${(discPercent != null && discPercent != 0.0) ? "Promo" : ""}",
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w500,
-                        color: Colors.red,
-                      ),
-                    ),
-                    Text(
-                      Utils.formatCurrency(
-                        (int.tryParse(controller.selectedPriceDuration.value) ?? 0) -
-                        (int.tryParse(controller.selectedDiscount.value) ?? 0),
-                      ),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ],
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2), // warna bayangan lembut
+                  spreadRadius: 2, // seberapa jauh bayangan menyebar
+                  blurRadius: 10, // seberapa lembut bayangan
+                  offset: const Offset(0, 4), // posisi bayangan (x, y)
                 ),
               ],
-            )
-          : const SizedBox.shrink(),
+            ),
+            child: Obx(() {
+              return Column(
+                children: [
+                  ((discPercent != null && discPercent != 0.0) ||
+                              profileController.hasVoucher.value) &&
+                          controller.selectedPriceDuration.value != ""
+                      ? Column(
+                          children: [
+                            Obx(() {
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                   Text(
+                                    "Subtotal",
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.w500,fontSize: 38.sp),
+                                  ),
+                                  Text(
+                                    Utils.formatCurrency(
+                                      int.tryParse(controller
+                                              .selectedDiscount.value) ??
+                                          0,
+                                    ),
+                                    style:  TextStyle(
+                                      fontSize: 38.sp,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              );
+                            }),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "${profileController.hasVoucher.value ? "Voucher Member" : ""}"
+                                  "${profileController.hasVoucher.value && discPercent != null && discPercent != 0.0 ? " + " : ""}"
+                                  "${(discPercent != null && discPercent != 0.0) ? "Promo" : ""}",
+                                  style:  TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.red,
+                                    fontSize: 38.sp
+                                  ),
+                                ),
+                                Text(
+                                  Utils.formatCurrency(
+                                    (int.tryParse(controller
+                                                .selectedPriceDuration.value) ??
+                                            0) -
+                                        (int.tryParse(controller
+                                                .selectedDiscount.value) ??
+                                            0),
+                                  ),
+                                  style:  TextStyle(
+                                    fontSize: 38.sp,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Divider(),
+                          ],
+                        )
+                      : const SizedBox.shrink(),
                   controller.selectedPriceDuration.value != ""
                       ? Column(
                           children: [
+                            
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   "Total",
-                                  style: TextStyle(fontWeight: FontWeight.w600),
+                                  style: TextStyle(fontWeight: FontWeight.w600,fontSize: 40.sp),
                                 ),
                                 Text(
                                     Utils.formatCurrency(int.parse(controller
                                         .selectedPriceDuration.value)),
                                     style: TextStyle(
-                                        fontSize: 16,
+                                        fontSize: 40.sp,
                                         fontWeight: FontWeight.bold)),
                               ],
                             ),
@@ -385,12 +422,12 @@ class cardLayanan extends StatelessWidget {
             builder: (BuildContext context) {
               return Center(
                 child: Container(
-                  height: 500,
-                  width: 350,
-                  padding: EdgeInsets.all(10),
+                  height: 1500.h,
+                  width: MediaQuery.of(context).size.width - 100.w,
+                  padding: EdgeInsets.all(43.r),
                   decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(30.r),
                   ),
                   child: Material(
                     color: Colors.transparent,
@@ -403,7 +440,7 @@ class cardLayanan extends StatelessWidget {
                               title,
                               maxLines: 2,
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                                  fontSize: 45.sp, fontWeight: FontWeight.bold),
                             ),
                             GestureDetector(
                                 onTap: () {
@@ -481,10 +518,10 @@ class SelectDuration extends StatelessWidget {
     print("realprice : $realPrice");
     return Obx(() {
       return RadioListTile(
-        contentPadding: EdgeInsets.zero,
+        contentPadding: EdgeInsets.only(right: 30.r),
         title: Text(
           "$title Jam",
-          style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 38.sp, fontWeight: FontWeight.bold),
         ),
         secondary: Row(
           mainAxisSize: MainAxisSize.min,
@@ -492,9 +529,9 @@ class SelectDuration extends StatelessWidget {
             (normalPrice != realPrice)
                 ? Text(
                     Utils.formatCurrency(normalPrice).toString(),
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.grey,
-                      fontSize: 12,
+                      fontSize: 33.sp,
                       decoration: TextDecoration.lineThrough,
                     ),
                   )
@@ -502,7 +539,7 @@ class SelectDuration extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               Utils.formatCurrency(realPrice).toString(),
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
             ),
           ],
         ),

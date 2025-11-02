@@ -3,8 +3,9 @@ import 'package:cleaning_app/controller/login.dart';
 import 'package:cleaning_app/view/menu/editprofile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
 
 import '../../controller/profile.dart';
@@ -31,7 +32,7 @@ class ProfilePage extends GetView<ProfileController> {
               children: [
                 Container(
                   width: double.infinity,
-                  padding: EdgeInsets.all(15),
+                  padding: EdgeInsets.all(45.r),
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
@@ -40,8 +41,8 @@ class ProfilePage extends GetView<ProfileController> {
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(30),
-                      bottomRight: Radius.circular(30),
+                      bottomLeft: Radius.circular(100.r),
+                      bottomRight: Radius.circular(100.r),
                     ),
                   ),
                   child: Row(
@@ -56,10 +57,10 @@ class ProfilePage extends GetView<ProfileController> {
                                 backgroundColor: Colors.transparent,
                                 elevation: 10,
                                 child: CircleAvatar(
-                                  radius: 100,
+                                  radius: 200.r,
                                   child: AvatarCircle(
-                                    imageUrl: controller.urlAvatar.value,
-                                    size: 200,
+                                    imageUrl:  controller.urlAvatar.value,
+                                    size: 400.r,
                                   ),
                                 ),
                               ),
@@ -67,12 +68,12 @@ class ProfilePage extends GetView<ProfileController> {
                           },
                           child: AvatarCircle(
                             imageUrl: controller.urlAvatar.value,
-                            size: 80,
+                            size: 220.r,
                           ),
                         );
                       }),
                       SizedBox(
-                        width: 20,
+                        width: 50.w,
                       ),
                       Expanded(
                         child: Column(
@@ -88,7 +89,7 @@ class ProfilePage extends GetView<ProfileController> {
                                       return Text(
                                         controller.username.value,
                                         style: TextStyle(
-                                            fontSize: 22,
+                                            fontSize: 55.sp,
                                             color: Colors.white,
                                             fontWeight: FontWeight.w500),
                                       );
@@ -96,7 +97,7 @@ class ProfilePage extends GetView<ProfileController> {
                                     Text(
                                       controller.email.value,
                                       style: TextStyle(
-                                          fontSize: 12,
+                                          fontSize: 34.sp,
                                           color: Colors.white,
                                           fontWeight: FontWeight.w500),
                                     ),
@@ -110,7 +111,11 @@ class ProfilePage extends GetView<ProfileController> {
                                         controller.getDetailUser();
                                       }
                                     },
-                                    icon: Icon(Icons.edit, color: Colors.white))
+                                    icon: Icon(
+                                      Icons.edit,
+                                      color: Colors.white,
+                                      size: 60.r,
+                                    ))
                               ],
                             ),
                             SizedBox(
@@ -126,7 +131,7 @@ class ProfilePage extends GetView<ProfileController> {
                                       return LinearProgressIndicator(
                                         value: controller.percentageData.value /
                                             100,
-                                        minHeight: 4,
+                                        minHeight: 10.h,
                                         backgroundColor: Colors.grey[300],
                                         // Background track color
                                         valueColor:
@@ -137,7 +142,7 @@ class ProfilePage extends GetView<ProfileController> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 15,
+                                  width: 45.w,
                                 ),
                                 Container(
                                   padding: EdgeInsets.all(5),
@@ -146,7 +151,7 @@ class ProfilePage extends GetView<ProfileController> {
                                         color: Colors.white,
                                         width: 1), // Border styling
                                     borderRadius: BorderRadius.circular(
-                                        8), // Rounded corners
+                                        24.r), // Rounded corners
                                   ),
                                   child: Obx(() {
                                     return Text(
@@ -155,7 +160,7 @@ class ProfilePage extends GetView<ProfileController> {
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white,
-                                          fontSize: 12),
+                                          fontSize: 33.sp),
                                     );
                                   }),
                                 ),
@@ -163,8 +168,8 @@ class ProfilePage extends GetView<ProfileController> {
                             ),
                             Text(
                               "Yuk lengkapi data diri kamu!",
-                              style:
-                                  TextStyle(fontSize: 10, color: Colors.white),
+                              style: TextStyle(
+                                  fontSize: 28.sp, color: Colors.white),
                             )
                           ],
                         ),
@@ -172,25 +177,17 @@ class ProfilePage extends GetView<ProfileController> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 10,
-                ),
                 // buildTileMenu(Icon(LineIcons.checkSquare, color: Colors.black,),
                 //     "Berlangganan Prepaid Lebih Hemat Hingga 20%"),
                 Padding(
-                  padding: const EdgeInsets.all(15),
+                  padding: EdgeInsets.only(
+                      bottom: 45.r, left: 45.r, right: 45.r, top: 0),
                   child: Column(
                     children: [
-                      buildTileMenu(
-                          () {},
-                          Icon(
-                            LineIcons.user,
-                            color: Colors.black,
-                          ),
-                          "Member Silver",
+                      buildTileMenu(() {}, "Member Silver",
                           subtitle: "Transaksi 35x lagi untuk naik ke Gold"),
                       SizedBox(
-                        height: 10,
+                        height: 30.h,
                       ),
                       SizedBox(
                         width: double.infinity,
@@ -201,6 +198,7 @@ class ProfilePage extends GetView<ProfileController> {
                                 Icon(
                                   LineIcons.alternateTicket,
                                   color: Colors.black,
+                                  size: 70.r,
                                 ),
                                 "Voucher",
                                 "0 Voucher"),
@@ -212,15 +210,19 @@ class ProfilePage extends GetView<ProfileController> {
                                 Icon(
                                   LineIcons.userPlus,
                                   color: Colors.black,
+                                  size: 70.r,
                                 ),
                                 "Undang Teman",
                                 "0 Teman"),
                           ],
                         ),
                       ),
+                      SizedBox(
+                        height: 30.h,
+                      ),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.all(16),
+                        padding: EdgeInsets.all(50.r),
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
@@ -230,56 +232,35 @@ class ProfilePage extends GetView<ProfileController> {
                         ),
                         child: Column(
                           children: [
-                            // buildListTile(
-                            //   title: 'Dark Mode',
-                            //   icon: Icon(LineIcons.moon,),
-                            //   trailing: Switch(value: false, onChanged: (value) {}),
-                            //   ontap: () {},
-                            // ),
                             buildListTile(
                               title: 'Alamat',
-                              icon: Icon(
-                                LineIcons.mapMarker,
-                              ),
+                              icon: LineIcons.mapMarker,
                               ontap: () {
                                 Get.toNamed("/alamat");
                               },
                             ),
                             buildListTile(
                               title: 'Saldo',
-                              icon: Icon(
-                                LineIcons.wallet,
-                              ),
+                              icon: LineIcons.wallet,
                               ontap: () {
                                 Get.toNamed("/info-saldo");
                               },
                             ),
-                            // buildListTile(
-                            //   title: 'Hubungi Kami',
-                            //   icon: Icon(LineIcons.phone,),
-                            //   ontap: () {},
-                            // ),
                             buildListTile(
                               title: 'Ketentuan Layanan',
-                              icon: Icon(
-                                LineIcons.clipboardList,
-                              ),
+                              icon: LineIcons.clipboardList,
                               ontap: () {},
                             ),
                             buildListTile(
                               title: 'Kebijakan Privasi',
-                              icon: Icon(
-                                LineIcons.userShield,
-                              ),
+                              icon: LineIcons.userShield,
                               ontap: () {
                                 Get.toNamed("/privacy_policy");
                               },
                             ),
                             buildListTile(
                               title: 'Keluar',
-                              icon: Icon(
-                                LineIcons.doorOpen,
-                              ),
+                              icon: LineIcons.doorOpen,
                               ontap: () {
                                 Get.find<LoginController>().logout();
                               },
@@ -290,9 +271,9 @@ class ProfilePage extends GetView<ProfileController> {
                     ],
                   ),
                 ),
-                SizedBox(
-                  height: 10,
-                )
+                // SizedBox(
+                //   height: 10,
+                // )
               ],
             ),
           ),
@@ -307,11 +288,10 @@ class ProfilePage extends GetView<ProfileController> {
       child: GestureDetector(
         onTap: ontap,
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-          margin: EdgeInsets.only(bottom: 10),
+          padding: EdgeInsets.symmetric(horizontal: 35.w, vertical: 40.h),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(45.r),
             boxShadow: [
               BoxShadow(color: Colors.black12, blurRadius: 8)
             ], // Rounded border
@@ -321,8 +301,9 @@ class ProfilePage extends GetView<ProfileController> {
             children: [
               icon,
               Text(title,
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13)),
-              Text(value, style: TextStyle(fontSize: 10)),
+                  style:
+                      TextStyle(fontWeight: FontWeight.w500, fontSize: 34.sp)),
+              Text(value, style: TextStyle(fontSize: 28.sp)),
             ],
           ),
         ),
@@ -330,51 +311,81 @@ class ProfilePage extends GetView<ProfileController> {
     );
   }
 
-  Widget buildTileMenu(VoidCallback ontap, Icon icon, String title,
-      {String? subtitle}) {
+  Widget buildTileMenu(VoidCallback ontap, String title, {String? subtitle}) {
     return GestureDetector(
       onTap: ontap,
-      child: Container(
-        width: double.infinity,
-        padding: EdgeInsets.symmetric(horizontal: 12, vertical: 15),
-        margin: EdgeInsets.only(bottom: 10),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12), // Rounded border
-          boxShadow: [
-            BoxShadow(color: Colors.black12, blurRadius: 5)
-          ], // Light border color
-        ),
-        child: Row(
-          children: [
-            Container(
-                padding: EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                    color: Colors.black12,
-                    borderRadius: BorderRadius.circular(8)),
-                child: icon),
-            SizedBox(
-              width: 15,
-            ),
-            Expanded(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13),
+      child: Stack(
+        alignment: Alignment(1, 1.5),
+        children: [
+          Container(
+            width: double.infinity,
+            padding: EdgeInsets.symmetric(horizontal: 35.r, vertical: 35.r),
+            margin: EdgeInsets.only(bottom: 30.h),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(36.r), // Rounded border
+              gradient: const LinearGradient(
+                begin: Alignment.bottomLeft,
+                end: Alignment.topRight,
+                colors: [
+                  Color(0xFF39B5FF), // Lighter blue at top
+                  // Color(0xFF9BD8F1), // Darker blue at bottom
+                  Color(0xFFB2E6FD), // Darker blue at bottom
+                ],
+              ),
+              boxShadow: [
+                // Top light shadow
+                BoxShadow(
+                  color: Colors.white.withOpacity(0.2),
+                  offset: const Offset(0, -1),
+                  blurRadius: 4,
                 ),
-                subtitle != null
-                    ? Text(
-                        subtitle,
-                        style: TextStyle(fontSize: 10, color: Colors.grey),
-                      )
-                    : SizedBox()
+                // Bottom shadow
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.2),
+                  offset: const Offset(0, 2),
+                  blurRadius: 4,
+                ),
+              ], // Light border color
+            ),
+            child: Row(
+              children: [
+                SizedBox(
+                  width: 240.w,
+                ),
+                Expanded(
+                    child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: GoogleFonts.poppins(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 38.sp,
+                          color: Colors.white),
+                    ),
+                    subtitle != null
+                        ? Text(
+                            subtitle,
+                            style: GoogleFonts.poppins(
+                                fontSize: 25.sp, color: Colors.white),
+                          )
+                        : SizedBox()
+                  ],
+                )),
+                Icon(Icons.chevron_right, color: Colors.white, size: 60.r),
               ],
-            )),
-            Icon(Icons.chevron_right, color: Colors.black),
-          ],
-        ),
+            ),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                  height: 265.w,
+                  width: 265.w,
+                  child: Image.asset("assets/icon/icon_member.png")),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -383,7 +394,7 @@ class ProfilePage extends GetView<ProfileController> {
 class buildListTile extends StatelessWidget {
   final Widget? trailing;
   final String title;
-  final Icon icon;
+  final IconData icon;
   final VoidCallback ontap;
 
   const buildListTile({
@@ -398,8 +409,8 @@ class buildListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 0),
-      leading: icon,
-      title: Text(title),
+      leading: Icon(icon,size: 65.r,),
+      title: Text(title,style: TextStyle(fontSize: 42.sp),),
       trailing: trailing,
       onTap: ontap,
     );
@@ -428,9 +439,9 @@ class AvatarCircle extends StatelessWidget {
           imageUrl: imageUrl,
           fit: BoxFit.cover,
           placeholder: (context, url) => const CircularProgressIndicator(),
-          errorWidget: (context, url, error) =>  Icon(
+          errorWidget: (context, url, error) => Icon(
             Icons.person,
-            size: 60,
+            size: 140.r,
             color: color,
           ),
         ),

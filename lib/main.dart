@@ -31,7 +31,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-
+import 'package:upgrader/upgrader.dart';
 
 import 'bindings.dart';
 import 'controller/login.dart';
@@ -69,176 +69,180 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-        designSize: const Size(1080, 1920),
+        designSize: const Size(1080, 2340),
         minTextAdapt: true,
         splitScreenMode: true,
-      builder: (_ , child) {
-        return GetMaterialApp(
-          debugShowCheckedModeBanner: false,
-          initialBinding: InitialBindings(),
-          builder: EasyLoading.init(),
-          title: 'Cleaning App',
-          locale: const Locale('id', 'ID'), // Set default locale to Indonesian
-          supportedLocales: const [
-            Locale('en', 'US'),
-            Locale('id', 'ID'),
-          ],
-          localizationsDelegates:  const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          fallbackLocale: const Locale('en', 'US'),
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-            scaffoldBackgroundColor: Colors.grey[100],
-            appBarTheme: AppBarTheme(color: Colors.white),
-            iconTheme: IconThemeData(color: Colors.white,),
-            fontFamily: 'Poppins',
-            textTheme: const TextTheme(
-              displayLarge: TextStyle(
-                fontFamily: 'Poppins',
-                fontSize: 32,
-                fontWeight: FontWeight.bold,
+        builder: (_, child) {
+          return UpgradeAlert(
+            dialogStyle: UpgradeDialogStyle.material,
+            showIgnore: false,
+            showLater: true,
+            upgrader: Upgrader(
+              languageCode: 'id',
+              storeController: UpgraderStoreController(
+                onAndroid: () => UpgraderPlayStore(),
               ),
-              bodyLarge: TextStyle(
+            ),
+            child: GetMaterialApp(
+              debugShowCheckedModeBanner: false,
+              initialBinding: InitialBindings(),
+              builder: EasyLoading.init(),
+              title: 'Cleaning App',
+              locale:
+                  const Locale('id', 'ID'), // Set default locale to Indonesian
+              supportedLocales: const [
+                Locale('en', 'US'),
+                Locale('id', 'ID'),
+              ],
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              fallbackLocale: const Locale('en', 'US'),
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+                scaffoldBackgroundColor: Colors.grey[100],
+                appBarTheme: AppBarTheme(color: Colors.white),
+                iconTheme: IconThemeData(
+                  color: Colors.white,
+                ),
                 fontFamily: 'Poppins',
-                fontSize: 16,
-                fontWeight: FontWeight.normal,
+                textTheme: const TextTheme(
+                  displayLarge: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 32,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  bodyLarge: TextStyle(
+                    fontFamily: 'Poppins',
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                  ),
+                  // ... other styles
+                ),
               ),
-              // ... other styles
+              initialRoute: isFirstOpen
+                  ? '/intro'
+                  : isLoggedIn
+                      ? '/menu'
+                      : '/login',
+              getPages: [
+                GetPage(name: '/intro', page: () => IntroductionPage()),
+                GetPage(
+                    name: '/login',
+                    page: () => LoginPage(),
+                    binding: InitialBindings()),
+                GetPage(
+                    name: '/register',
+                    page: () => const RegisterPage(),
+                    binding: RegisterBindings()),
+                GetPage(
+                  name: '/register-verify',
+                  page: () => RegisterVerify.fromArguments(),
+                ),
+                GetPage(
+                    name: '/profile',
+                    page: () => ProfilePage(),
+                    binding: ProfileBindings()),
+                GetPage(name: '/edit-profile', page: () => EditProfile()),
+                GetPage(
+                  name: '/menu',
+                  page: () => Menu(),
+                  binding: MenuBindings(),
+                ),
+                GetPage(
+                  name: '/detail-category-daily',
+                  page: () => DetailCategory.fromArguments(),
+                  binding: DetailPackageBindings(),
+                ),
+                // GetPage(
+                //   name: '/detail-category-deep',
+                //   page: () =>  DetailCategoryDeep.fromArguments(),
+                //   binding: DetailPackageBindings(),
+                // ),
+                GetPage(
+                  name: '/detail-daily',
+                  page: () => DetailDailyCleaning.fromArguments(),
+                  binding: DetailDailyBindings(),
+                ),
+                GetPage(
+                    name: '/pemesanan',
+                    page: () => Pemesanan(),
+                    binding: PemesananBindings()),
+                GetPage(
+                  name: '/tagihan',
+                  page: () => TagihanPage.fromArguments(),
+                ),
+                GetPage(
+                  name: '/pembayaran',
+                  page: () => Pembayaran(),
+                ),
+                GetPage(
+                  name: '/booking-success',
+                  page: () => BookingSuccess(),
+                ),
+                GetPage(
+                    name: '/invoice',
+                    page: () => InvoicePage(),
+                    binding: InvoiceBindings()),
+                GetPage(
+                  name: '/isi-saldo',
+                  page: () => IsiSaldo(),
+                  binding: TopupBindings(),
+                ),
+                GetPage(
+                  name: '/upload-bukti-topup',
+                  page: () => UploadBuktiTopup(),
+                  binding: TopupBindings(),
+                ),
+                GetPage(
+                  name: '/topup-success',
+                  page: () => TopupSuccess(),
+                ),
+                GetPage(
+                  name: '/info-saldo',
+                  page: () => InfoSaldo(),
+                ),
+                GetPage(
+                    name: '/alamat',
+                    page: () => DaftarAlamat(),
+                    binding: AlamatBindings()),
+                GetPage(
+                    name: '/tambah-alamat',
+                    page: () => TambahAlamat(),
+                    binding: AlamatBindings()),
+                GetPage(
+                  name: '/detail-order',
+                  page: () => OrderDetail(),
+                ),
+                GetPage(
+                  name: '/detail-notif',
+                  page: () => DetailNotif.fromArguments(),
+                ),
+                GetPage(
+                  name: '/privacy_policy',
+                  page: () => KebijakanPrivasi(),
+                ),
+                GetPage(
+                  name: '/instruksi_pembayaran',
+                  page: () => InstructionPage.fromArguments(),
+                ),
+                GetPage(
+                  name: '/voucher',
+                  page: () => VoucherPage(),
+                ),
+                GetPage(
+                  name: '/package_description',
+                  page: () => PackageDescription(),
+                ),
+                GetPage(
+                  name: '/syarat_ketentuan',
+                  page: () => SyaratKetentuan(),
+                ),
+              ],
             ),
-          ),
-          initialRoute: isFirstOpen
-              ? '/intro'
-              : isLoggedIn
-                  ? '/menu'
-                  : '/login',
-          getPages: [
-            GetPage(name: '/intro', page: () => IntroductionPage()),
-            GetPage(
-                name: '/login',
-                page: () => LoginPage(),
-                binding: InitialBindings()),
-            GetPage(
-                name: '/register',
-                page: () => const RegisterPage(),
-                binding: RegisterBindings()),
-            GetPage(
-              name: '/register-verify',
-              page: () => RegisterVerify.fromArguments(),
-            ),
-            GetPage(
-                name: '/profile',
-                page: () => ProfilePage(),
-                binding: ProfileBindings()),
-            GetPage(name: '/edit-profile', page: () => EditProfile()),
-            GetPage(
-              name: '/menu',
-              page: () => Menu(),
-              binding: MenuBindings(),
-            ),
-            GetPage(
-              name: '/detail-category-daily',
-              page: () =>  DetailCategory.fromArguments(),
-              binding: DetailPackageBindings(),
-            ),
-            // GetPage(
-            //   name: '/detail-category-deep',
-            //   page: () =>  DetailCategoryDeep.fromArguments(),
-            //   binding: DetailPackageBindings(),
-            // ),
-            GetPage(
-              name: '/detail-daily',
-              page: () =>  DetailDailyCleaning.fromArguments(),
-              binding: DetailDailyBindings(),
-            ),
-            GetPage(
-              name: '/pemesanan',
-              page: () =>  Pemesanan(),
-              binding: PemesananBindings()
-            ),
-            GetPage(
-              name: '/tagihan',
-              page: () =>  TagihanPage.fromArguments(),
-            ),
-            GetPage(
-              name: '/pembayaran',
-              page: () =>  Pembayaran(),
-            ),
-            GetPage(
-              name: '/booking-success',
-              page: () =>  BookingSuccess(),
-            ),
-            GetPage(
-              name: '/invoice',
-              page: () =>  InvoicePage(),
-              binding: InvoiceBindings()
-            ),
-            GetPage(
-              name: '/isi-saldo',
-              page: () =>  IsiSaldo(),
-              binding: TopupBindings(),
-            ),
-            GetPage(
-              name: '/upload-bukti-topup',
-              page: () =>  UploadBuktiTopup(),
-              binding: TopupBindings(),
-            ),
-            GetPage(
-              name: '/topup-success',
-              page: () =>  TopupSuccess(),
-            ),
-            GetPage(
-              name: '/info-saldo',
-              page: () =>  InfoSaldo(),
-            ),
-            GetPage(
-              name: '/alamat',
-              page: () =>  DaftarAlamat(),
-              binding: AlamatBindings()
-            ),
-            GetPage(
-                name: '/tambah-alamat',
-                page: () =>  TambahAlamat(),
-                binding: AlamatBindings()
-            ),
-            GetPage(
-                name: '/pilih-provinsi',
-                page: () =>  SelectProvince(),
-                binding: AlamatBindings()
-            ),
-            GetPage(
-                name: '/detail-order',
-                page: () =>  OrderDetail(),
-            ),
-            GetPage(
-              name: '/detail-notif',
-              page: () =>  DetailNotif.fromArguments(),
-            ),
-            GetPage(
-              name: '/privacy_policy',
-              page: () =>  KebijakanPrivasi(),
-            ),
-            GetPage(
-              name: '/instruksi_pembayaran',
-              page: () =>  InstructionPage.fromArguments(),
-            ),
-            GetPage(
-              name: '/voucher',
-              page: () =>  VoucherPage(),
-            ),
-            GetPage(
-              name: '/package_description',
-              page: () =>  PackageDescription(),
-            ),
-            GetPage(
-              name: '/syarat_ketentuan',
-              page: () =>  SyaratKetentuan(),
-            ),
-          ],
-        );
-      }
-    );
+          );
+        });
   }
 }

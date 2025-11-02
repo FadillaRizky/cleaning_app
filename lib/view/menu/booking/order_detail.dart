@@ -1,6 +1,9 @@
 import 'package:cleaning_app/controller/booking.dart';
 import 'package:cleaning_app/widget/popup.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
@@ -16,407 +19,579 @@ class OrderDetail extends GetView<BookingController> {
 
   @override
   Widget build(BuildContext context) {
+    controller.fetchDetailOrder();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("Detail Order"),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: FutureBuilder(
-            future: controller.getDetailorder(),
-            builder: (context, AsyncSnapshot<DetailOrderResponse> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Skeletonizer(
-                    child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text("asdajsdasd"), Text("asdajsdasd")],
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [Text("asdajsdasd"), Text("asdajsdasd")],
-                    )
-                  ],
-                ));
-              } else if (snapshot.hasError) {
-                return Text('Error: ${snapshot.error}');
-              } else if (!snapshot.hasData) {
-                return const Text('No list packages found.');
-              }
-              final data = snapshot.data!.data!;
+        padding: EdgeInsets.all(43.r),
+        child: Obx(() {
+          final data = controller.detailOrder.value;
 
-              final statusToStep = {
-                "open": 0,
-                "picked": 1,
-                "progress": 2,
-                "finish": 3,
-              };
-              controller.currentStep.value = statusToStep[data.orderStatus] ?? 0;
-              return Column(
+          if (data == null) {
+            // loading skeleton
+            return Skeletonizer(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.vertical,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    RichText(
-                                      text: TextSpan(
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.black,
-                                        ),
-                                        children: [
-                                          TextSpan(
-                                            text: controller.getStatusOrder(),
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.green,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text:
-                                                ' · ${controller.getDescriptionOrder()}',
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.normal,
-                                              color: Colors.black,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                Image.asset(
-                                  "assets/smartphone_icon.png",
-                                  height: 70,
-                                )
-                              ]),
-                          SizedBox(
-                            // width: double.infinity,
-                            height: 70,
-                            child: Obx(() {
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: List.generate(controller.steps.length,
-                                    (index) {
-                                  return Expanded(
-                                    child: TimelineTile(
-                                      axis: TimelineAxis.horizontal,
-                                      alignment: TimelineAlign.center,
-                                      isFirst: index == 0,
-                                      isLast:
-                                          index == controller.steps.length - 1,
-                                      beforeLineStyle: LineStyle(
-                                        color: index <=
-                                                controller.currentStep.value
-                                            ? Colors.blue
-                                            : Colors.grey.shade300,
-                                        thickness: 4,
-                                      ),
-                                      afterLineStyle: LineStyle(
-                                        color:
-                                            index < controller.currentStep.value
-                                                ? Colors.blue
-                                                : Colors.grey.shade300,
-                                        thickness: 4,
-                                      ),
-                                      indicatorStyle: IndicatorStyle(
-                                        width: 30,
-                                        height: 30,
-                                        drawGap: true,
-                                        indicatorXY: 0.5,
-                                        indicator: index == 0
-                                            ? Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        vertical: 6),
-                                                child: Image.asset(
-                                                    "assets/icon/icons.png"),
-                                              )
-                                            : Icon(
-                                                controller.steps[index],
-                                                color: index <=
-                                                        controller
-                                                            .currentStep.value
-                                                    ? Colors.blue
-                                                    : Colors.grey.shade400,
-                                                size: 20,
-                                              ),
-                                      ),
-                                    ),
-                                  );
-                                }),
-                              );
-                            }),
-                          ),
-                          controller.currentStep.value == 0
-                              ? Text(
-                                  "Kami akan segera menginformasikan mitra yang akan melayani anda.")
-                              : Row(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 30,
-                                      backgroundColor: Colors.black54,
-                                      child:
-                                      data.partnerPhoto == null
-                                          ? Text(
-                                        data.partnerName![0].toUpperCase(),
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      )
-                                          :
-                                      ClipOval(
-                                        child: Image.network(
-                                          data.partnerPhoto!,
-                                          fit: BoxFit.cover,
-                                          width: 60,
-                                          height: 60,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Column(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [Text("Loading..."), Text("Loading...")],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [Text("Loading..."), Text("Loading...")],
+                  ),
+                ],
+              ),
+            );
+          }
+          var result = data.data!;
+          return Column(
+            children: [
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: controller.fetchDetailOrder,
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              result.orderStatus == "new"
+                                  ? Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(
-                                          "Osem Irawan",
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 17),
-                                        ),
-                                        Text("0851 5842 6044",
-                                            style: TextStyle(fontSize: 13)),
+                                        RichText(
+                                          text: TextSpan(
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text: "Menunggu Verifikasi",
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.green,
+                                                    fontSize: 46.sp),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    ' · Pesananmu\nsedang diverifikasi oleh admin',
+                                                style: TextStyle(
+                                                    fontWeight:
+                                                        FontWeight.normal,
+                                                    color: Colors.black,
+                                                    fontSize: 42.sp),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )
+                                  : Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        RichText(
+                                          text: TextSpan(
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                            ),
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    controller.getStatusOrder(),
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.green,
+                                                    fontSize: 46.sp),
+                                              ),
+                                              TextSpan(
+                                                text:
+                                                    ' · ${controller.getDescriptionOrder()}',
+                                                style: TextStyle(
+                                                  fontSize: 42.sp,
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
                                       ],
                                     ),
-                                    Spacer(),
-                                    GestureDetector(
-                                      onTap: ()async{
-                                        final phone = data.partnerPhone.toString();
-                                        final url = 'https://wa.me/$phone';
-
-                                        if (await canLaunchUrl(Uri.parse(url))) {
-                                          await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-                                        } else {
-                                          print('Could not launch $url');
-                                        }
-                                      },
-                                      child: Icon(
-                                        LineIcons.whatSApp,
-                                        color: Colors.green,
-                                        size: 35,
+                              Image.asset(
+                                "assets/smartphone_icon.png",
+                                height: 190.h,
+                              )
+                            ]),
+                        result.orderStatus != "new"
+                            ? SizedBox(
+                                // width: double.infinity,
+                                height: 190.h,
+                                child: Obx(() {
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: List.generate(
+                                        controller.steps.length, (index) {
+                                      return Expanded(
+                                        child: TimelineTile(
+                                          axis: TimelineAxis.horizontal,
+                                          alignment: TimelineAlign.center,
+                                          isFirst: index == 0,
+                                          isLast: index ==
+                                              controller.steps.length - 1,
+                                          beforeLineStyle: LineStyle(
+                                            color: index <=
+                                                    controller.currentStep.value
+                                                ? Colors.blue
+                                                : Colors.grey.shade300,
+                                            thickness: 4,
+                                          ),
+                                          afterLineStyle: LineStyle(
+                                            color: index <
+                                                    controller.currentStep.value
+                                                ? Colors.blue
+                                                : Colors.grey.shade300,
+                                            thickness: 4,
+                                          ),
+                                          indicatorStyle: IndicatorStyle(
+                                            width: 80.w,
+                                            height: 80.w,
+                                            drawGap: true,
+                                            indicatorXY: 0.5,
+                                            indicator: index == 0
+                                                ? Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 17.r),
+                                                    child: Image.asset(
+                                                        "assets/icon/icons.png"),
+                                                  )
+                                                : Icon(
+                                                    controller.steps[index],
+                                                    color: index <=
+                                                            controller
+                                                                .currentStep
+                                                                .value
+                                                        ? Colors.blue
+                                                        : Colors.grey.shade400,
+                                                    size: 20,
+                                                  ),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                  );
+                                }),
+                              )
+                            : SizedBox(
+                                height: 60.h,
+                              ),
+                        result.orderStatus == "new"
+                            ? Text(
+                                "Kami akan segera menginformasikan setelah proses verifikasi selesai.",
+                                style: TextStyle(fontSize: 38.sp),
+                              )
+                            : controller.currentStep.value == 0
+                                ? Text(
+                                    "Kami akan segera menginformasikan mitra yang akan melayani anda.",
+                                    style: TextStyle(fontSize: 38.sp),
+                                  )
+                                : Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 80.r,
+                                        backgroundColor: Colors.grey,
+                                        child: result.partnerPhoto == null
+                                            ? Text(
+                                                result.partnerName![0]
+                                                    .toUpperCase(),
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 50.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              )
+                                            : ClipOval(
+                                                child: Image.network(
+                                                  result.partnerPhoto!,
+                                                  fit: BoxFit.cover,
+                                                  width: double.infinity,
+                                                  height: double.infinity,
+                                                ),
+                                              ),
                                       ),
+                                      SizedBox(
+                                        width: 30.w,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            result.partnerName!,
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 45.sp),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Text(result.partnerPhone!,
+                                                  style: TextStyle(
+                                                      fontSize: 35.sp)),
+                                              SizedBox(width: 5),
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Clipboard.setData(
+                                                    ClipboardData(
+                                                      text:
+                                                          result.partnerPhone!,
+                                                    ),
+                                                  );
+                                                  IconSnackBar.show(
+                                                    context,
+                                                    snackBarType:
+                                                        SnackBarType.alert,
+                                                    label:
+                                                        'Text berhasil di salin.',
+                                                  );
+                                                },
+                                                child: Icon(
+                                                  LineIcons.copy,
+                                                  color: Colors.black,
+                                                  size: 40.r,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      Spacer(),
+                                      GestureDetector(
+                                        onTap: () async {
+                                          final phone =
+                                              result.partnerPhone.toString();
+                                          final url = 'https://wa.me/$phone';
+
+                                          if (await canLaunchUrl(
+                                              Uri.parse(url))) {
+                                            await launchUrl(Uri.parse(url),
+                                                mode: LaunchMode
+                                                    .externalApplication);
+                                          } else {
+                                            print('Could not launch $url');
+                                          }
+                                        },
+                                        child: Icon(
+                                          LineIcons.whatSApp,
+                                          color: Colors.green,
+                                          size: 90.r,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                        Divider(),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "LAYANAN",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 38.sp),
+                              ),
+                              SizedBox(
+                                height: 20.h,
+                              ),
+                              Text(
+                                result.category!,
+                                style: TextStyle(
+                                    fontSize: 38.sp,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 10.h,
+                              ),
+                              (result.category != "Daily Cleaning")
+                                  ? Column(
+                                      children: result.dataPack!.map((item) {
+                                        return Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              item.packName!,
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 38.sp),
+                                            ),
+                                            Column(
+                                                children: item.dataObject
+                                                    .map((items) {
+                                              return Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Expanded(
+                                                    child: Text(
+                                                      " • ${items.objectName} x ${items.qty}",
+                                                      maxLines: 2,
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                          fontSize: 37.sp),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    Utils.formatCurrency(
+                                                        items.objectPrice!),
+                                                    style: TextStyle(
+                                                        fontSize: 37.sp),
+                                                  ),
+                                                ],
+                                              );
+                                            }).toList()),
+                                          ],
+                                        );
+                                      }).toList(),
                                     )
-                                  ],
-                                ),
-                          Divider(),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
+                                  : Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                              " • ${result.dataPack.first.packName} (${result.dataPack.first.packHour} Jam)",
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style:
+                                                  TextStyle(fontSize: 37.sp)),
+                                        ),
+                                        Text(
+                                            Utils.formatCurrency(result
+                                                .dataPack.first.packPrice!),
+                                            style: TextStyle(fontSize: 37.sp)),
+                                      ],
+                                    ),
+                              Divider(),
+                              Text(
+                                "LOKASI",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 38.sp),
+                              ),
+                              Text(
+                                result.propertyAddress!,
+                                maxLines: 3,
+                                style: TextStyle(fontSize: 37.sp),
+                              ),
+                              Divider(),
+                              Text(
+                                "TIPE PROPERTY",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 38.sp),
+                              ),
+                              Text(
+                                result.propertyType!,
+                                maxLines: 3,
+                                style: TextStyle(fontSize: 37.sp),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                "JADWAL PESANAN",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 38.sp),
+                              ),
+                              Text(
+                                Utils.formatTanggal(result.dueDate!),
+                                style: TextStyle(fontSize: 37.sp),
+                              ),
+                              Text(
+                                Utils.formatTime(result.dueTime!),
+                                style: TextStyle(fontSize: 37.sp),
+                              ),
+                              Divider(),
+                              Text(
+                                "CATATAN",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 38.sp),
+                              ),
+                              Text(
+                                result.orderNotes ?? "-",
+                                style: TextStyle(fontSize: 37.sp),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Card(
+                          color: Colors.white,
+                          elevation: 2,
+                          child: Padding(
+                            padding: EdgeInsets.all(43.r),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  "LAYANAN",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Metode Pembayaran",
+                                      style: TextStyle(fontSize: 38.sp),
+                                    ),
+                                    Text(
+                                      result.paymentType!.toUpperCase(),
+                                      style: TextStyle(fontSize: 38.sp),
+                                    ),
+                                  ],
                                 ),
-                                Text(data.category!),
-                                (data.category != "Daily Cleaning")
-                                    ? Column(
-                                        children: data.dataPack!.map((item) {
-                                          return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                item.packName!,
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                              Column(
-                                                  children: item.dataObject!
-                                                      .map((items) {
-                                                return Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Text("${items.objectName} x ${items.qty}"),
-                                                    Text(Utils.formatCurrency(
-                                                        items
-                                                            .objectPrice!)),
-                                                  ],
-                                                );
-                                              }).toList()),
-                                            ],
-                                          );
-                                        }).toList(),
-                                      )
-                                    : Row(
+                                Divider(),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Subtotal",
+                                      style: TextStyle(fontSize: 38.sp),
+                                    ),
+                                    Text(
+                                      Utils.formatCurrency(
+                                          result.ttlBasicPrice!),
+                                      style: TextStyle(fontSize: 38.sp),
+                                    ),
+                                  ],
+                                ),
+                                (result.ttlDiscPercent != 0)
+                                    ? Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Text(
-                                              "${data.dataPack!.first.packName} (${data.dataPack!.first.packHour} Jam)"),
-                                          Text(Utils.formatCurrency(
-                                              data.dataPack!.first.packPrice!)),
+                                            "Discount",
+                                            style: TextStyle(fontSize: 38.sp),
+                                          ),
+                                          Text(
+                                            "- ${Utils.formatCurrency(result.ttlDiscNominal!)}",
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 38.sp),
+                                          ),
                                         ],
-                                      ),
+                                      )
+                                    : SizedBox.shrink(),
+                                (result.propertyType == "Apartement")
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "Apartement Fee",
+                                            style: TextStyle(fontSize: 38.sp),
+                                          ),
+                                          Text(
+                                            Utils.formatCurrency(
+                                                result.propertyCharge!),
+                                            style: TextStyle(fontSize: 38.sp),
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox.shrink(),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Biaya Platform",
+                                      style: TextStyle(fontSize: 38.sp),
+                                    ),
+                                    Text(
+                                      Utils.formatCurrency(
+                                          result.platformCharge!),
+                                      style: TextStyle(fontSize: 38.sp),
+                                    ),
+                                  ],
+                                ),
+                                (result.tax != 0)
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            "PPN ${result.tax}%",
+                                            style: TextStyle(fontSize: 38.sp),
+                                          ),
+                                          Text(
+                                            Utils.formatCurrency(
+                                                result.nominalTax!),
+                                            style: TextStyle(fontSize: 38.sp),
+                                          ),
+                                        ],
+                                      )
+                                    : SizedBox.shrink(),
                                 Divider(),
-                                Text(
-                                  "LOKASI",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  data.propertyAddress!,
-                                  maxLines: 3,
-                                ),
-                                Divider(),
-                                Text(
-                                  "TIPE PROPERTY",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  data.propertyType!,
-                                  maxLines: 3,
-                                ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                Text(
-                                  "JADWAL PESANAN",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(Utils.formatTanggal(data.dueDate!)),
-                                Text(
-                                  Utils.formatTime(data.dueTime!),
-                                ),
-                                Divider(),
-                                Text(
-                                  "CATATAN",
-                                  style: TextStyle(fontWeight: FontWeight.bold),
-                                ),
-                                Text(
-                                  data.orderNotes ?? "",
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "TOTAL PEMBAYARAN",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 38.sp),
+                                    ),
+                                    Text(
+                                      Utils.formatCurrency(
+                                          result.ttlSellingNominal!),
+                                      style: TextStyle(fontSize: 38.sp),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
                           ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Card(
-                            color: Colors.white,
-                            elevation: 2,
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Subtotal"),
-                                      Text(
-                                          Utils.formatCurrency(data.ttlBasicPrice!)),
-                                    ],
-                                  ),
-                                  (data.ttlDiscPercent != 0)
-                                  ? Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Discount"),
-                                      Text("- ${Utils.formatCurrency(
-                                          data.ttlDiscNominal!)}",style: TextStyle(color: Colors.red),),
-                                    ],
-                                  )
-                                  : SizedBox.shrink(),
-                                  (data.propertyType == "Apartement")
-                                  ? Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Apartement Fee"),
-                                      Text(Utils.formatCurrency(
-                                          data.propertyCharge!)),
-                                    ],
-                            )
-                            : SizedBox.shrink(),
-                            Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Biaya Platform"),
-                                      Text(Utils.formatCurrency(
-                                          data.platformCharge!),),
-                                    ],
-                                  ),
-                            (data.tax != 0)
-                                  ? Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "PPN ${data.tax}%",
-                                      ),
-                                      Text(Utils.formatCurrency(
-                                          data.nominalTax!)),
-                                    ],
-                                  )
-                                  : SizedBox.shrink(),
-                                  Divider(),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("TOTAL PEMBAYARAN",style:
-                                      TextStyle(fontWeight: FontWeight.bold)),
-                                      Text(Utils.formatCurrency(
-                                          data.ttlSellingNominal!)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ],
-                      ),
+                        )
+                      ],
                     ),
                   ),
-                  data.orderStatus != "finish"
-                  ? SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(20))),
-                        onPressed: () {
-                          showCancelDialog(context, data.orderId!.toInt());
-                        },
-                        child: Text("Batalkan Pesanan")),
-                  )
-                      : SizedBox.shrink()
-                ],
-              );
-            }),
+                ),
+              ),
+              result.orderStatus == "finish" || result.orderStatus == "progress"
+                  ? SizedBox.shrink()
+                  : SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20))),
+                          onPressed: () {
+                            showCancelDialog(context, result.orderId!.toInt());
+                          },
+                          child: Text("Batalkan Pesanan")),
+                    )
+            ],
+          );
+        }),
       ),
     );
   }
@@ -426,7 +601,7 @@ class OrderDetail extends GetView<BookingController> {
 
     var optionReason = [
       "Salah Memasukkan Alamat",
-      "Ingin Mengubah Produk Layanan",
+      "Ingin Mengubah Jenis Layanan",
       "Order dibuat Secara Tidak Sengaja"
     ];
     showDialog(
@@ -434,28 +609,34 @@ class OrderDetail extends GetView<BookingController> {
       builder: (BuildContext context) {
         return Center(
             child: Container(
-                width: 350,
-                padding: EdgeInsets.all(10),
+                width: MediaQuery.of(context).size.width - 100.w,
+                padding: EdgeInsets.all(30.r),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(30.r),
                 ),
                 child: Material(
                     color: Colors.transparent,
                     child: Column(mainAxisSize: MainAxisSize.min, children: [
-                      const Text(
+                      Text(
                         'Konfirmasi Pembatalan',
                         style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold),
+                            fontSize: 55.sp, fontWeight: FontWeight.bold),
                       ),
-                      const SizedBox(height: 15),
-                      const Text("Silakan isi alasan pembatalan:"),
+                      SizedBox(height: 30.h),
+                      Text("Silakan isi alasan pembatalan:",
+                          style: TextStyle(
+                            fontSize: 40.sp,
+                          )),
                       const SizedBox(height: 10),
                       TextField(
                         controller: reasonController,
                         maxLines: 3,
+                        style: TextStyle(fontSize: 37.sp),
                         decoration: InputDecoration(
+                        
                           hintText: "Tulis alasan...",
+                          hintStyle: TextStyle(fontSize: 37.sp),
                           border: OutlineInputBorder(
                             borderSide:
                                 BorderSide(color: Colors.grey, width: 1),
@@ -490,6 +671,7 @@ class OrderDetail extends GetView<BookingController> {
                                       optionReason[index],
                                       style: TextStyle(
                                         color: Colors.black,
+                                        fontSize: 34.sp
                                       ),
                                     ),
                                   ),

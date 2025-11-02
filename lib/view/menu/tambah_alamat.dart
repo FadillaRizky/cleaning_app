@@ -37,18 +37,22 @@ class DaftarAlamat extends GetView<AlamatController> {
             child: Container(
               width: double.infinity,
               padding: EdgeInsets.symmetric(vertical: 10),
-              color: Colors.white,
+              color: Colors.grey,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Icon(
                     Icons.add_circle_outline,
-                    color: Colors.black,
+                    color: Colors.white,
+                    size: 50.r,
                   ),
                   SizedBox(
                     width: 5,
                   ),
-                  Text("Tambah Alamat"),
+                  Text(
+                    "Tambah Alamat",
+                    style: TextStyle(fontSize: 38.sp, color: Colors.white),
+                  ),
                 ],
               ),
             ),
@@ -124,7 +128,8 @@ class DaftarAlamat extends GetView<AlamatController> {
                                         snapshot
                                             .data!.data![index].propertyType!,
                                         style: TextStyle(
-                                            fontWeight: FontWeight.bold)),
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 40.sp)),
                                     SizedBox(width: 8),
                                     snapshot.data!.data![index].isDefault == "1"
                                         ? Container(
@@ -138,8 +143,8 @@ class DaftarAlamat extends GetView<AlamatController> {
                                             child: Text(
                                               "Utama",
                                               style: TextStyle(
-                                                  fontSize: 10,
-                                                  color: Colors.black),
+                                                  color: Colors.black,
+                                                  fontSize: 30.sp),
                                             ),
                                           )
                                         : SizedBox.shrink()
@@ -149,21 +154,23 @@ class DaftarAlamat extends GetView<AlamatController> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                        "${snapshot.data!.data![index].picName!} (${snapshot.data!.data![index].picPhone})"),
+                                      "${snapshot.data!.data![index].picName!} (${snapshot.data!.data![index].picPhone})",
+                                      style: TextStyle(fontSize: 38.sp),
+                                    ),
                                     Text(
                                       snapshot.data!.data![index]
                                               .propertyAddress ??
                                           "",
-                                      style: TextStyle(fontSize: 13),
+                                      style: TextStyle(fontSize: 36.sp),
                                     ),
                                     Text(
                                       snapshot.data!.data![index].description!,
-                                      style: TextStyle(fontSize: 13),
+                                      style: TextStyle(fontSize: 36.sp),
                                     ),
                                   ],
                                 ),
                                 contentPadding:
-                                    EdgeInsets.fromLTRB(15, 5, 0, 5),
+                                    EdgeInsets.fromLTRB(45.r, 15.r, 15.r, 15.r),
                                 tileColor: Colors.white,
                               ),
                               SizedBox(
@@ -222,7 +229,7 @@ class TambahAlamat extends GetView<AlamatController> {
                     child: Column(
                       children: [
                         Container(
-                          height: 400,
+                          height: 1000.h,
                           child: Stack(children: [
                             FlutterMap(
                               mapController: controller.mapController,
@@ -248,9 +255,9 @@ class TambahAlamat extends GetView<AlamatController> {
                               children: [
                                 TileLayer(
                                   urlTemplate:
-                                      'https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.png?key=jgR9RzmD0bqJ3JFDMu0u',
+                                      'https://api.maptiler.com/maps/openstreetmap/{z}/{x}/{y}.png?key=eRLVaXvBVHP7PY5RwKuF',
                                   additionalOptions: {
-                                    'key': '1gNKYIfx6aHHTUGgvDgW',
+                                    'key': 'eRLVaXvBVHP7PY5RwKuF',
                                   },
                                   userAgentPackageName: 'com.example.myapp',
                                 ),
@@ -269,8 +276,8 @@ class TambahAlamat extends GetView<AlamatController> {
                                         ? [
                                             Marker(
                                               point: loc,
-                                              width: 40,
-                                              height: 40,
+                                              width: 120.w,
+                                              height: 120.w,
                                               child: Icon(Icons.location_on,
                                                   color: Colors.red, size: 30),
                                             )
@@ -282,8 +289,8 @@ class TambahAlamat extends GetView<AlamatController> {
                             ),
                             !isDetail
                                 ? Positioned(
-                                    bottom: 10,
-                                    right: 10,
+                                    bottom: 30.w,
+                                    right: 30.w,
                                     child: ElevatedButton.icon(
                                         style: ElevatedButton.styleFrom(
                                             backgroundColor: Colors.blue,
@@ -357,7 +364,7 @@ class TambahAlamat extends GetView<AlamatController> {
                                               : Text(
                                                   "Gunakan lokasi saat ini",
                                                   style:
-                                                      TextStyle(fontSize: 12),
+                                                      TextStyle(fontSize: 33.sp),
                                                 );
                                         })),
                                   )
@@ -379,14 +386,14 @@ class TambahAlamat extends GetView<AlamatController> {
                                           Text(
                                               controller.specificLocation.value,
                                               style: TextStyle(
-                                                  fontSize: 16,
+                                                  fontSize: 43.sp,
                                                   fontWeight: FontWeight.bold,
                                                   color: Colors.black)),
                                         ],
                                       ),
                                       Text(
                                         controller.detailLocation.value,
-                                        style: TextStyle(color: Colors.grey),
+                                        style: TextStyle(color: Colors.grey,fontSize: 38.sp),
                                       ),
                                     ],
                                   ),
@@ -406,8 +413,9 @@ class TambahAlamat extends GetView<AlamatController> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         FieldAlamat(
-                            label: "Nama",
-                            controller: controller.nameController,),
+                          label: "Nama",
+                          controller: controller.nameController,
+                        ),
                         FieldAlamat(
                           label: "Nomor Telepon",
                           controller: controller.phoneNumberController,
@@ -421,14 +429,14 @@ class TambahAlamat extends GetView<AlamatController> {
                           return DropdownButtonFormField<String>(
                               decoration: InputDecoration(
                                 labelText: 'Type Property',
-                                labelStyle: TextStyle(color: Colors.black),
+                                labelStyle: TextStyle(color: Colors.black,fontSize: 40.sp),
                                 border: InputBorder.none,
                               ),
                               value: controller.selectedProperty.value == ''
                                   ? null
                                   : controller.selectedProperty.value,
                               style:
-                                  TextStyle(color: Colors.black, fontSize: 15),
+                                  TextStyle(color: Colors.black, fontSize: 40.sp),
                               items: controller.typeProperty.map((property) {
                                 return DropdownMenuItem<String>(
                                   value: property,
@@ -436,7 +444,7 @@ class TambahAlamat extends GetView<AlamatController> {
                                 );
                               }).toList(),
                               onChanged: (val) =>
-                                      controller.selectedProperty.value = val!);
+                                  controller.selectedProperty.value = val!);
                         }),
                         Obx(() {
                           return Row(
@@ -445,18 +453,16 @@ class TambahAlamat extends GetView<AlamatController> {
                               Text(
                                 "Jadikan Alamat Utama",
                                 style: TextStyle(
-                                    fontSize: 15,
-                                    color:
-                                        Colors.black),
+                                    fontSize: 40.sp, color: Colors.black),
                               ),
                               Switch(
                                 value: controller.isDefaultAddress.value,
                                 activeColor: Colors.blue,
                                 inactiveThumbColor: Colors.grey,
-                                onChanged:(value) {
-                                        controller.isDefaultAddress.value =
-                                            !controller.isDefaultAddress.value;
-                                      },
+                                onChanged: (value) {
+                                  controller.isDefaultAddress.value =
+                                      !controller.isDefaultAddress.value;
+                                },
                               ),
                             ],
                           );
@@ -477,54 +483,54 @@ class TambahAlamat extends GetView<AlamatController> {
             child: Column(
               children: [
                 SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              foregroundColor: Colors.white),
-                          onPressed: () async {
-                            if (controller.nameController.text.isEmpty) {
-                              EasyLoading.showError("Nama Kosong");
-                              return;
-                            }
-                            if (controller.phoneNumberController.text.isEmpty) {
-                              EasyLoading.showError("Nomor Telepon Kosong");
-                              return;
-                            }
-                            if (controller.detailAddressController.text.isEmpty) {
-                              EasyLoading.showError("Detail Alamat Kosong");
-                              return;
-                            }
-                            if (controller.selectedProperty.value == "") {
-                              EasyLoading.showError("Type Property Kosong");
-                              return;
-                            }
-                            if (controller.latlongLocation.value.isEmpty) {
-                              EasyLoading.showError("Silahkan Pilih Titik Lokasi");
-                              return;
-                            }
-                
-                            var data = {
-                              "pic_name": controller.nameController.text,
-                              "pic_phone": controller.phoneNumberController.text,
-                              "property_type": controller.selectedProperty.value,
-                              "lat": controller.latLocation.value,
-                              "long": controller.longLocation.value,
-                              "property_address": controller.detailLocation.value,
-                              "description":
-                                  controller.detailAddressController.text,
-                              "is_default":
-                                  controller.isDefaultAddress.value ? "1" : "0"
-                            };
-                            if (isDetail) {
-                               data["id"] = controller.idAddress.value;
-                            }
-                            controller.fetchAddress(data,isDetail);
-                          },
-                          child: Text("Simpan"),
-                        )),
-                    (isDetail)
-                    ?  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blue,
+                          foregroundColor: Colors.white),
+                      onPressed: () async {
+                        if (controller.nameController.text.isEmpty) {
+                          EasyLoading.showError("Nama Kosong");
+                          return;
+                        }
+                        if (controller.phoneNumberController.text.isEmpty) {
+                          EasyLoading.showError("Nomor Telepon Kosong");
+                          return;
+                        }
+                        if (controller.detailAddressController.text.isEmpty) {
+                          EasyLoading.showError("Detail Alamat Kosong");
+                          return;
+                        }
+                        if (controller.selectedProperty.value == "") {
+                          EasyLoading.showError("Type Property Kosong");
+                          return;
+                        }
+                        if (controller.latlongLocation.value.isEmpty) {
+                          EasyLoading.showError("Silahkan Pilih Titik Lokasi");
+                          return;
+                        }
+
+                        var data = {
+                          "pic_name": controller.nameController.text,
+                          "pic_phone": controller.phoneNumberController.text,
+                          "property_type": controller.selectedProperty.value,
+                          "lat": controller.latLocation.value,
+                          "long": controller.longLocation.value,
+                          "property_address": controller.detailLocation.value,
+                          "description":
+                              controller.detailAddressController.text,
+                          "is_default":
+                              controller.isDefaultAddress.value ? "1" : "0"
+                        };
+                        if (isDetail) {
+                          data["id"] = controller.idAddress.value;
+                        }
+                        controller.fetchAddress(data, isDetail);
+                      },
+                      child: Text("Simpan"),
+                    )),
+                (isDetail)
+                    ? SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -536,7 +542,7 @@ class TambahAlamat extends GetView<AlamatController> {
                             },
                             child: Text("Hapus Alamat")),
                       )
-                      : SizedBox.shrink()
+                    : SizedBox.shrink()
               ],
             ),
           )
@@ -575,32 +581,16 @@ class FieldAlamat extends StatelessWidget {
         keyboardType: keyboardType,
         readOnly: readOnly ?? false,
         maxLines: maxlines,
-        style: TextStyle(fontSize: 15, color: Colors.grey),
+        style: TextStyle(fontSize: 40.sp, color: Colors.grey),
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(fontSize: 15, color: Colors.black),
+          labelStyle: TextStyle(fontSize: 40.sp, color: Colors.black),
           suffixIcon: isCurrentLocation ? Icon(Icons.arrow_forward_ios) : null,
           border: InputBorder.none,
           focusedBorder:
               UnderlineInputBorder(borderSide: BorderSide(color: Colors.grey)),
           enabled: isProvince || isCurrentLocation ? false : true,
         ),
-      ),
-    );
-  }
-}
-
-class SelectProvince extends StatelessWidget {
-  const SelectProvince({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Pilih Alamat"),
-      ),
-      body: Column(
-        children: [],
       ),
     );
   }

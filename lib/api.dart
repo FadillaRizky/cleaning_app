@@ -12,6 +12,7 @@ import 'package:cleaning_app/model/GetListOrderResponse.dart';
 import 'package:cleaning_app/model/GetSaldoResponse.dart';
 import 'package:cleaning_app/model/HistoryTransaksiResponse.dart';
 import 'package:cleaning_app/model/ListCategoryPackageResponse.dart';
+import 'package:cleaning_app/model/LogoutResponse.dart';
 import 'package:cleaning_app/model/ObjectPackageResponse.dart';
 import 'package:cleaning_app/model/OrderPackageResponse.dart';
 import 'package:cleaning_app/model/PropertyAddressResponse.dart';
@@ -103,6 +104,35 @@ class Api {
       throw 'An unexpected error occurred during login.';
     }
   }
+  
+  static Future<LogoutResponse> logout() async {
+    try {
+      var url = "$baseUrl/partner/logout";
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http
+            .get(
+              Uri.parse(url),
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer $token',
+              },
+            )
+            .timeout(const Duration(seconds: 10));
+      });
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        return LogoutResponse.fromJson(jsonDecode(response.body));
+      } else {
+        throw "Unable to Logout :${response.body}";
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Logout: $e');
+      throw e;
+    }
+  }
 
   static Future<RefreshTokenResponse> refreshToken() async {
     try {
@@ -175,7 +205,8 @@ class Api {
       });
 
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        final decodedBody = utf8.decode(response.bodyBytes);
+      final data = jsonDecode(decodedBody);
         return ListCategoryPackageResponse.fromJson(data);
       } else {
         final errorData = jsonDecode(response.body);

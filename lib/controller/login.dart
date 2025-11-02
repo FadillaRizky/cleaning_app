@@ -1,5 +1,8 @@
 import 'package:cleaning_app/bindings.dart';
+import 'package:cleaning_app/widget/popup.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
@@ -92,26 +95,132 @@ class LoginController extends GetxController {
   }
 
   void logout() async {
-    Get.dialog(
-      AlertDialog(
-        title: Text('Confirm Logout'),
-        content: Text('Are you sure you want to log out?'),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Get.back(); // Close the dialog
-            },
-            child: Text('Cancel'),
+    // Get.dialog(
+    //   AlertDialog(
+    //     title: Text('Confirm Logout'),
+    //     content: Text('Are you sure you want to log out?'),
+    //     actions: [
+    //       TextButton(
+    //         onPressed: () {
+    //           Get.back(); // Close the dialog
+    //         },
+    //         child: Text('Cancel'),
+    //       ),
+    //       TextButton(
+    //         onPressed: () async {
+    //           await _removeInitialLoginData();
+    //           Get.offAllNamed('/login');
+    //         },
+    //         child: Text('Logout'),
+    //       ),
+    //     ],
+    //   ),
+    // );
+
+     Get.dialog(
+      Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(25),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () async {
-              await _removeInitialLoginData();
-              Get.offAllNamed('/login');
-            },
-            child: Text('Logout'),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Icon dengan animasi
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.red[50],
+                  shape: BoxShape.circle,
+                ),
+                padding: EdgeInsets.all(42.r),
+                child: Icon(
+                  Icons.logout_rounded,
+                  color: Colors.red,
+                  size: 100.r,
+                ),
+              ),
+              SizedBox(height: 25.h),
+              Text(
+                "Keluar dari akun?",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40.sp),
+              ),
+              SizedBox(height: 24.h),
+              Text(
+                "Apakah kamu yakin ?",
+                textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey, fontSize: 38.sp),
+              ),
+              SizedBox(height: 35.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Get.back(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[300],
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 33.h),
+                      ),
+                      child: Text("Batal", style: TextStyle(fontSize: 38.sp)),
+                    ),
+                  ),
+                  SizedBox(width: 36.w),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Get.back();
+                        try {
+                          EasyLoading.show(status: 'Keluar...');
+
+                          final response = await Api.logout();
+
+                          if (response.status == true) {
+                            await _removeInitialLoginData();
+                            EasyLoading.dismiss();
+                            Get.offAllNamed('/login');
+                          } else {
+                            EasyLoading.dismiss();
+                            SnackbarUtil.error(
+                              "Terjadi kesalahan, coba lagi..",
+                            );
+                          }
+                        } catch (e) {
+                          EasyLoading.dismiss();
+                          SnackbarUtil.error("Logout gagal: ${e.toString()}");
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 33.h),
+                      ),
+                      child: Text("Keluar", style: TextStyle(fontSize: 38.sp)),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
-        ],
+        ),
       ),
+      barrierColor: Colors.black.withOpacity(0.4),
+      barrierDismissible: true,
     );
   }
 }

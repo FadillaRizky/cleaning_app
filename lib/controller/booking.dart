@@ -9,36 +9,40 @@ import '../api.dart';
 import '../model/DetailOrderResponse.dart';
 
 class BookingController extends GetxController {
+  var detailOrder = Rxn<DetailOrderResponse>();
+  var currentStep = 0.obs;
   var selectedIndex = 1.obs;
   var selectedStatus = "aktif".obs;
   var isLoading = false.obs;
   var listOrder = <Data.Data>[].obs;
 
   var status = <String>[
-    "Menunggu",
+    "Menunggu Verifikasi",
     "Aktif",
-    "Completed",
+    "Selesai",
     "Cancel",
   ];
 
-  var currentStep = 0.obs;
   var steps = [
     LineIcons.broom,
-    Icons.person,
-    LineIcons.broom,
+    Icons.motorcycle_outlined,
     Icons.home,
+    LineIcons.broom,
+    Icons.check_circle,
   ].obs;
 
   String getStatusOrder() {
     switch (currentStep.value) {
       case 0:
-        return 'Order';
+        return 'Open';
       case 1:
-        return 'Menuju Lokasi';
+        return 'Picked';
       case 2:
-        return 'Dalam Proses';
+        return 'Arrived';
       case 3:
-        return 'Selesai';
+        return 'Progress';
+      case 4:
+        return 'Finish';
       default:
         return 'Status Tidak Dikenal';
     }
@@ -49,11 +53,13 @@ class BookingController extends GetxController {
       case 0:
         return 'Kami sudah\nmenerima pesananmu';
       case 1:
-        return 'Mitra kami segera\nmenuju lokasi anda';
+        return 'Mitra kami segera\nmenuju lokasi';
       case 2:
-        return 'Mitra kami sedang\nmenyelesaikan pekerjaan';
+        return 'Mitra kami sudah\nsampai lokasi';
       case 3:
-        return 'Klik tombol selesai\ndibawah untuk menyelesaikan';
+        return 'Orderan sedang\ndikerjakan Mitra';
+      case 4:
+        return 'Orderan sudah selesai';
       default:
         return 'Status Tidak Dikenal';
     }
@@ -83,9 +89,25 @@ class BookingController extends GetxController {
     }
   }
 
-  Future<DetailOrderResponse> getDetailorder() {
+  Future<void> fetchDetailOrder() async {
     final id = Get.arguments;
-    return Api.getDetailOrder(id.toString());
+    try {
+      final response = await Api.getDetailOrder(id.toString());
+      detailOrder.value = response;
+
+      // update currentStep
+      final statusToStep = {
+        "open": 0,
+        "picked": 1,
+        "arrived": 2,
+        "progress": 3,
+        "finish": 4,
+      };
+      currentStep.value = statusToStep[response.data!.orderStatus] ?? 0;
+    } catch (e) {
+      // handle error
+      print(e);
+    }
   }
 
   Future<void> cancelOrder(Map<String, dynamic> data) async {
@@ -95,7 +117,8 @@ class BookingController extends GetxController {
       if (response.status == true) {
         Get.back();
         Get.back(result: true);
-        EasyLoading.showSuccess("Berhasil Cancel Order ${response.data!.category}");
+        EasyLoading.showSuccess(
+            "Berhasil Cancel Order ${response.data!.category}");
       } else {
         EasyLoading.showError("Gagal Cancel Order");
       }

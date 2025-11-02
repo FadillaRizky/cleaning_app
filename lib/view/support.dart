@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -74,20 +75,20 @@ class SupportPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset("assets/support.png"),
+            Image.asset("assets/support.png",height: 500.h,width: double.infinity,fit: BoxFit.fitWidth,),
             SizedBox(
               height: 10,
             ),
             Text(
               "    Hubungi Kami",
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 40.sp, fontWeight: FontWeight.w500),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(30.r),
                   boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)],
                 ),
                 child: Column(
@@ -132,56 +133,56 @@ class SupportPage extends StatelessWidget {
                 ),
               ),
             ),
-            Text(
-              "    Media Sosial",
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)],
-                ),
-                child: Column(
-                  children: [
-                    TileSupport(
-                      title: "Instagram",
-                      subtitle: "@$usernameIgCS",
-                      icon: LineIcons.instagram,
-                      ontap: () async {
-                        final Uri url = Uri.parse(
-                            'https://www.instagram.com/$usernameIgCS');
+            // Text(
+            //   "    Media Sosial",
+            //   style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            //   child: Container(
+            //     decoration: BoxDecoration(
+            //       color: Colors.white,
+            //       borderRadius: BorderRadius.circular(16),
+            //       boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)],
+            //     ),
+            //     child: Column(
+            //       children: [
+            //         TileSupport(
+            //           title: "Instagram",
+            //           subtitle: "@$usernameIgCS",
+            //           icon: LineIcons.instagram,
+            //           ontap: () async {
+            //             final Uri url = Uri.parse(
+            //                 'https://www.instagram.com/$usernameIgCS');
 
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(url,
-                              mode: LaunchMode.externalApplication);
-                        } else {
-                          SnackbarUtil.error("Gagal akses Instagram");
-                          throw 'Could not launch $url';
-                        }
-                      },
-                    ),
-                    TileSupport(
-                      title: "Facebook",
-                      subtitle: "@fadillarizky294",
-                      icon: LineIcons.facebookSquare,
-                      ontap: () async {
-                        final url = Uri.parse('https://www.facebook.com/');
-                        if (await canLaunchUrl(url)) {
-                          await launchUrl(url,
-                              mode: LaunchMode.externalApplication);
-                        } else {
-                          SnackbarUtil.error("Gagal akses Facebook");
-                          throw 'Could not launch $url';
-                        }
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            )
+            //             if (await canLaunchUrl(url)) {
+            //               await launchUrl(url,
+            //                   mode: LaunchMode.externalApplication);
+            //             } else {
+            //               SnackbarUtil.error("Gagal akses Instagram");
+            //               throw 'Could not launch $url';
+            //             }
+            //           },
+            //         ),
+            //         TileSupport(
+            //           title: "Facebook",
+            //           subtitle: "@fadillarizky294",
+            //           icon: LineIcons.facebookSquare,
+            //           ontap: () async {
+            //             final url = Uri.parse('https://www.facebook.com/');
+            //             if (await canLaunchUrl(url)) {
+            //               await launchUrl(url,
+            //                   mode: LaunchMode.externalApplication);
+            //             } else {
+            //               SnackbarUtil.error("Gagal akses Facebook");
+            //               throw 'Could not launch $url';
+            //             }
+            //           },
+            //         ),
+            //       ],
+            //     ),
+            //   ),
+            // )
           ],
         ),
       ),
@@ -208,12 +209,12 @@ class TileSupport extends StatelessWidget {
       onTap: ontap,
       leading: Icon(
         icon,
-        size: 30,
+        size: 80.r,
       ),
       title: Text(title),
       subtitle: Text(subtitle),
-      subtitleTextStyle: TextStyle(fontSize: 13, color: Colors.grey),
-      titleTextStyle: TextStyle(fontSize: 16, color: Colors.black87),
+      subtitleTextStyle: TextStyle(fontSize: 38.sp, color: Colors.grey),
+      titleTextStyle: TextStyle(fontSize: 43.sp, color: Colors.black87),
       trailing: Icon(LineIcons.angleRight),
       tileColor: Colors.white,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),

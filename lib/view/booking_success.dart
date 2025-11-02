@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 
@@ -13,20 +14,24 @@ class BookingSuccess extends StatelessWidget {
       child: Column(
         children: [
           const Spacer(),
-          Center(child: SvgPicture.asset("././assets/icon/booking_success.svg",height:200,)),
-          const SizedBox(height: 24),
-          const Text(
-            'Booking Sukses',
+          Center(
+              child: SvgPicture.asset(
+            "././assets/icon/booking_success.svg",
+            height: MediaQuery.of(context).size.width / 2,
+          )),
+           SizedBox(height: 70.h),
+           Text(
+            'Pesanan Sukses',
             style: TextStyle(
-              fontSize: 21,
+              fontSize: 60.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 8),
-          const Text(
+          const SizedBox(height: 10),
+           Text(
             'Silahkan tunggu konfirmasi berikutnya.',
             style: TextStyle(
-              fontSize: 15,
+              fontSize: 40.sp,
               color: Colors.black54,
             ),
             textAlign: TextAlign.center,
@@ -39,14 +44,18 @@ class BookingSuccess extends StatelessWidget {
                 child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
-                      side: BorderSide(width: 0.5,color: Colors.grey),
+                      side: BorderSide(width: 0.5, color: Colors.grey),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: (){
-                      Get.toNamed("/invoice" ,arguments: arg);
-                    }, child: Text("Lihat Invoice",style: TextStyle(color: Colors.black),)),
+                    onPressed: () {
+                      Get.toNamed("/invoice", arguments: arg);
+                    },
+                    child: Text(
+                      "Lihat Invoice",
+                      style: TextStyle(color: Colors.black),
+                    )),
               ),
               SizedBox(
                 width: double.infinity,
@@ -57,9 +66,13 @@ class BookingSuccess extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: (){
+                    onPressed: () {
                       Get.offAllNamed("/menu");
-                    }, child: Text("Kembali ke Beranda",style: TextStyle(color: Colors.white),)),
+                    },
+                    child: Text(
+                      "Kembali ke Beranda",
+                      style: TextStyle(color: Colors.white),
+                    )),
               ),
             ],
           )

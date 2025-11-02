@@ -72,6 +72,8 @@ dependencies:
   timeline_tile: ^2.0.0
   saver_gallery: ^4.0.1
   rename: ^3.1.0
+  upgrader: ^12.1.0
+  marquee: ^2.3.0
 
 
 dev_dependencies:

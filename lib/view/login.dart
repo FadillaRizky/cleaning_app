@@ -23,12 +23,14 @@ class LoginPage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Center(child: Image.asset("assets/logo.png", width: 714.w,)),
-              SizedBox(height: 180.h,),
+              SizedBox(height: 250.h),
               Text("Sign in",
-                style: TextStyle(fontSize: 80.sp, fontWeight: FontWeight.bold),),
+                style: TextStyle( fontSize: 80.sp,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.blue[800],),),
               Text("Senang bertemu denganmu lagi!",
-                style: TextStyle(fontWeight: FontWeight.w500),),
-              SizedBox(height: 50.h,),
+               style: TextStyle(fontWeight: FontWeight.w500,fontSize: 40.sp),),
+               SizedBox(height: 100.h),
               GlassmorphicTextField(
                   controller: controller.controllerphoneNumber,
                   hintText: 'Masukan Nomor Hp',

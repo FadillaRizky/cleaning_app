@@ -1,6 +1,7 @@
 import 'package:cleaning_app/model/GetNotificationResponse.dart';
 import 'package:cleaning_app/widget/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -64,7 +65,7 @@ class NotificationPage extends GetView<NotificationController> {
                             tileColor: data[index].status == "0"
                                 ? Colors.grey[300]
                                 : Colors.white,
-                            title: Text(data[index].title!),
+                            title: Text(data[index].title!,style: TextStyle(fontSize: 40.sp),),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -72,12 +73,12 @@ class NotificationPage extends GetView<NotificationController> {
                                   data[index].detail!,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(color: Colors.grey),
+                                  style: TextStyle(color: Colors.grey,fontSize: 38.sp),
                                 ),
                                 SizedBox(height: 5,),
                                 Text(
                                   Utils.formatTanggal2(data[index].createdAt!),
-                                  style: TextStyle(fontSize: 10,color: Colors.grey),
+                                  style: TextStyle(fontSize: 30.sp,color: Colors.grey),
                                 ),
                               ],
                             ),

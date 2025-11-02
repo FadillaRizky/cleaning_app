@@ -9,8 +9,10 @@ import 'package:cleaning_app/widget/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -34,10 +36,9 @@ class Home extends GetView<HomeController> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.all(15),
+                    padding: EdgeInsets.all(45.r),
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)),
+                        color: Colors.white,),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -50,12 +51,12 @@ class Home extends GetView<HomeController> {
                         }, child: Obx(() {
                           return AvatarCircle(
                             imageUrl: profileController.urlAvatar.value,
-                            size: 80,
+                            size: 220.r,
                             color: Colors.grey,
                           );
                         })),
                         SizedBox(
-                          width: 10,
+                          width: 30.w,
                         ),
                         Expanded(
                           child: Column(
@@ -72,16 +73,16 @@ class Home extends GetView<HomeController> {
                                       Obx(() {
                                         return Text(
                                           "Selamat ${controller.getGreetingByTime()} ‘${profileController.username}’ !",
-                                          style: const TextStyle(
+                                          style: TextStyle(
                                               color: Colors.blue,
-                                              fontSize: 18,
+                                              fontSize: 47.sp,
                                               fontWeight: FontWeight.w600),
                                         );
                                       }),
-                                      const Text(
-                                          "“Buat rumah Anda jadi lebih berkilau.”",
+                                       Text(
+                                          "“Buat hidup anda jadi lebih mudah.”",
                                           style: TextStyle(
-                                              fontSize: 13,
+                                              fontSize: 35.sp,
                                               fontWeight: FontWeight.w500)),
                                     ],
                                   ),
@@ -89,7 +90,7 @@ class Home extends GetView<HomeController> {
                                     return badges.Badge(
                                       badgeContent: Text(
                                         controller.notifLength.value.toString(),
-                                        style: TextStyle(color: Colors.white),
+                                        style: TextStyle(color: Colors.white,fontSize: 25.sp),
                                       ),
                                       showBadge:
                                           controller.notifLength.value != 0,
@@ -101,7 +102,7 @@ class Home extends GetView<HomeController> {
                                         child: Icon(
                                           Icons.notifications_none,
                                           color: Colors.black,
-                                          size: 26,
+                                          size: 70.r,
                                         ),
                                       ),
                                     );
@@ -121,11 +122,11 @@ class Home extends GetView<HomeController> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(15),
+                    padding:  EdgeInsets.all(45.r),
                     child: Column(
                       children: [
                         SizedBox(
-                            height: 50,
+                            height: 120.h,
                             child: Autocomplete<String>(
                               optionsBuilder:
                                   (TextEditingValue textEditingValue) {
@@ -171,6 +172,7 @@ class Home extends GetView<HomeController> {
                                   focusNode: focusNode,
                                   decoration: InputDecoration(
                                     hintText: 'Cari layanan...',
+                                    hintStyle: TextStyle(fontSize: 40.sp),
                                     filled: true,
                                     fillColor: Colors.white,
                                     enabledBorder: OutlineInputBorder(
@@ -268,7 +270,7 @@ class Home extends GetView<HomeController> {
                           height: 8,
                         ),
                         Container(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(30.r),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
@@ -278,9 +280,9 @@ class Home extends GetView<HomeController> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                   Text(
                                     "  DISCOVER SERVICES",
-                                    style: TextStyle(fontSize: 16),
+                                    style: TextStyle(fontSize: 43.sp),
                                   ),
                                   // TextButton(
                                   //     onPressed: () {},
@@ -371,11 +373,11 @@ class Home extends GetView<HomeController> {
                             ],
                           ),
                         ),
-                        const SizedBox(
-                          height: 15,
+                         SizedBox(
+                          height: 45.h,
                         ),
                         Container(
-                          padding: EdgeInsets.all(10),
+                          padding: EdgeInsets.all(30.r),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(10)),
@@ -385,9 +387,9 @@ class Home extends GetView<HomeController> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.start,
                                 children: [
-                                  const Text(
+                                   Text(
                                     "BEST SELLER SERVICES",
-                                    style: TextStyle(fontSize: 16),
+                                    style: TextStyle(fontSize: 43.sp),
                                   ),
                                   
                                   // TextButton(
@@ -438,32 +440,33 @@ class Home extends GetView<HomeController> {
 
   Widget gridPackageList(AsyncSnapshot<ListCategoryPackageResponse> snapshot) {
     return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4, // 3 columns
-        childAspectRatio: 0.8, // Adjust item height
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-      ),
+     shrinkWrap: true,
+          physics: const BouncingScrollPhysics(),
+          gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 4,
+            mainAxisSpacing: 5,
+            crossAxisSpacing: 10,
+            childAspectRatio: 0.8,
+          ),
       itemCount: snapshot.data!.data!.length,
       itemBuilder: (context, index) {
+        final service = snapshot.data!.data![index];
         return GestureDetector(
           onTap: () {
-            print(snapshot.data!.data![index].categoryName);
-            if (snapshot.data!.data![index].status == "active") {
+            print(service.categoryName);
+            if (service.status == "active") {
               Get.toNamed(
                 '/detail-category-daily',
                 arguments: {
-                  'id': snapshot.data!.data![index].id.toString(),
-                  'title': snapshot.data!.data![index].categoryName ?? "",
+                  'id': service.id.toString(),
+                  'title': service.categoryName ?? "",
                   'img_url': [
-                    snapshot.data!.data![index].bannerImg1 ?? "",
-                    snapshot.data!.data![index].bannerImg2 ?? "",
-                    snapshot.data!.data![index].bannerImg3 ?? ""
+                    service.bannerImg1 ?? "",
+                    service.bannerImg2 ?? "",
+                    service.bannerImg3 ?? ""
                   ],
                   'description':
-                      snapshot.data!.data![index].categoryDescription ?? "",
+                      service.categoryDescription ?? "",
                 },
               );
             } else {
@@ -471,8 +474,8 @@ class Home extends GetView<HomeController> {
             }
           },
           child: ServiceItem(
-            name: snapshot.data!.data![index].categoryName!,
-            imagePath: snapshot.data!.data![index].categoryImage!,
+            name: service.categoryName!,
+            imagePath: service.categoryImage!,
           ),
         );
       },
@@ -491,7 +494,7 @@ class saldoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 4, horizontal: 15),
+      padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 38.w),
       decoration: BoxDecoration(
         color: Colors.blue,
         borderRadius: BorderRadius.circular(10),
@@ -500,44 +503,39 @@ class saldoSection extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               GestureDetector(
                 onTap: () {
                   Get.toNamed("/info-saldo");
                 },
-                child: SvgPicture.asset(
-                  '././assets/icon/icon_wallet.svg',
-                  height: 18,
-                ),
+                child: Icon(LineIcons.wallet,size: 60.r,)
               ),
               SizedBox(
-                width: 10,
+                width: 30.w,
               ),
               Obx(() {
                 if (controller.isLoading.value) {
                   return SizedBox(
-                    height: 13,
-                    width: 13,
+                    height: 40.w,
+                    width: 40.w,
                     child: CircularProgressIndicator(
-                        color: Colors.white, strokeWidth: 2),
+                        color: Colors.white, strokeWidth: 1),
                   );
                 }
 
                 String saldoString = controller.amountSaldo.value;
                 int saldoInt = int.tryParse(saldoString) ?? 0;
 
-                return SizedBox(
-                  width: 100,
-                  child: Text(
-                    saldoInt != 0 ? Utils.formatCurrency(saldoInt) : "Rp. 0",
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.white),
-                  ),
+                return Text(
+                  saldoInt != 0 ? Utils.formatCurrency(saldoInt) : "Rp. 0",
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(color: Colors.white,fontSize: 36.sp),
                 );
               }),
               SizedBox(
-                width: 5,
+                width: 45.w,
               ),
               GestureDetector(
                   onTap: () {
@@ -545,7 +543,7 @@ class saldoSection extends StatelessWidget {
                   },
                   child: Icon(
                     Icons.add_circle,
-                    size: 22,
+                    size: 60.r,
                   )),
             ],
           ),
@@ -564,30 +562,40 @@ class ServiceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          padding: const EdgeInsets.all(2), // Padding for border effect
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            border: Border.all(color: Colors.blue, width: 2), // Blue border
+        Expanded(
+          flex: 3,
+          child: AspectRatio(
+            aspectRatio: 1,
+            child: Container(
+              padding: const EdgeInsets.all(2), // Padding for border effect
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.blue, width: 2), // Blue border
+              ),
+              child: ClipOval(
+                  child: CachedImage(
+                imgUrl: imagePath,
+                height: 150.h,
+                width: 50.h,
+                iconHeight: 100.h,
+              )),
+            ),
           ),
-          child: ClipOval(
-              child: CachedImage(
-            imgUrl: imagePath,
-            height: 50,
-            width: 50,
-            iconHeight: 40,
-          )),
         ),
         const SizedBox(height: 5),
-        Text(
-          name,
-          textAlign: TextAlign.center,
-          maxLines: 2,
-          style: const TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.w500,
-              overflow: TextOverflow.ellipsis),
+        Flexible(
+          flex: 2,
+          child: Text(
+            name,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            style:  TextStyle(
+                fontSize: 32.sp,
+                fontWeight: FontWeight.w500,
+                overflow: TextOverflow.ellipsis),
+          ),
         ),
       ],
     );

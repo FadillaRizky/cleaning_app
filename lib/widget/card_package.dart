@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleaning_app/widget/cached_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/number_symbols_data.dart';
 
@@ -24,11 +25,20 @@ class DailyCleaningCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(bottom: 5, left: 10, right: 10),
+      padding: EdgeInsets.all(30.r),
+      margin: EdgeInsets.only(bottom: 20.h),
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(12),
+        color: Colors.white,
+        border: Border.all(color: Colors.grey[300]!),
+        borderRadius: BorderRadius.circular(35.r),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2), // warna bayangan lembut
+            spreadRadius: 2, // seberapa jauh bayangan menyebar
+            blurRadius: 10, // seberapa lembut bayangan
+            offset: const Offset(0, 4), // posisi bayangan (x, y)
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,11 +49,11 @@ class DailyCleaningCard extends StatelessWidget {
               Stack(
                 children: [
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(28.r),
                     child: CachedImage(
                       imgUrl: imgPath,
-                      height: 70,
-                      width: 70,
+                      height: 190.w,
+                      width: 190.w,
                     ),
                   ),
                   if (discPercent != 0.0)
@@ -55,13 +65,13 @@ class DailyCleaningCard extends StatelessWidget {
                             horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
                           color: Colors.redAccent,
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(3),
                         ),
-                        child: const Text(
+                        child: Text(
                           "PROMO",
                           style: TextStyle(
                             color: Colors.white,
-                            fontSize: 10,
+                            fontSize: 24.sp,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -69,16 +79,16 @@ class DailyCleaningCard extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(width: 12),
+              SizedBox(width: 35.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 45.sp,
                       ),
                     ),
                     const SizedBox(height: 4),
@@ -87,7 +97,7 @@ class DailyCleaningCard extends StatelessWidget {
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: 32.sp,
                         color: Colors.grey[700],
                       ),
                     ),
@@ -96,32 +106,25 @@ class DailyCleaningCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 5),
+          SizedBox(height: 15.h),
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              // Text(
-              //   'Mulai dari ${NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0).format(price)}',
-              //   style: TextStyle(
-              //     fontSize: 11,
-              //     color: Colors.grey[700],
-              //   ),
-              // ),
               ElevatedButton(
                 onPressed: ontap,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 5,
-                  ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(30.r),
                   ),
                 ),
-                child: const Text('Pilih'),
-              ),
+                child: Text(
+                  'Pilih',
+                  style: TextStyle(fontSize: 35.sp),
+                ),
+              )
             ],
           ),
         ],

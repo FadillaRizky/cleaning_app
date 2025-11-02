@@ -4,7 +4,9 @@ import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/model/ListPackageResponse.dart' as Data;
 import 'package:cleaning_app/model/ObjectPackageResponse.dart';
 import 'package:cleaning_app/widget/count_number.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:readmore/readmore.dart';
@@ -35,205 +37,199 @@ class DetailCategory extends GetView<PackageController> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title, style: TextStyle(fontWeight: FontWeight.w600)),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Stack(
-                    children: [
-                      CarouselSlider.builder(
-                        carouselController: _carouselController,
-                        itemCount: img_url.length,
-                        itemBuilder: (context, index, realIndex) {
-                          return CachedImage(
-                              imgUrl: img_url[index],
-                              height: 200,
-                              width: double.infinity);
-                        },
-                        options: CarouselOptions(
-                          viewportFraction: 1,
-                          enlargeCenterPage: false,
-                          autoPlay: true,
-                          autoPlayInterval: const Duration(seconds: 3),
-                          onPageChanged: (index, reason) {
-                            controller.currentIndex.value = index;
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(title, style: TextStyle(fontWeight: FontWeight.w600)),
+          centerTitle: true,
+        ),
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Stack(
+                      children: [
+                        CarouselSlider.builder(
+                          carouselController: _carouselController,
+                          itemCount: img_url.length,
+                          itemBuilder: (context, index, realIndex) {
+                            return CachedImage(
+                                imgUrl: img_url[index],
+                                height: 200,
+                                width: double.infinity);
                           },
+                          options: CarouselOptions(
+                            viewportFraction: 1,
+                            enlargeCenterPage: false,
+                            autoPlay: true,
+                            autoPlayInterval: const Duration(seconds: 3),
+                            onPageChanged: (index, reason) {
+                              controller.currentIndex.value = index;
+                            },
+                          ),
                         ),
-                      ),
-                      Obx(() {
-                        return Positioned(
-                          bottom: 10, // beri jarak dari bawah
-                          left: 0,
-                          right: 0,
-                          child: Container(
-                            child: Center(
-                              child: AnimatedSmoothIndicator(
-                                activeIndex: controller.currentIndex.value,
-                                count: img_url.length,
-                                effect: const WormEffect(
-                                    dotHeight: 8,
-                                    dotWidth: 8,
-                                    activeDotColor: Colors.orange,
-                                    dotColor: Colors.white),
+                        Obx(() {
+                          return Positioned(
+                            bottom: 30.h, // beri jarak dari bawah
+                            left: 0,
+                            right: 0,
+                            child: Container(
+                              child: Center(
+                                child: AnimatedSmoothIndicator(
+                                  activeIndex: controller.currentIndex.value,
+                                  count: img_url.length,
+                                  effect: const WormEffect(
+                                      dotHeight: 8,
+                                      dotWidth: 8,
+                                      activeDotColor: Colors.orange,
+                                      dotColor: Colors.white),
+                                ),
                               ),
                             ),
+                          );
+                        }),
+                      ],
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(43.r),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                                fontSize: 60.sp, fontWeight: FontWeight.bold),
                           ),
-                        );
-                      }),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          title,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        profileController.hasVoucher.value != false
-                            ? Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 2),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Colors.red.shade300, width: 1),
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      LineIcons.alternateTicket,
-                                      color: Colors.red,
-                                      size: 16,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      "Voucher Member",
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.red.shade400,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : SizedBox.shrink(),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        ReadMoreText(
-                          description,
-                          trimLines: 10,
-                          colorClickableText: Colors.blue,
-                          trimMode: TrimMode.Line,
-                          trimCollapsedText: 'Read more',
-                          trimExpandedText: 'Read less',
-                          style: TextStyle(fontSize: 15),
-                          moreStyle: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.blue),
-                          lessStyle: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.blue),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        title != "Daily Cleaning"
-                            ? Column(
-                                children: [
-                                  Text(
-                                    "Pilihan Paket",
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          profileController.hasVoucher.value != false
+                              ? Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.red.shade300, width: 1),
+                                    borderRadius: BorderRadius.circular(4),
                                   ),
-                                  SizedBox(
-                                    height: 5,
-                                  )
-                                ],
-                              )
-                            : SizedBox.shrink(),
-                        FutureBuilder(
-                            future: (controller.getlistPackage(title)),
-                            builder: (context,
-                                AsyncSnapshot<Data.ListPackageResponse>
-                                    snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
-                                return Skeletonizer(
-                                    child: Column(
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Icon(
+                                        LineIcons.alternateTicket,
+                                        color: Colors.red,
+                                        size: 48.r,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        "Voucher Member",
+                                        style: TextStyle(
+                                          fontSize: 32.sp,
+                                          color: Colors.red.shade400,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : SizedBox.shrink(),
+                          SizedBox(
+                            height: 4,
+                          ),
+                          ReadMoreText(
+                            description,
+                            trimLines: 10,
+                            colorClickableText: Colors.blue,
+                            trimMode: TrimMode.Line,
+                            trimCollapsedText: 'Read more',
+                            trimExpandedText: 'Read less',
+                            style: TextStyle(fontSize: 37.sp),
+                            moreStyle: TextStyle(
+                                fontSize: 38.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.blue),
+                            lessStyle: TextStyle(
+                                fontSize: 38.sp,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.blue),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          title != "Daily Cleaning"
+                              ? Column(
                                   children: [
-                                    DailyCleaningCard(
-                                      imgPath: '././assets/intro1.png',
-                                      title: "Jasa Borongan Cleaning",
-                                      subtitle:
-                                          "Tersedia pilihan jasa cleaning berdasarkan luas area, jumlah tenaga kerja, waktu pengerjaan atau jenis acara/kegiatan.",
-                                      discPercent: null,
-                                      ontap: () {},
+                                    Text(
+                                      "Pilihan Paket",
+                                      style: TextStyle(
+                                          fontSize: 50.sp,
+                                          fontWeight: FontWeight.bold),
                                     ),
+                                    SizedBox(
+                                      height: 5,
+                                    )
                                   ],
-                                ));
-                              } else if (snapshot.hasError) {
-                                return Text('Error: ${snapshot.error}');
-                              } else if (!snapshot.hasData) {
-                                return const Text('No list packages found.');
-                              }
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: snapshot.data!.data!.length,
-                                itemBuilder: (context, index) {
-                                  if (title != "Daily Cleaning") {
-                                    var data = snapshot.data!.data![index];
-                                    return Column(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            // controller
-                                            //         .selectPackageDeep[index] =
-                                            //     !controller
-                                            //         .selectPackageDeep[index];
-                                            // if (controller
-                                            //     .selectPackageDeep[index]) {
-                                            //   popupObjectPackage(context, data,
-                                            //       () {
-                                            //     controller.selectPackageDeep[
-                                            //         index] = false;
-                                            //   }, "tambah");
-                                            // } else {
-                                            //   controller.resultDataObject
-                                            //       .removeWhere((element) =>
-                                            //           element["pack_id"] ==
-                                            //           data.packId);
-                                            // }
-                                          },
-                                          child: Container(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 10, 10, 10),
+                                )
+                              : SizedBox.shrink(),
+                          FutureBuilder(
+                              future: (controller.getlistPackage(title)),
+                              builder: (context,
+                                  AsyncSnapshot<Data.ListPackageResponse>
+                                      snapshot) {
+                                if (snapshot.connectionState ==
+                                    ConnectionState.waiting) {
+                                  return Skeletonizer(
+                                      child: Column(
+                                    children: [
+                                      DailyCleaningCard(
+                                        imgPath: '././assets/intro1.png',
+                                        title: "Jasa Borongan Cleaning",
+                                        subtitle:
+                                            "Tersedia pilihan jasa cleaning berdasarkan luas area, jumlah tenaga kerja, waktu pengerjaan atau jenis acara/kegiatan.",
+                                        discPercent: null,
+                                        ontap: () {},
+                                      ),
+                                    ],
+                                  ));
+                                } else if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                } else if (!snapshot.hasData) {
+                                  return const Text('No list packages found.');
+                                }
+                                return ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: snapshot.data!.data!.length,
+                                  itemBuilder: (context, index) {
+                                    if (title != "Daily Cleaning") {
+                                      var data = snapshot.data!.data![index];
+                                      return Column(
+                                        children: [
+                                          Container(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 30.r, 30.r, 30.r),
                                               decoration: BoxDecoration(
+                                                color: Colors.white,
                                                 border: Border.all(
                                                     color:
                                                         Colors.grey.shade300),
                                                 borderRadius:
-                                                    BorderRadius.circular(12),
+                                                    BorderRadius.circular(35.r),
+                                                boxShadow: [
+                                                  BoxShadow(
+                                                    color: Colors.grey.withOpacity(
+                                                        0.2), // warna bayangan lembut
+                                                    spreadRadius:
+                                                        2, // seberapa jauh bayangan menyebar
+                                                    blurRadius:
+                                                        10, // seberapa lembut bayangan
+                                                    offset: const Offset(0,
+                                                        4), // posisi bayangan (x, y)
+                                                  ),
+                                                ],
                                               ),
                                               child: Row(
                                                 crossAxisAlignment:
@@ -275,59 +271,88 @@ class DetailCategory extends GetView<PackageController> {
                                                           }
                                                         });
                                                   }),
-                                                  Stack(
-                                                    children: [
-                                                      ClipRRect(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(8),
-                                                        child: CachedImage(
-                                                          imgUrl:
-                                                              data.packBannerPath ??
-                                                                  "",
-                                                          height: 70,
-                                                          width: 70,
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      controller
+                                                              .selectPackageDeep[
+                                                          index] = !controller
+                                                              .selectPackageDeep[
+                                                          index];
+                                                      if (controller
+                                                              .selectPackageDeep[
+                                                          index]) {
+                                                        popupObjectPackage(
+                                                            context, data, () {
+                                                          controller
+                                                                  .selectPackageDeep[
+                                                              index] = false;
+                                                        }, "tambah");
+                                                      } else {
+                                                        controller
+                                                            .resultDataObject
+                                                            .removeWhere((element) =>
+                                                                element[
+                                                                    "pack_id"] ==
+                                                                data.packId);
+                                                      }
+                                                    },
+                                                    child: Stack(
+                                                      children: [
+                                                        ClipRRect(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      28.r),
+                                                          child: CachedImage(
+                                                            imgUrl:
+                                                                data.packBannerPath ??
+                                                                    "",
+                                                            height: 190.w,
+                                                            width: 190.w,
+                                                          ),
                                                         ),
-                                                      ),
-                                                      if (data.discPercentage !=
-                                                          null) // ✅ tambahkan flag promo dari model kamu
-                                                        Positioned(
-                                                          top: 4,
-                                                          left: 4,
-                                                          child: Container(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        6,
-                                                                    vertical:
-                                                                        2),
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: Colors
-                                                                  .redAccent,
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          6),
-                                                            ),
-                                                            child: const Text(
-                                                              "PROMO",
-                                                              style: TextStyle(
+                                                        if (data.discPercentage !=
+                                                            null) // ✅ tambahkan flag promo dari model kamu
+                                                          Positioned(
+                                                            top: 4,
+                                                            left: 4,
+                                                            child: Container(
+                                                              padding:
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          6,
+                                                                      vertical:
+                                                                          2),
+                                                              decoration:
+                                                                  BoxDecoration(
                                                                 color: Colors
-                                                                    .white,
-                                                                fontSize: 10,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                    .redAccent,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            3),
+                                                              ),
+                                                              child: Text(
+                                                                "PROMO",
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize:
+                                                                      24.sp,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold,
+                                                                ),
                                                               ),
                                                             ),
                                                           ),
-                                                        ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                   SizedBox(
-                                                    width: 14,
+                                                    width: 35.w,
                                                   ),
                                                   Expanded(
                                                     child: Column(
@@ -336,36 +361,98 @@ class DetailCategory extends GetView<PackageController> {
                                                               .start,
                                                       children: [
                                                         Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceBetween,
                                                           children: [
-                                                            Text(
-                                                              data.packName! ??
-                                                                  "",
-                                                              style: TextStyle(
-                                                                  fontSize: 17,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
+                                                            Expanded(
+                                                              child:
+                                                                  GestureDetector(
+                                                                onTap: () {
+                                                                  controller.selectPackageDeep[
+                                                                          index] =
+                                                                      !controller
+                                                                              .selectPackageDeep[
+                                                                          index];
+                                                                  if (controller
+                                                                          .selectPackageDeep[
+                                                                      index]) {
+                                                                    popupObjectPackage(
+                                                                        context,
+                                                                        data,
+                                                                        () {
+                                                                      controller
+                                                                              .selectPackageDeep[index] =
+                                                                          false;
+                                                                    }, "tambah");
+                                                                  } else {
+                                                                    controller
+                                                                        .resultDataObject
+                                                                        .removeWhere((element) =>
+                                                                            element["pack_id"] ==
+                                                                            data.packId);
+                                                                  }
+                                                                },
+                                                                child: Text(
+                                                                  data.packName! ??
+                                                                      "",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          42.sp,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis),
+                                                                ),
+                                                              ),
                                                             ),
-                                                            SizedBox(
-                                                              width: 5,
-                                                            ),
-                                                            (data.packCategory != "Daily Cleaning" )
-                                                                ? GestureDetector(
-                                                                    onTap: () {
+                                                            (data.packCategory !=
+                                                                    "Daily Cleaning")
+                                                                ? TextButton
+                                                                    .icon(
+                                                                    style: TextButton
+                                                                        .styleFrom(
+                                                                      padding: EdgeInsets.symmetric(
+                                                                          horizontal:
+                                                                              5),
+                                                                      minimumSize:
+                                                                          Size(
+                                                                              0,
+                                                                              0),
+                                                                      tapTargetSize:
+                                                                          MaterialTapTargetSize
+                                                                              .shrinkWrap,
+                                                                    ),
+                                                                    onPressed:
+                                                                        () {
                                                                       Get.toNamed(
                                                                           "/package_description",
                                                                           arguments: {
+                                                                            'packName':
+                                                                                data.packName,
                                                                             'globalDesc':
-                                                                                data.packGlobalDescription
+                                                                                data.packGlobalDescription,
+                                                                            'objectDesc':
+                                                                                data.packObjectDescription,
+                                                                            'jobDesc':
+                                                                                data.packJobDescription,
                                                                           });
                                                                     },
-                                                                    child: Icon(
+                                                                    icon: Icon(
                                                                       Icons
-                                                                          .info,
-                                                                      color: Colors
-                                                                          .grey,
-                                                                      size: 15,
-                                                                    ))
+                                                                          .info_outline,
+                                                                      size:
+                                                                          45.r,
+                                                                    ),
+                                                                    label: Text(
+                                                                      "Info",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              34.sp),
+                                                                    ),
+                                                                  )
                                                                 : SizedBox
                                                                     .shrink()
                                                           ],
@@ -387,23 +474,14 @@ class DetailCategory extends GetView<PackageController> {
                                                                               .start,
                                                                       children: [
                                                                         Text(
-                                                                            "$count Item"),
-                                                                        SizedBox(
-                                                                          height:
-                                                                              5,
+                                                                          "$count Item",
+                                                                          style:
+                                                                              TextStyle(fontSize: 35.sp),
                                                                         ),
-                                                                        SizedBox(
-                                                                          height:
-                                                                              25,
-                                                                          child: ElevatedButton(
-                                                                              style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: 10, vertical: 2), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)), backgroundColor: Colors.blue, foregroundColor: Colors.white, textStyle: TextStyle(fontSize: 12)),
-                                                                              onPressed: () {
-                                                                                popupObjectPackage(context, data, () {
-                                                                                  controller.selectPackageDeep[index] = false;
-                                                                                }, "edit");
-                                                                              },
-                                                                              child: Text("Detail")),
-                                                                        )
+                                                                        Text(
+                                                                            "Total : ${Utils.formatCurrency(controller.amountPriceperPackage(data.packId!))}",
+                                                                            style:
+                                                                                TextStyle(fontSize: 35.sp)),
                                                                       ],
                                                                     ),
                                                                     Spacer(),
@@ -415,299 +493,252 @@ class DetailCategory extends GetView<PackageController> {
                                                                           MainAxisAlignment
                                                                               .end,
                                                                       children: [
-                                                                        Text(
-                                                                          "Total Harga",
-                                                                          style: TextStyle(
-                                                                              fontSize: 12,
-                                                                              fontWeight: FontWeight.bold),
-                                                                        ),
-                                                                        Text(
-                                                                          Utils.formatCurrency(
-                                                                              controller.amountPriceperPackage(data.packId!)),
-                                                                          style:
-                                                                              TextStyle(fontWeight: FontWeight.bold),
-                                                                        ),
+                                                                        SizedBox(
+                                                                          height:
+                                                                              25,
+                                                                          child: ElevatedButton(
+                                                                              style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)), backgroundColor: Colors.blue, foregroundColor: Colors.white, textStyle: TextStyle(fontSize: 12)),
+                                                                              onPressed: () {
+                                                                                popupObjectPackage(context, data, () {
+                                                                                  controller.selectPackageDeep[index] = false;
+                                                                                }, "edit");
+                                                                              },
+                                                                              child: Text(
+                                                                                "Detail",
+                                                                                style: TextStyle(fontSize: 34.sp),
+                                                                              )),
+                                                                        )
                                                                       ],
                                                                     )
                                                                   ],
                                                                 )
                                                               : SizedBox
                                                                   .shrink();
-                                                          // : Text(
-                                                          //     "(ketuk untuk memilih paket)",
-                                                          //     style: TextStyle(
-                                                          //         fontStyle:
-                                                          //             FontStyle
-                                                          //                 .italic,
-                                                          //         color: Colors
-                                                          //                 .grey[
-                                                          //             500]!),
-                                                          //   );
                                                         }),
                                                       ],
                                                     ),
                                                   ),
                                                 ],
                                               )),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        )
-                                      ],
-                                    );
-                                  } else {
-                                    return DailyCleaningCard(
-                                      imgPath: snapshot.data!.data![index]
-                                              .packBannerPath ??
-                                          "",
-                                      title: snapshot
-                                              .data!.data![index].packName ??
-                                          "-",
-                                      subtitle: snapshot.data!.data![index]
-                                          .packGlobalDescription!,
-                                      discPercent: snapshot.data!.data![index]
-                                              .discPercentage ??
-                                          0.0,
-                                      ontap: () {
-                                        print(
-                                            controller.selectedPackageId.value);
-                                        controller.category.value = title;
-                                        controller.selectedPackageId.value =
-                                            snapshot.data!.data![index].packId!
-                                                .toString();
-                                        Get.toNamed(
-                                          '/detail-daily',
-                                          arguments: {
-                                            'id': snapshot
-                                                .data!.data![index].packId!
-                                                .toString(),
-                                            'title': snapshot
-                                                .data!.data![index].packName!,
-                                            'discPercent': snapshot
-                                                .data!
-                                                .data![index]
-                                                .discPercentage, // biarkan null
-                                          },
-                                        );
-                                      },
-                                    );
-                                  }
-                                },
-                              );
-                            }),
-                      ],
-                    ),
-                  )
-                ],
+                                          SizedBox(
+                                            height: 30.h,
+                                          )
+                                        ],
+                                      );
+                                    } else {
+                                      return DailyCleaningCard(
+                                        imgPath: snapshot.data!.data![index]
+                                                .packBannerPath ??
+                                            "",
+                                        title: snapshot
+                                                .data!.data![index].packName ??
+                                            "-",
+                                        subtitle: snapshot.data!.data![index]
+                                            .packGlobalDescription!,
+                                        discPercent: snapshot.data!.data![index]
+                                                .discPercentage ??
+                                            0.0,
+                                        ontap: () {
+                                          controller.category.value = title;
+                                          controller.selectedPackageId.value =
+                                              snapshot
+                                                  .data!.data![index].packId!
+                                                  .toString();
+                                          Get.toNamed(
+                                            '/detail-daily',
+                                            arguments: {
+                                              'id': snapshot
+                                                  .data!.data![index].packId!
+                                                  .toString(),
+                                              'title': snapshot
+                                                  .data!.data![index].packName!,
+                                              'discPercent': snapshot
+                                                  .data!
+                                                  .data![index]
+                                                  .discPercentage, // biarkan null
+                                            },
+                                          );
+                                        },
+                                      );
+                                    }
+                                  },
+                                );
+                              }),
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
+            title != "Daily Cleaning"
+                ? Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(45.r),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                         boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2), // warna bayangan lembut
+            spreadRadius: 2, // seberapa jauh bayangan menyebar
+            blurRadius: 10, // seberapa lembut bayangan
+            offset: const Offset(0, 4), // posisi bayangan (x, y)
           ),
-          title != "Daily Cleaning"
-              ? Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
-                  margin: const EdgeInsets.only(bottom: 15),
-                  decoration: BoxDecoration(
-                    color: Color(0xfff4f4f4),
-                    // color: Colors.transparent,
-                  ),
-                  child: Obx(() {
-                    int normalTotal = 0;
-                    int total = 0;
-                    int qty = 0;
-                    for (var pack in controller.resultDataObject) {
-                      final objects = pack["data_object"] as List;
+        ],
+                        ),
+                    child: Obx(() {
+                      int normalTotal = 0;
+                      int total = 0;
+                      int qty = 0;
+                      for (var pack in controller.resultDataObject) {
+                        final objects = pack["data_object"] as List;
 
-                      for (var obj in objects) {
-                        final price = obj["object_price"] as int;
-                        final normalPrice = obj["object_normal_price"] as int;
-                        final amount = obj["object_amount"] as int;
+                        for (var obj in objects) {
+                          final price = obj["object_price"] as int;
+                          final normalPrice = obj["object_normal_price"] as int;
+                          final amount = obj["object_amount"] as int;
 
-                        total += price * amount;
-                        normalTotal += normalPrice * amount;
-                        qty += amount;
+                          total += price * amount;
+                          normalTotal += normalPrice * amount;
+                          qty += amount;
+                        }
                       }
-                    }
-                    bool hasDiscount = controller.resultDataObject
-                        .any((pack) => pack["pack_disc"] != 0);
-                    return Column(
-                      children: [
-                        controller.resultDataObject.isNotEmpty
-                            ? Column(
-                                children: [
-                                  (profileController.hasVoucher.value ||
-                                          hasDiscount)
-                                      ? Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "Subtotal",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w500,
+                      bool hasDiscount = controller.resultDataObject
+                          .any((pack) => pack["pack_disc"] != 0);
+                      return Column(
+                        children: [
+                          controller.resultDataObject.isNotEmpty
+                              ? Column(
+                                  children: [
+                                    (profileController.hasVoucher.value ||
+                                            hasDiscount)
+                                        ? Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "Subtotal",
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 38.sp),
                                                   ),
-                                                ),
-                                                Text(
-                                                    Utils.formatCurrency(
-                                                        normalTotal),
+                                                  Text(
+                                                      Utils.formatCurrency(
+                                                          normalTotal),
+                                                      style: TextStyle(
+                                                          fontSize: 38.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                ],
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "${profileController.hasVoucher.value ? "Voucher Member" : ""}"
+                                                    "${profileController.hasVoucher.value && hasDiscount ? " + " : ""}"
+                                                    "${hasDiscount ? "Promo" : ""}",
                                                     style: TextStyle(
-                                                        fontSize: 14,
                                                         fontWeight:
-                                                            FontWeight.bold)),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "${profileController.hasVoucher.value ? "Voucher Member" : ""}"
-                                                  "${profileController.hasVoucher.value && hasDiscount ? " + " : ""}"
-                                                  "${hasDiscount ? "Promo" : ""}",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      color: Colors.red),
-                                                ),
-                                                Text(
-                                                    "- ${Utils.formatCurrency(normalTotal - total)}",
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                              ],
-                                            ),
-                                          ],
-                                        )
-                                      : SizedBox.shrink(),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Total",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                      Text(Utils.formatCurrency(total),
+                                                            FontWeight.w500,
+                                                        fontSize: 38.sp,
+                                                        color: Colors.red),
+                                                  ),
+                                                  Text(
+                                                      "- ${Utils.formatCurrency(normalTotal - total)}",
+                                                      style: TextStyle(
+                                                          fontSize: 38.sp,
+                                                          fontWeight:
+                                                              FontWeight.bold)),
+                                                ],
+                                              ),
+                                            ],
+                                          )
+                                        : SizedBox.shrink(),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Total",
                                           style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Qty",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w500,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 38.sp,
+                                          ),
                                         ),
-                                      ),
-                                      Text("$qty Item",
+                                        Text(Utils.formatCurrency(total),
+                                            style: TextStyle(
+                                                fontSize: 38.sp,
+                                                fontWeight: FontWeight.bold)),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Qty",
                                           style: TextStyle(
-                                              fontSize: 14,
-                                              fontWeight: FontWeight.bold)),
-                                    ],
-                                  ),
-                                  // Row(
-                                  //   mainAxisAlignment:
-                                  //       MainAxisAlignment.spaceBetween,
-                                  //   children: [
-                                  //     Text(
-                                  //       "Biaya Layanan",
-                                  //       style: TextStyle(
-                                  //           fontWeight: FontWeight.w600,
-                                  //           color: Colors.grey),
-                                  //     ),
-                                  //     Text("Rp 2.000",
-                                  //         style: TextStyle(
-                                  //             fontSize: 14,
-                                  //             fontWeight: FontWeight.bold)),
-                                  //   ],
-                                  // ),
-                                  // Row(
-                                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  //   children: [
-                                  //     Text(
-                                  //       "Discount",
-                                  //       style: TextStyle(
-                                  //           fontWeight: FontWeight.w600,
-                                  //           color: Colors.grey),
-                                  //     ),
-                                  //     Text(
-                                  //         Utils.formatCurrency(int.parse(
-                                  //             controller.selectedDuration.value) -
-                                  //             int.parse(
-                                  //                 controller.selectedDiscount.value)),
-                                  //         style: TextStyle(
-                                  //             fontSize: 14,
-                                  //             fontWeight: FontWeight.bold,
-                                  //             color: Colors.red)),
-                                  //   ],
-                                  // ),
-                                  // Row(
-                                  //   mainAxisAlignment:
-                                  //       MainAxisAlignment.spaceBetween,
-                                  //   children: [
-                                  //     Text(
-                                  //       "Total",
-                                  //       style: TextStyle(
-                                  //           fontWeight: FontWeight.w600),
-                                  //     ),
-                                  //     Text(Utils.formatCurrency(total + 2000),
-                                  //         style: TextStyle(
-                                  //             fontSize: 16,
-                                  //             fontWeight: FontWeight.bold)),
-                                  //   ],
-                                  // ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                ],
-                              )
-                            : SizedBox(),
-                        SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor:
-                                  controller.resultDataObject.isNotEmpty
-                                      ? Colors.blue
-                                      : Colors.grey,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                                side: BorderSide.none,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 38.sp,
+                                          ),
+                                        ),
+                                        Text("$qty Item",
+                                            style: TextStyle(
+                                                fontSize: 38.sp,
+                                                fontWeight: FontWeight.bold)),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                  ],
+                                )
+                              : SizedBox(),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor:
+                                    controller.resultDataObject.isNotEmpty
+                                        ? Colors.blue
+                                        : Colors.grey,
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 12),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                  side: BorderSide.none,
+                                ),
                               ),
-                            ),
-                            onPressed: controller.resultDataObject.isNotEmpty
-                                ? () {
-                                    print(
-                                        "result = ${controller.resultDataObject}");
-                                    controller.category.value = title;
-                                    Get.toNamed("/pemesanan");
-                                  }
-                                : null,
-                            child: Text(
-                              "Lanjutkan",
-                              style: TextStyle(
-                                color: Colors.white,
+                              onPressed: controller.resultDataObject.isNotEmpty
+                                  ? () {
+                                      print(
+                                          "result = ${controller.resultDataObject}");
+                                      controller.category.value = title;
+                                      Get.toNamed("/pemesanan");
+                                    }
+                                  : null,
+                              child: Text(
+                                "Lanjutkan",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 38.sp,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  }))
-              : SizedBox.shrink()
-        ],
+                        ],
+                      );
+                    }))
+                : SizedBox.shrink()
+          ],
+        ),
       ),
     );
   }
@@ -722,59 +753,165 @@ class DetailCategory extends GetView<PackageController> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+        String truncateWithEllipsis(String text) {
+          return (text.length <= 150) ? text : '${text.substring(0, 150)}...';
+        }
+
         return Center(
           child: Container(
-            height: 500,
-            width: 350,
+            height: MediaQuery.of(context).size.height - 500.w,
+            width: MediaQuery.of(context).size.width - 100.w,
             decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
+              color: Colors.transparent,
             ),
             child: Material(
-              color: Colors.transparent,
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(30.r),
               child: Column(
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  IntrinsicHeight(
+                    child: Stack(
                       children: [
-                        Text(
-                          data.packName!,
-                          maxLines: 2,
-                          style: TextStyle(
-                              fontSize: 16, fontWeight: FontWeight.bold),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.fromLTRB(15, 15, 15, 10),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(30.r),
+                                topRight: Radius.circular(30.r)),
+                            image: DecorationImage(
+                              image: NetworkImage(data.packBannerPath!),
+                              fit: BoxFit.fitWidth,
+                            ),
+                          ),
                         ),
-                        GestureDetector(
-                            onTap: () {
-                              controller.tempDataObject.clear();
-                              Get.back();
 
-                              if (action == "edit") {
-                                if (!controller.selectObjectPackage
-                                    .any((e) => e)) {
-                                  controller.resultDataObject.removeWhere(
-                                    (element) =>
-                                        element["pack_id"] == data.packId,
-                                  );
-                                  onClose();
-                                }
-                              } else {
-                                onClose();
-                              }
-                            },
-                            child: Icon(
-                              Icons.close,
-                              color: Colors.black,
-                            ))
+                        // 🔹 Lapisan 2: Overlay gradient putih dari bawah
+                        Positioned.fill(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.only(
+                                  topLeft: Radius.circular(30.r),
+                                  topRight: Radius.circular(30.r)),
+                              gradient: LinearGradient(
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                                colors: [
+                                  Color.fromARGB(230, 255, 255, 255),
+                                  Color.fromARGB(164, 255, 255, 255), // atas
+                                  Color.fromARGB(
+                                      96, 255, 255, 255), // transparan penuh
+                                ],
+                                stops: [0.0, 0.6, 1.0],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        // 🔹 Lapisan 3: Isi konten (teks dan tombol)
+                        Container(
+                          width: double.infinity,
+                          padding: EdgeInsets.all(45.r),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // Header baris atas
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      data.packName!,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontSize: 60.sp,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      controller.tempDataObject.clear();
+                                      Get.back();
+
+                                      if (action == "edit") {
+                                        if (!controller.selectObjectPackage
+                                            .any((e) => e)) {
+                                          controller.resultDataObject
+                                              .removeWhere(
+                                            (element) =>
+                                                element["pack_id"] ==
+                                                data.packId,
+                                          );
+                                          onClose();
+                                        }
+                                      } else {
+                                        onClose();
+                                      }
+                                    },
+                                    child: const Icon(Icons.close,
+                                        color: Colors.black),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 45.h),
+
+                              // Deskripsi + tombol selengkapnya
+                              Stack(
+                                children: [
+                                  Text(
+                                    truncateWithEllipsis(
+                                        data.packGlobalDescription ?? ""),
+                                    maxLines: 4,
+                                    // overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color: Colors.black87,
+                                      fontSize: 35.sp,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Get.toNamed("/package_description",
+                                            arguments: {
+                                              'packName': data.packName,
+                                              'globalDesc':
+                                                  data.packGlobalDescription,
+                                              'objectDesc':
+                                                  data.packObjectDescription,
+                                              'jobDesc':
+                                                  data.packJobDescription,
+                                            });
+                                      },
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 4),
+                                        child: Text(
+                                          "Selengkapnya",
+                                          style: TextStyle(
+                                            color: Colors.blue,
+                                            fontSize: 38.sp,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  Divider(),
                   Expanded(
                       child: SingleChildScrollView(
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(5, 5, 15, 5),
+                      padding: EdgeInsets.fromLTRB(15.r, 15.r, 45.r, 15.r),
                       child: FutureBuilder(
                           future: controller
                               .getObjectPackage(data.packId.toString()),
@@ -878,7 +1015,7 @@ class DetailCategory extends GetView<PackageController> {
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: TextStyle(
-                                                      fontSize: 14,
+                                                      fontSize: 38.sp,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
@@ -887,6 +1024,8 @@ class DetailCategory extends GetView<PackageController> {
                                                           .objectDescription ??
                                                       "",
                                                   maxLines: 2,
+                                                  style: TextStyle(
+                                                      fontSize: 35.sp),
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                 )
@@ -904,16 +1043,23 @@ class DetailCategory extends GetView<PackageController> {
                                                       options[index]
                                                           .objectPrice)
                                                   ? Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .end,
                                                       children: [
-                                                        Text(Utils.formatCurrency(
-                                                            options[index]
-                                                                .objectPriceDisc!)),
+                                                        Text(
+                                                            Utils.formatCurrency(
+                                                                options[index]
+                                                                    .objectPriceDisc!),
+                                                            style: TextStyle(
+                                                              fontSize: 36.sp,
+                                                            )),
                                                         Text(
                                                             Utils.formatCurrency(
                                                                 options[index]
                                                                     .objectPrice!),
                                                             style: TextStyle(
-                                                              fontSize: 12,
+                                                              fontSize: 32.sp,
                                                               decoration:
                                                                   TextDecoration
                                                                       .lineThrough,
@@ -924,7 +1070,9 @@ class DetailCategory extends GetView<PackageController> {
                                                       Utils.formatCurrency(
                                                           options[index]
                                                               .objectPrice!),
-                                                    ),
+                                                      style: TextStyle(
+                                                        fontSize: 36.sp,
+                                                      )),
                                               SizedBox(
                                                 height: 10,
                                               ),
@@ -955,34 +1103,10 @@ class DetailCategory extends GetView<PackageController> {
                                                                         index]);
                                                               }
                                                             },
-                                                            child: Container(
-                                                              height: 20,
-                                                              width: 20,
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                border: Border.all(
-                                                                    width: 1,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            100),
-                                                              ),
-                                                              child:
-                                                                  const Center(
-                                                                child: Icon(
+                                                            child:
+                                                                IconPlusMinus(
+                                                              icon:
                                                                   Icons.remove,
-                                                                  size: 15,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
-                                                              ),
                                                             ),
                                                           ),
                                                           const SizedBox(
@@ -991,9 +1115,9 @@ class DetailCategory extends GetView<PackageController> {
                                                             padding: EdgeInsets
                                                                 .symmetric(
                                                                     horizontal:
-                                                                        10,
+                                                                        30.r,
                                                                     vertical:
-                                                                        5),
+                                                                        15.r),
                                                             alignment: Alignment
                                                                 .center,
                                                             decoration:
@@ -1002,10 +1126,8 @@ class DetailCategory extends GetView<PackageController> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           5),
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .colorScheme
-                                                                  .surface,
+                                                              color: Colors
+                                                                  .grey[100],
                                                             ),
                                                             child: Text(
                                                                 controller
@@ -1014,7 +1136,7 @@ class DetailCategory extends GetView<PackageController> {
                                                                     .toString(),
                                                                 style: TextStyle(
                                                                     fontSize:
-                                                                        12)),
+                                                                        34.sp)),
                                                           ),
                                                           const SizedBox(
                                                               width: 10),
@@ -1031,34 +1153,9 @@ class DetailCategory extends GetView<PackageController> {
                                                                           .amountObjectPackage[
                                                                       index]);
                                                             },
-                                                            child: Container(
-                                                              height: 20,
-                                                              width: 20,
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                border: Border.all(
-                                                                    width: 1,
-                                                                    color: Theme.of(
-                                                                            context)
-                                                                        .colorScheme
-                                                                        .primary),
-                                                                borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            100),
-                                                              ),
-                                                              child:
-                                                                  const Center(
-                                                                child: Icon(
-                                                                  Icons.add,
-                                                                  size: 15,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
-                                                              ),
+                                                            child:
+                                                                IconPlusMinus(
+                                                              icon: Icons.add,
                                                             ),
                                                           ),
                                                         ],
@@ -1083,7 +1180,7 @@ class DetailCategory extends GetView<PackageController> {
                   Obx(() {
                     return controller.selectObjectPackage.any((e) => e)
                         ? Container(
-                            padding: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(30.r),
                             child: Obx(() {
                               return Column(
                                 children: [
@@ -1091,19 +1188,28 @@ class DetailCategory extends GetView<PackageController> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text("Total Item"),
-                                      Text(controller
-                                          .amountObjectQty()
-                                          .toString()),
+                                      Text(
+                                        "Total Item",
+                                        style: TextStyle(fontSize: 38.sp),
+                                      ),
+                                      Text(
+                                        controller.amountObjectQty().toString(),
+                                        style: TextStyle(fontSize: 38.sp),
+                                      ),
                                     ],
                                   ),
                                   Row(
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text("Total Harga"),
-                                      Text(controller.amountObjectPrice()),
+                                      Text("Total Harga",
+                                          style: TextStyle(fontSize: 38.sp)),
+                                      Text(controller.amountObjectPrice(),
+                                          style: TextStyle(fontSize: 38.sp)),
                                     ],
+                                  ),
+                                  SizedBox(
+                                    height: 20.h,
                                   ),
                                   SizedBox(
                                     width: double.infinity,
@@ -1112,22 +1218,23 @@ class DetailCategory extends GetView<PackageController> {
                                             backgroundColor: Colors.blue,
                                             foregroundColor: Colors.white),
                                         onPressed: () {
-                                          // print(
-                                          //     "hasil : ${controller.tempDataObject}");
                                           controller.addResultDataObject(
                                             data.packId!.toInt(),
                                             data.packName ?? "",
                                             data.packBannerPath ?? "",
                                             (data.discPercentage as num?)
                                                     ?.toDouble() ??
-                                                0.0, // ✅ aman untuk int, double, null
+                                                0.0,
                                             controller.tempDataObject.toList(),
                                           );
                                           controller.tempDataObject.clear();
 
                                           Get.back();
                                         },
-                                        child: Text("Simpan")),
+                                        child: Text(
+                                          "Simpan",
+                                          style: TextStyle(fontSize: 38.sp),
+                                        )),
                                   )
                                 ],
                               );
@@ -1151,6 +1258,34 @@ class DetailCategory extends GetView<PackageController> {
       title: args['title'],
       img_url: args['img_url'],
       description: args['description'],
+    );
+  }
+}
+
+class IconPlusMinus extends StatelessWidget {
+  final IconData icon;
+  const IconPlusMinus({
+    super.key,
+    required this.icon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 60.r,
+      width: 60.r,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        border: Border.all(width: 1, color: Colors.blue),
+        borderRadius: BorderRadius.circular(1000),
+      ),
+      child: Center(
+        child: Icon(
+          icon,
+          size: 45.r,
+          color: Colors.black,
+        ),
+      ),
     );
   }
 }

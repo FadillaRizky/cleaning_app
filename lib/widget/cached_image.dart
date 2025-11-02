@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CachedImage extends StatelessWidget {
   final String imgUrl;
@@ -23,7 +24,7 @@ class CachedImage extends StatelessWidget {
       width: width,
       placeholder: (context, url) => Center(
         child: SizedBox(
-            height: 40, width: 40, child: const CircularProgressIndicator()),
+            height: 120.h, width:120.h, child: const CircularProgressIndicator()),
       ),
       errorWidget: (context, url, error) => Icon(
         Icons.image,

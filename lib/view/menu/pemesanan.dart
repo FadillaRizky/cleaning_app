@@ -8,6 +8,7 @@ import 'package:cleaning_app/widget/popup.dart';
 import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:day_night_time_picker/lib/state/time.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -31,7 +32,7 @@ class Pemesanan extends GetView<PemesananController> {
           Expanded(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.all(15),
+                padding: EdgeInsets.all(30.r),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -80,7 +81,7 @@ class Pemesanan extends GetView<PemesananController> {
                               });
 
                               return Container(
-                                padding: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(30.r),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10)),
@@ -90,22 +91,22 @@ class Pemesanan extends GetView<PemesananController> {
                                     Text(
                                       "Alamat",
                                       style: TextStyle(
-                                          fontSize: 15,
+                                          fontSize: 40.sp,
                                           fontWeight: FontWeight.w600),
                                     ),
                                     Divider(),
                                     Obx(() {
                                       return ListTile(
                                         contentPadding:
-                                            EdgeInsets.only(left: 5, right: 0),
+                                            EdgeInsets.only(left: 15.w),
                                         leading: Icon(Icons.home),
                                         title: Text(
                                           controller.picName.value,
-                                          style: TextStyle(fontSize: 15),
+                                          style: TextStyle(fontSize: 38.sp),
                                         ),
                                         subtitle: Text(
                                           controller.propertyAddress.value,
-                                          style: TextStyle(fontSize: 13),
+                                          style: TextStyle(fontSize: 34.sp),
                                         ),
                                         trailing: TextButton(
                                           style: ButtonStyle(
@@ -116,7 +117,12 @@ class Pemesanan extends GetView<PemesananController> {
                                           onPressed: () {
                                             selectAddress(context, snapshot);
                                           },
-                                          child: Text("Ubah"),
+                                          child: Text(
+                                            "Ubah",
+                                            style: TextStyle(
+                                              fontSize: 38.sp,
+                                            ),
+                                          ),
                                         ),
                                       );
                                     }),
@@ -126,7 +132,7 @@ class Pemesanan extends GetView<PemesananController> {
                             }
 
                             return Container(
-                                padding: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(30.r),
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(10)),
@@ -136,20 +142,21 @@ class Pemesanan extends GetView<PemesananController> {
                                     Text(
                                       "Alamat",
                                       style: TextStyle(
-                                          fontSize: 17,
+                                          fontSize: 40.sp,
                                           fontWeight: FontWeight.bold),
                                     ),
                                     Divider(),
                                     ListTile(
-                                        contentPadding:
-                                            EdgeInsets.only(left: 5, right: 0),
+                                        contentPadding: EdgeInsets.only(
+                                          left: 15.w,
+                                        ),
                                         title: Text(
                                           "Tambah Alamat ",
-                                          style: TextStyle(fontSize: 14),
+                                          style: TextStyle(fontSize: 38.sp),
                                         ),
                                         subtitle: Text(
                                           "Alamat belum ditambahkan",
-                                          style: TextStyle(fontSize: 13),
+                                          style: TextStyle(fontSize: 36.sp),
                                         ),
                                         trailing: ElevatedButton.icon(
                                           style: ElevatedButton.styleFrom(
@@ -184,13 +191,15 @@ class Pemesanan extends GetView<PemesananController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Pesanan Anda",
+                          Text("Detail Pesanan",
                               style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w600)),
+                                  fontSize: 43.sp,
+                                  fontWeight: FontWeight.w600)),
                           Divider(),
                           Text(packController.category.value,
                               style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.bold)),
+                                  fontSize: 38.sp,
+                                  fontWeight: FontWeight.bold)),
                           SizedBox(
                             height: 10,
                           ),
@@ -217,16 +226,16 @@ class Pemesanan extends GetView<PemesananController> {
                                                             .resultDataObject[
                                                         index]['pack_img'],
                                                     fit: BoxFit.cover,
-                                                    height: 70,
-                                                    width: 70,
+                                                    height: 190.w,
+                                                    width: 190.w,
                                                     placeholder: (context,
                                                             url) =>
                                                         const CircularProgressIndicator(),
                                                     errorWidget:
                                                         (context, url, error) =>
-                                                            const Icon(
+                                                            Icon(
                                                       Icons.person,
-                                                      size: 60,
+                                                      size: 130.r,
                                                       color: Colors.grey,
                                                     ),
                                                   ),
@@ -236,8 +245,8 @@ class Pemesanan extends GetView<PemesananController> {
                                                         index]['pack_disc'] !=
                                                     0)
                                                   Positioned(
-                                                    top: 4,
-                                                    left: 4,
+                                                    top: 12.r,
+                                                    left: 12.r,
                                                     child: Container(
                                                       padding: const EdgeInsets
                                                           .symmetric(
@@ -252,9 +261,9 @@ class Pemesanan extends GetView<PemesananController> {
                                                       ),
                                                       child: Text(
                                                         "- ${packController.resultDataObject[index]['pack_disc']} %",
-                                                        style: const TextStyle(
+                                                        style: TextStyle(
                                                           color: Colors.white,
-                                                          fontSize: 10,
+                                                          fontSize: 25.sp,
                                                           fontWeight:
                                                               FontWeight.bold,
                                                         ),
@@ -263,8 +272,7 @@ class Pemesanan extends GetView<PemesananController> {
                                                   ),
                                               ],
                                             ),
-                                            const SizedBox(width: 15),
-                                            // Gunakan Expanded di sini agar teks bisa wrap
+                                            SizedBox(width: 45.w),
                                             Expanded(
                                               child: Column(
                                                 crossAxisAlignment:
@@ -277,9 +285,8 @@ class Pemesanan extends GetView<PemesananController> {
                                                           packController
                                                                   .resultDataObject[
                                                               index]['pack_name'],
-                                                          style:
-                                                              const TextStyle(
-                                                            fontSize: 14,
+                                                          style: TextStyle(
+                                                            fontSize: 38.sp,
                                                             fontWeight:
                                                                 FontWeight.bold,
                                                           ),
@@ -294,19 +301,18 @@ class Pemesanan extends GetView<PemesananController> {
                                                               index]['pack_disc'] !=
                                                           0)
                                                         Row(
-                                                          children: const [
+                                                          children: [
                                                             Icon(
                                                               LineIcons
                                                                   .alternateTicket,
                                                               color: Colors.red,
-                                                              size: 13,
-                                                              weight: 10,
+                                                              size: 30.r,
                                                             ),
                                                             SizedBox(width: 3),
                                                             Text(
                                                               "Dengan Promo",
                                                               style: TextStyle(
-                                                                fontSize: 10,
+                                                                fontSize: 25.sp,
                                                                 color:
                                                                     Colors.red,
                                                               ),
@@ -323,19 +329,13 @@ class Pemesanan extends GetView<PemesananController> {
                                                         .resultDataObject[index]
                                                             ["data_object"]
                                                         .map<Widget>((item) {
-                                                      return Padding(
-                                                        padding:
-                                                            const EdgeInsets
-                                                                .only(top: 2),
-                                                        child: Text(
-                                                          "\u2022 ${item['object_name']}    x ${item['object_amount']}",
-                                                          style:
-                                                              const TextStyle(
-                                                                  fontSize: 13),
-                                                          softWrap: true,
-                                                          overflow: TextOverflow
-                                                              .visible,
-                                                        ),
+                                                      return Text(
+                                                        "\u2022 ${item['object_name']}    x ${item['object_amount']}",
+                                                        style: TextStyle(
+                                                            fontSize: 35.sp),
+                                                        softWrap: true,
+                                                        overflow: TextOverflow
+                                                            .visible,
                                                       );
                                                     }).toList(),
                                                   ),
@@ -344,7 +344,7 @@ class Pemesanan extends GetView<PemesananController> {
                                             ),
                                           ],
                                         ),
-                                        const SizedBox(height: 10),
+                                        SizedBox(height: 30.h),
                                       ],
                                     );
                                   },
@@ -358,20 +358,20 @@ class Pemesanan extends GetView<PemesananController> {
                                         imageUrl: packController
                                             .selectedPackageImg.value,
                                         fit: BoxFit.cover,
-                                        height: 70,
-                                        width: 70,
+                                        height: 190.w,
+                                        width: 190.w,
                                         placeholder: (context, url) =>
                                             const CircularProgressIndicator(),
                                         errorWidget: (context, url, error) =>
-                                            const Icon(
+                                            Icon(
                                           Icons.person,
-                                          size: 60,
+                                          size: 130.r,
                                           color: Colors.grey,
                                         ),
                                       ),
                                     ),
                                     SizedBox(
-                                      width: 15,
+                                      width: 45.w,
                                     ),
                                     Expanded(
                                       child: Column(
@@ -382,12 +382,12 @@ class Pemesanan extends GetView<PemesananController> {
                                             packController
                                                 .selectedPackageName.value,
                                             style: TextStyle(
-                                                fontSize: 16,
+                                                fontSize: 40.sp,
                                                 fontWeight: FontWeight.bold),
                                           ),
                                           Text(
                                             "${packController.selectedDuration.value} Jam",
-                                            style: TextStyle(fontSize: 15),
+                                            style: TextStyle(fontSize: 38.sp),
                                           ),
                                           Row(
                                             mainAxisAlignment:
@@ -398,7 +398,8 @@ class Pemesanan extends GetView<PemesananController> {
                                                     packController
                                                         .selectedPriceDuration
                                                         .value)),
-                                                style: TextStyle(fontSize: 15),
+                                                style:
+                                                    TextStyle(fontSize: 38.sp),
                                               ),
                                             ],
                                           )
@@ -411,7 +412,7 @@ class Pemesanan extends GetView<PemesananController> {
                       ),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 30.h,
                     ),
                     GestureDetector(
                       onTap: () {
@@ -430,15 +431,15 @@ class Pemesanan extends GetView<PemesananController> {
                                 Icon(
                                   LineIcons.alternateTicket,
                                   color: Colors.red,
-                                  size: 18,
+                                  size: 50.r,
                                 ),
                                 SizedBox(
-                                  width: 5,
+                                  width: 25.w,
                                 ),
                                 Text(
                                   "Voucher Anda",
                                   style: TextStyle(
-                                      fontSize: 14,
+                                      fontSize: 38.sp,
                                       fontWeight: FontWeight.w400),
                                 ),
                               ],
@@ -458,7 +459,8 @@ class Pemesanan extends GetView<PemesananController> {
                                         child: Text(
                                           "- ${profileController.valueVoucher.value} %",
                                           style: TextStyle(
-                                              fontSize: 11, color: Colors.red),
+                                              fontSize: 30.sp,
+                                              color: Colors.red),
                                         ))
                                     : SizedBox.shrink(),
                                 Icon(
@@ -472,20 +474,20 @@ class Pemesanan extends GetView<PemesananController> {
                       ),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 30.h,
                     ),
                     Container(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(30.r),
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
+                          borderRadius: BorderRadius.circular(30.r)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Metode Pembayaran",
                             style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w600),
+                                fontSize: 40.sp, fontWeight: FontWeight.w600),
                           ),
                           Divider(),
                           RadioPayment(
@@ -510,159 +512,98 @@ class Pemesanan extends GetView<PemesananController> {
                       ),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 30.h,
                     ),
                     Container(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(30.r),
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
+                          borderRadius: BorderRadius.circular(30.r)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Waktu Layanan",
                             style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w600),
+                                fontSize: 40.sp, fontWeight: FontWeight.w600),
                           ),
                           Divider(),
-                          TextField(
+                          PickDateTime(
                             controller: controller.dateController,
-                            style: TextStyle(fontSize: 15),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 2, horizontal: 10),
-                              hintText: "Pilih Tanggal",
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
-                              ),
-                              suffixIcon: Icon(
-                                Icons.calendar_month_rounded,
-                                color: Colors.grey,
-                                size: 23,
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey, width: 1),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              disabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              filled: true,
-                              fillColor: Color(0xfff7f9fc),
-                            ),
-                            readOnly: true,
-                            onTap: () {
+                            ontap: () {
                               controller.selectDate(context);
                             },
+                            hint: "Pilih Tanggal",
+                            icon: Icons.calendar_month_rounded,
                           ),
                           SizedBox(
                             height: 10,
                           ),
-                          TextField(
+                          PickDateTime(
                             controller: controller.timeController,
-                            style: TextStyle(fontSize: 15),
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 2, horizontal: 10),
-                              hintText: "Pilih Waktu",
-                              hintStyle: TextStyle(
-                                color: Colors.grey,
-                              ),
-                              suffixIcon: Icon(
-                                Icons.access_time_outlined,
-                                color: Colors.grey,
-                                size: 23,
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey, width: 1),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              disabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              filled: true,
-                              fillColor: Color(0xfff7f9fc),
-                            ),
-                            readOnly: true,
-                            onTap: () {
-                              controller.selectTime(context);
+                            ontap: () {
+                               controller.selectTime(context);
                             },
+                            hint: "Pilih Waktu",
+                            icon: Icons.access_time_outlined,
                           ),
-                        ],
+                          ],
                       ),
                     ),
                     SizedBox(
-                      height: 10,
+                      height: 30.h,
                     ),
                     Container(
-                      padding: EdgeInsets.all(10),
+                      padding: EdgeInsets.all(30.r),
                       decoration: BoxDecoration(
                           color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
+                          borderRadius: BorderRadius.circular(30.r)),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
                             "Tambahan",
                             style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.bold),
+                                fontSize: 40.sp, fontWeight: FontWeight.bold),
                           ),
                           Divider(),
                           TextField(
                             maxLines: 3,
                             controller: controller.noteController,
-                            style: TextStyle(fontSize: 15),
+                            style: TextStyle(fontSize: 38.sp),
                             decoration: InputDecoration(
                               hintText: "Catatan (Opsional)",
                               hintStyle:
-                                  TextStyle(color: Colors.grey, fontSize: 15),
+                                  TextStyle(color: Colors.grey),
                               focusedBorder: OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.grey, width: 1),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(30.r),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(30.r),
                               ),
                               disabledBorder: OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(30.r),
                               ),
                               filled: true,
                               fillColor: Color(0xfff7f9fc),
                             ),
                           ),
                           SizedBox(
-                            height: 10,
+                            height: 30.h,
                           ),
                           Text(
                             "Gender Mitra",
                             style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black54),
+                                fontWeight: FontWeight.bold,fontSize: 40.sp),
                           ),
                           SizedBox(
-                            height: 5,
+                            height: 15.h,
                           ),
                           Obx(() {
                             return DropdownButtonFormField<String>(
@@ -675,17 +616,17 @@ class Pemesanan extends GetView<PemesananController> {
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Colors.grey, width: 1),
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(30.r),
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(30.r),
                                 ),
                                 disabledBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Colors.grey.shade300),
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(30.r),
                                 ),
                                 filled: true,
                                 fillColor: Color(0xfff7f9fc),
@@ -696,12 +637,12 @@ class Pemesanan extends GetView<PemesananController> {
                                   : controller.selectedGender.value,
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 15,
+                                fontSize: 38.sp,
                               ),
-                              items: controller.genderMitra.map((fruit) {
+                              items: controller.genderMitra.map((gender) {
                                 return DropdownMenuItem<String>(
-                                  value: fruit,
-                                  child: Text(fruit),
+                                  value: gender,
+                                  child: Text(gender),
                                 );
                               }).toList(),
                               onChanged: (val) =>
@@ -713,7 +654,7 @@ class Pemesanan extends GetView<PemesananController> {
                           ),
                           Text(
                             "* Opsi ini dapat Anda sesuaikan apabila menginginkan mitra dengan gender tertentu untuk kenyamanan Anda selama layanan berlangsung.",
-                            style: TextStyle(fontSize: 10, color: Colors.grey),
+                            style: TextStyle(fontSize: 25.sp, color: Colors.grey),
                           )
                         ],
                       ),
@@ -725,8 +666,7 @@ class Pemesanan extends GetView<PemesananController> {
           ),
           Container(
               width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(15, 20, 15, 10),
-              margin: const EdgeInsets.only(bottom: 15),
+              padding:  EdgeInsets.all(45.r),
               decoration: BoxDecoration(
                 color: Colors.white,
               ),
@@ -767,9 +707,9 @@ class Pemesanan extends GetView<PemesananController> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "Sub Total",
+                                    "SubTotal",
                                     style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 36.sp,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.black),
                                   ),
@@ -781,7 +721,7 @@ class Pemesanan extends GetView<PemesananController> {
                                               packController
                                                   .selectedDiscount.value)),
                                       style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize: 36.sp,
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),
@@ -796,14 +736,14 @@ class Pemesanan extends GetView<PemesananController> {
                                           "${profileController.hasVoucher.value && hasDiscount ? " + " : ""}"
                                           "${hasDiscount ? "Promo" : ""}",
                                           style: TextStyle(
-                                              fontSize: 13,
+                                              fontSize: 36.sp,
                                               fontWeight: FontWeight.w500,
                                               color: Colors.red),
                                         ),
                                         Text(
                                             "- ${Utils.formatCurrency(normalTotal - total)}",
                                             style: TextStyle(
-                                                fontSize: 13,
+                                                fontSize: 36.sp,
                                                 fontWeight: FontWeight.bold)),
                                       ],
                                     )
@@ -816,7 +756,7 @@ class Pemesanan extends GetView<PemesananController> {
                                         Text(
                                           "Discount",
                                           style: TextStyle(
-                                              fontSize: 13,
+                                              fontSize: 36.sp,
                                               fontWeight: FontWeight.w500,
                                               color: Colors.black),
                                         ),
@@ -828,7 +768,7 @@ class Pemesanan extends GetView<PemesananController> {
                                                 int.parse(packController
                                                     .selectedDiscount.value)),
                                             style: TextStyle(
-                                                fontSize: 13,
+                                                fontSize: 36.sp,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.red)),
                                       ],
@@ -840,7 +780,7 @@ class Pemesanan extends GetView<PemesananController> {
                                         Text(
                                           "Biaya Layanan Apartemen",
                                           style: TextStyle(
-                                              fontSize: 13,
+                                              fontSize: 36.sp,
                                               fontWeight: FontWeight.w500,
                                               color: Colors.black),
                                         ),
@@ -859,14 +799,14 @@ class Pemesanan extends GetView<PemesananController> {
                                                 title: Text(
                                                   "Biaya Layanan Apartemen",
                                                   style: TextStyle(
-                                                      fontSize: 16,
+                                                      fontSize: 45.sp,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
                                                 content: Text(
                                                   "Biaya ini diperlukan untuk mendukung operasional di area apartemen, seperti akses masuk, parkir petugas, dan aturan dari pihak pengelola gedung.",
                                                   style: TextStyle(
-                                                      fontSize: 14,
+                                                      fontSize: 38.sp,
                                                       height: 1.5),
                                                 ),
                                                 actions: [
@@ -886,13 +826,13 @@ class Pemesanan extends GetView<PemesananController> {
                                           child: Icon(
                                             Icons.info_outline,
                                             color: Colors.black,
-                                            size: 15,
+                                            size: 43.r,
                                           ),
                                         ),
                                         Spacer(),
                                         Text("Rp 20.000",
                                             style: TextStyle(
-                                                fontSize: 13,
+                                                fontSize: 36.sp,
                                                 fontWeight: FontWeight.bold)),
                                       ],
                                     )
@@ -904,13 +844,13 @@ class Pemesanan extends GetView<PemesananController> {
                                   Text(
                                     "Biaya Platform",
                                     style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize: 36.sp,
                                         fontWeight: FontWeight.w500,
                                         color: Colors.black),
                                   ),
                                   Text("Rp 2.000",
                                       style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize: 36.sp,
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),
@@ -922,7 +862,7 @@ class Pemesanan extends GetView<PemesananController> {
                                   Text(
                                     "Total",
                                     style: TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 40.sp,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.black),
                                   ),
@@ -945,12 +885,12 @@ class Pemesanan extends GetView<PemesananController> {
                                                   ? 20000
                                                   : 0)),
                                       style: TextStyle(
-                                          fontSize: 15,
+                                          fontSize: 40.sp,
                                           fontWeight: FontWeight.bold)),
                                 ],
                               ),
                               SizedBox(
-                                height: 10,
+                                height: 30.h,
                               ),
                             ],
                           )
@@ -966,9 +906,9 @@ class Pemesanan extends GetView<PemesananController> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor:
                                   enabled ? Colors.blue : Colors.grey,
-                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              padding: EdgeInsets.symmetric(vertical: 35.h),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(30.r),
                                 side: BorderSide.none,
                               ),
                             ),
@@ -1052,23 +992,6 @@ class Pemesanan extends GetView<PemesananController> {
                                   return;
                                 }
 
-                                // if (packController.category.value !=
-                                //     "Daily Cleaning") {
-                                //   if (saldoInt < total) {
-                                //     SnackbarUtil.show("Saldo Tidak Mencukupi",
-                                //         "Silakan Top up Saldo terlebih dahulu");
-                                //     return;
-                                //   }
-                                // } else {
-                                //   if (saldoInt <
-                                //       int.parse(packController
-                                //           .selectedPriceDuration.value)) {
-                                //     SnackbarUtil.show("Saldo Tidak Mencukupi",
-                                //         "Silakan top up saldo terlebih dahulu");
-                                //     return;
-                                //   }
-                                // }
-
                                 if (packController.category.value !=
                                     "Daily Cleaning") {
                                   Map<String, dynamic> dataPackMap =
@@ -1096,22 +1019,25 @@ class Pemesanan extends GetView<PemesananController> {
                                 } else {
                                   var dataDaily = {
                                     "data_pack[0][pack_id]":
-                                packController.selectedPackageId.value,
-                            "data_pack[0][pack_category]":
-                                packController.category.value,
-                            "data_pack[0][ph_id]":
-                                packController.selectedDuration.value,
-                            "data_pack[0][object_id]": "",
-                            "data_pack[0][object_price]": "",
-                            "category": packController.category.value,
-                            "due_date": controller.dateText.value,
-                            "due_time": controller.timeText.value,
-                            "discount": "2",
-                            "order_notes": controller.noteController.text,
-                            "property_id": controller.propertyId.value,
-                            "property_city": Utils.extractSecondSentence(
-                                controller.propertyAddress.value),
-                            "mitra_gender": controller.selectedGender.value,
+                                        packController.selectedPackageId.value,
+                                    "data_pack[0][pack_category]":
+                                        packController.category.value,
+                                    "data_pack[0][ph_id]":
+                                        packController.selectedDuration.value,
+                                    "data_pack[0][object_id]": "",
+                                    "data_pack[0][object_price]": "",
+                                    "category": packController.category.value,
+                                    "due_date": controller.dateText.value,
+                                    "due_time": controller.timeText.value,
+                                    "discount": "2",
+                                    "order_notes":
+                                        controller.noteController.text,
+                                    "property_id": controller.propertyId.value,
+                                    "property_city":
+                                        Utils.extractSecondSentence(
+                                            controller.propertyAddress.value),
+                                    "mitra_gender":
+                                        controller.selectedGender.value,
                                     "payment_type": "balance"
                                   };
                                   print(dataDaily);
@@ -1271,11 +1197,14 @@ class Pemesanan extends GetView<PemesananController> {
               const SizedBox(height: 20),
               (profileController.hasVoucher.value)
                   ? VoucherCard(
-      title: "Voucher Member",
-      subtitle: "Discount ${profileController.valueVoucher.value} %",
-      condition: "Voucher spesial member! Gunakan di semua layanan. Ayo tingkatkan jumlah pesananmu untuk meraih voucher yang lebih besar!",
-      buttonText: "Batalkan",
-    ) : Container(
+                      title: "Voucher Member",
+                      subtitle:
+                          "Discount ${profileController.valueVoucher.value} %",
+                      condition:
+                          "Voucher spesial member! Gunakan di semua layanan. Ayo tingkatkan jumlah pesananmu untuk meraih voucher yang lebih besar!",
+                      buttonText: "Batalkan",
+                    )
+                  : Container(
                       width: double.infinity,
                       child: Column(
                         children: [
@@ -1287,6 +1216,63 @@ class Pemesanan extends GetView<PemesananController> {
           ),
         );
       },
+    );
+  }
+}
+
+class PickDateTime extends StatelessWidget {
+  const PickDateTime({
+    super.key,
+    required this.controller,
+    required this.ontap,
+    required this.hint,
+    required this.icon,
+  });
+
+  final TextEditingController controller;
+  final VoidCallback ontap;
+  final String hint;
+  final IconData icon;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 130.h,
+      padding: EdgeInsets.symmetric(horizontal: 30.w),
+      decoration: BoxDecoration(
+        color: Color(0xfff7f9fc),
+        borderRadius: BorderRadius.circular(30.r),
+        border: Border.all(
+          color: Colors.grey,
+          width: 1,
+        ),
+      ),
+      child: Center(
+        child: TextField(
+          controller: controller,
+          style: TextStyle(fontSize: 38.sp),
+          textAlignVertical: TextAlignVertical.center,
+          decoration: InputDecoration(
+            hintText: hint,
+            hintStyle: TextStyle(
+              color: Colors.grey,
+            ),
+            suffixIcon: Icon(
+              icon,
+              color: Colors.grey,
+              size: 60.r,
+            ),
+            suffixIconConstraints: BoxConstraints(
+              minWidth: 0,
+              minHeight: 0,
+            ),
+            border: InputBorder.none,
+            isCollapsed: true,
+          ),
+          readOnly: true,
+          onTap: ontap,
+        ),
+      ),
     );
   }
 }
@@ -1321,15 +1307,19 @@ class RadioPayment extends StatelessWidget {
             Icon(
               icon,
               color: Colors.black,
+              size: 55.r,
             ),
             SizedBox(
               width: 8,
             ),
-            Text(title, style: TextStyle(fontSize: 14)),
+            Text(title, style: TextStyle(fontSize: 38.sp)),
+            SizedBox(
+              width: 15.w,
+            ),
             (title == "Saldo")
                 ? Text(
                     " (${Utils.formatCurrency(saldoInt)})",
-                    style: TextStyle(fontSize: 13, color: Colors.blue),
+                    style: TextStyle(fontSize: 34.sp, color: Colors.blue),
                   )
                 : SizedBox.shrink(),
             Spacer(),

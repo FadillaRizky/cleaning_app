@@ -2,6 +2,7 @@ import 'package:cleaning_app/controller/pemesanan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 class InstructionPage extends GetView<PemesananController> {
@@ -36,48 +37,51 @@ class InstructionPage extends GetView<PemesananController> {
                                     begin: Alignment.topRight,
                                     end: Alignment.bottomLeft,
                                   ),
-                                  borderRadius: BorderRadius.circular(12)),
+                                  borderRadius: BorderRadius.circular(36.r)),
                               child: Padding(
-                                padding: const EdgeInsets.all(16),
+                                padding: EdgeInsets.all(45.r),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Image.asset("assets/icon/bca_white.png",
-                                        height: 25),
+                                        height: 68.h),
                                     const SizedBox(height: 10),
-                                    const Text(
+                                    Text(
                                       "PT. KUSUMA WIJAYA SENTOSA",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
+                                          fontSize: 38.sp,
                                           color: Colors.white),
                                     ),
-                                    const Text(
+                                    SizedBox(height: 30.h,),
+                                     Text(
                                       "Nomor Rekening",
-                                      style: TextStyle(color: Colors.white),
+                                      style: TextStyle(color: Colors.white,fontSize: 36.sp),
                                     ),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        const Text(
+                                         Text(
                                           "168 0370 628",
-                                          style: TextStyle(color: Colors.white),
+                                          style: TextStyle(color: Colors.white,fontSize: 38.sp),
                                         ),
                                         GestureDetector(
                                           onTap: () {
                                             Clipboard.setData(
                                                 const ClipboardData(
-                                                    text: "168 0370 628"));
+                                                    text:
+                                                        "168 0370 628"));
                                             IconSnackBar.show(context,
                                                 snackBarType:
                                                     SnackBarType.alert,
                                                 label:
                                                     'Text berhasil disalin.');
                                           },
-                                          child: const Text(
+                                          child:  Text(
                                             "Salin",
                                             style:
-                                                TextStyle(color: Colors.white),
+                                                TextStyle(color: Colors.white,fontSize: 38.sp),
                                           ),
                                         ),
                                       ],
@@ -320,11 +324,11 @@ class InstructionPage extends GetView<PemesananController> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("$number. ",style: const TextStyle(color: Colors.black, fontSize: 14)),
+          Text("$number. ",style:  TextStyle(color: Colors.black, fontSize: 34.sp)),
           Expanded(
             child: RichText(
               text: TextSpan(
-                style: const TextStyle(color: Colors.black, fontSize: 14),
+                style:  TextStyle(color: Colors.black, fontSize: 35.sp),
                 children: [
                   TextSpan(text: prefix),
                   if (bold != null)
@@ -385,11 +389,12 @@ class ExpandListTile extends StatelessWidget {
           text: TextSpan(
             style: TextStyle(color: Colors.black, fontSize: 15),
             children: [
-              TextSpan(text: "Petunjuk Transfer "),
+              TextSpan(text: "Petunjuk Transfer ",style: TextStyle(fontSize: 38.sp)),
               TextSpan(
                 text: title,
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
+                  fontSize: 40.sp
                 ),
               ),
             ],

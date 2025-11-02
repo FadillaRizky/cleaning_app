@@ -1,6 +1,7 @@
 import 'package:cleaning_app/model/DetailOrderResponse.dart' as Data;
 import 'package:cleaning_app/widget/utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -24,51 +25,52 @@ class InvoicePage extends GetView<InvoiceController> {
               pw.Center(
                 child: pw.Text('INVOICE',
                     style: pw.TextStyle(
-                        fontSize: 20, fontWeight: pw.FontWeight.bold)),
+                        fontSize: 58.sp, fontWeight: pw.FontWeight.bold)),
               ),
               pw.SizedBox(height: 20),
-              pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pw.Text('Name: ${data.picName}'),
-                  pw.Text('Mobile No: ${data.picPhone}'),
-                ],
-              ),
+              buildPdfInfoRow('Name', data.picName),
+              buildPdfInfoRow('Mobile No', data.picPhone),
+              buildPdfInfoRow('Date', Utils.formatTanggal(data.dueDate!)),
+              buildPdfInfoRow('Property Type', data.propertyType),
+              buildPdfInfoRow('Property Address', data.propertyAddress),
+              buildPdfInfoRow('Payment Type', data.paymentType!.toUpperCase()),
               pw.Divider(),
               pw.Text(data.category!,
-                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold,fontSize: 32.sp)),
               pw.SizedBox(height: 5),
               (data.category != "Daily Cleaning")
                   ? pw.Column(
                       children: data.dataPack!.map((item) {
                         return pw.Column(
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          children: [
-                            pw.SizedBox(height: 10),
-                            pw.Text(item.packName!,style: pw.TextStyle(
-                                              fontWeight: pw.FontWeight.bold)),
-                            pw.Column(
-                            children: item.dataObject!.map((items) {
-                          return pw.Row(
-                            mainAxisAlignment:
-                                pw.MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: pw.CrossAxisAlignment.start,
                             children: [
-                              pw.Text("${items.objectName} x ${items.qty}"),
-                              pw.Text(Utils.formatCurrency(items.objectPrice!)),
-                            ],
-                          );
-                        }).toList())
-                          ]
-                        );
+                              pw.SizedBox(height: 10),
+                              pw.Text(item.packName!,
+                                  style: pw.TextStyle(
+                                      fontWeight: pw.FontWeight.bold,fontSize: 32.sp)),
+                              pw.Column(
+                                  children: item.dataObject!.map((items) {
+                                return pw.Row(
+                                  mainAxisAlignment:
+                                      pw.MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    pw.Text(
+                                        "${items.objectName} x ${items.qty}",style: pw.TextStyle(fontSize: 32.sp)),
+                                    pw.Text(Utils.formatCurrency(
+                                        items.objectPrice!),style: pw.TextStyle(fontSize: 32.sp)),
+                                  ],
+                                );
+                              }).toList())
+                            ]);
                       }).toList(),
                     )
                   : pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
                         pw.Text(
-                            "${data!.dataPack!.first.packName} (${data.dataPack!.first.packHour} Jam)"),
+                            "${data!.dataPack!.first.packName} (${data.dataPack!.first.packHour} Jam)",style: pw.TextStyle(fontSize: 32.sp)),
                         pw.Text(Utils.formatCurrency(
-                            data.dataPack!.first.packPrice!)),
+                            data.dataPack!.first.packPrice!),style: pw.TextStyle(fontSize: 32.sp)),
                       ],
                     ),
               pw.SizedBox(height: 10),
@@ -76,38 +78,48 @@ class InvoicePage extends GetView<InvoiceController> {
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text("Subtotal"),
-                  pw.Text(Utils.formatCurrency(data.ttlBasicPrice!)),
+                  pw.Text("Subtotal",style: pw.TextStyle(fontSize: 32.sp)),
+                  pw.Text(Utils.formatCurrency(data.ttlBasicPrice!),style: pw.TextStyle(fontSize: 32.sp)),
                 ],
               ),
-          (data.ttlDiscPercent != 0)
-             ? pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                children: [
-                  pw.Text("Diskon", style: pw.TextStyle(color: PdfColors.red)),
-                  pw.Text(Utils.formatCurrency(data.ttlDiscNominal!),
-                      style: pw.TextStyle(color: PdfColors.red)),
-                ],
-              )
-              : pw.SizedBox.shrink(),
+              (data.ttlDiscPercent != 0)
+                  ? pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text("Diskon",
+                            style: pw.TextStyle(color: PdfColors.red,fontSize: 32.sp)),
+                        pw.Text(Utils.formatCurrency(data.ttlDiscNominal!),
+                            style: pw.TextStyle(color: PdfColors.red,fontSize: 32.sp)),
+                      ],
+                    )
+                  : pw.SizedBox.shrink(),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text("Biaya Platform"),
-                  pw.Text(Utils.formatCurrency(data.platformCharge!)),
+                  pw.Text("Biaya Platform",style: pw.TextStyle(fontSize: 32.sp)),
+                  pw.Text(Utils.formatCurrency(data.platformCharge!),style: pw.TextStyle(fontSize: 32.sp)),
                 ],
               ),
-          (data.tax != 0)
-              ? pw.Row(
+              (data.propertyCharge != 0)
+               ? pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text(
-                    "PPN ${data.tax}%",
-                  ),
-                  pw.Text(Utils.formatCurrency(data.nominalTax!)),
+                  pw.Text("Apartemen Fee",style: pw.TextStyle(fontSize: 32.sp)),
+                  pw.Text(Utils.formatCurrency(data.propertyCharge!),style: pw.TextStyle(fontSize: 32.sp)),
                 ],
               )
-: pw.SizedBox.shrink(),
+              : pw.SizedBox.shrink(),
+              (data.tax != 0)
+                  ? pw.Row(
+                      mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                      children: [
+                        pw.Text(
+                          "PPN ${data.tax}%",style: pw.TextStyle(fontSize: 32.sp)
+                        ),
+                        pw.Text(Utils.formatCurrency(data.nominalTax!),style: pw.TextStyle(fontSize: 32.sp)),
+                      ],
+                    )
+                  : pw.SizedBox.shrink(),
               pw.Divider(),
               pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -115,11 +127,11 @@ class InvoicePage extends GetView<InvoiceController> {
                   pw.Text('Total Pembayaran',
                       style: pw.TextStyle(
                           color: PdfColors.blue,
-                          fontWeight: pw.FontWeight.bold)),
+                          fontWeight: pw.FontWeight.bold,fontSize: 32.sp)),
                   pw.Text(Utils.formatCurrency(data.ttlSellingNominal!),
                       style: pw.TextStyle(
                           color: PdfColors.blue,
-                          fontWeight: pw.FontWeight.bold)),
+                          fontWeight: pw.FontWeight.bold,fontSize: 32.sp)),
                 ],
               ),
             ],
@@ -144,18 +156,18 @@ class InvoicePage extends GetView<InvoiceController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Center(
+               Center(
                 child: Text(
                   'INVOICE',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 58.sp, fontWeight: FontWeight.bold),
                 ),
               ),
               const SizedBox(height: 24),
               Expanded(
                 child: FutureBuilder(
                     future: controller.getDetailorder(),
-                    builder:
-                        (context, AsyncSnapshot<Data.DetailOrderResponse> snapshot) {
+                    builder: (context,
+                        AsyncSnapshot<Data.DetailOrderResponse> snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Skeletonizer(
                             child: Column(
@@ -188,8 +200,8 @@ class InvoicePage extends GetView<InvoiceController> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Name:"),
-                              Text(snapshot.data!.data!.picName!)
+                              Text("Name:",style: TextStyle(fontSize: 38.sp),),
+                              Text(snapshot.data!.data!.picName!,style: TextStyle(fontSize: 38.sp))
                             ],
                           ),
                           SizedBox(
@@ -198,8 +210,8 @@ class InvoicePage extends GetView<InvoiceController> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Mobile No:"),
-                              Text(snapshot.data!.data!.picPhone!)
+                              Text("Mobile No:",style: TextStyle(fontSize: 38.sp)),
+                              Text(snapshot.data!.data!.picPhone!,style: TextStyle(fontSize: 38.sp))
                             ],
                           ),
                           SizedBox(
@@ -208,8 +220,8 @@ class InvoicePage extends GetView<InvoiceController> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Date:"),
-                              Text(Utils.formatTanggal(data!.dueDate!))
+                              Text("Date:",style: TextStyle(fontSize: 38.sp)),
+                              Text(Utils.formatTanggal(data!.dueDate!),style: TextStyle(fontSize: 38.sp))
                             ],
                           ),
                           SizedBox(
@@ -218,25 +230,49 @@ class InvoicePage extends GetView<InvoiceController> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Property Type:"),
-                              Text(data.propertyType!)
+                              Text("Property Type:",style: TextStyle(fontSize: 38.sp)),
+                              Text(data.propertyType!,style: TextStyle(fontSize: 38.sp))
                             ],
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("Property Address:",style: TextStyle(fontSize: 38.sp)),
+                              Expanded(
+                                child: Text(
+                                  data.propertyAddress != null
+                                      ? data.propertyAddress!.substring(
+                                          data.propertyAddress!.indexOf(",") +
+                                              2)
+                                      : "-",
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.right,
+                                  style:  TextStyle(color: Colors.black87,fontSize: 38.sp),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 5,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Payment Type:"),
-                              Text(data.paymentType!)
+                              Text("Payment Type:",style: TextStyle(fontSize: 38.sp)),
+                              Text(data.paymentType!.toUpperCase(),style: TextStyle(fontSize: 38.sp))
                             ],
                           ),
                           Divider(),
+                          SizedBox(height: 15,),
                           Text(
-                            data!.category!,
+                            data.category!,
                             style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.bold),
-                          ),
-                          SizedBox(
-                            height: 5,
+                                fontSize: 42.sp, fontWeight: FontWeight.bold),
                           ),
                           (data.category != "Daily Cleaning")
                               ? Column(
@@ -245,11 +281,11 @@ class InvoicePage extends GetView<InvoiceController> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        SizedBox(height: 10),
+                                        SizedBox(height: 5),
                                         Text(
                                           item.packName!,
                                           style: TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                              fontWeight: FontWeight.bold,fontSize: 38.sp),
                                         ),
                                         Column(
                                             children:
@@ -259,9 +295,9 @@ class InvoicePage extends GetView<InvoiceController> {
                                                 MainAxisAlignment.spaceBetween,
                                             children: [
                                               Text(
-                                                  "${items.objectName} x ${items.qty}"),
+                                                  "${items.objectName} x ${items.qty}",style: TextStyle(fontSize: 38.sp),),
                                               Text(Utils.formatCurrency(
-                                                  items.objectPrice!)),
+                                                  items.objectPrice!),style: TextStyle(fontSize: 38.sp)),
                                             ],
                                           );
                                         }).toList()),
@@ -274,69 +310,74 @@ class InvoicePage extends GetView<InvoiceController> {
                                       MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                        "${data.dataPack!.first.packName} (${data.dataPack!.first.packHour} Jam)"),
+                                        "${data.dataPack!.first.packName} (${data.dataPack!.first.packHour} Jam)",style: TextStyle(fontSize: 38.sp)),
                                     Text(Utils.formatCurrency(
-                                        data.dataPack!.first.packPrice!)),
+                                        data.dataPack!.first.packPrice!),style: TextStyle(fontSize: 38.sp)),
                                   ],
                                 ),
                           SizedBox(
-                            height: 10,
+                            height: 100.h,
                           ),
                           Divider(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text("Subtotal"),
-                              Text(Utils.formatCurrency(data.ttlBasicPrice!)),
+                              Text(Utils.formatCurrency(data.ttlBasicPrice!),style: TextStyle(fontSize: 38.sp)),
                             ],
                           ),
-                      (data.ttlDiscPercent != 0)
-                          ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Diskon",
-                                style: TextStyle(color: Colors.red),
-                              ),
-                              Text(
-                                "- ${Utils.formatCurrency(data.ttlDiscNominal!)}",
-                                style: TextStyle(color: Colors.red),
-                              ),
-                            ],
-                          )
-                          : SizedBox.shrink(),
+                          (data.ttlDiscPercent != 0)
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Diskon",
+                                      style: TextStyle(color: Colors.red,fontSize: 38.sp),
+                                    ),
+                                    Text(
+                                      "- ${Utils.formatCurrency(data.ttlDiscNominal!)}",
+                                      style: TextStyle(color: Colors.red,fontSize: 38.sp),
+                                    ),
+                                  ],
+                                )
+                              : SizedBox.shrink(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Biaya Platform"),
-                              Text(Utils.formatCurrency(data.platformCharge!)),
+                              Text("Biaya Platform",style: TextStyle(fontSize: 38.sp)),
+                              Text(Utils.formatCurrency(data.platformCharge!),style: TextStyle(fontSize: 38.sp)),
                             ],
                           ),
-                      (data.propertyType == "Apartement")
-                          ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("Apartemen Fee"),
-                              Text(Utils.formatCurrency(data.propertyCharge!)),
-                            ],
-                          )
-                          : SizedBox.shrink(),
+                          (data.propertyType == "Apartement")
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Apartemen Fee",style: TextStyle(fontSize: 38.sp)),
+                                    Text(Utils.formatCurrency(
+                                        data.propertyCharge!),style: TextStyle(fontSize: 38.sp)),
+                                  ],
+                                )
+                              : SizedBox.shrink(),
                           (data.tax != 0)
-                          ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text("PPN ${data.tax}%"),
-                              Text(Utils.formatCurrency(data.nominalTax!)),
-                            ],
-                          )
-                          : SizedBox.shrink(),
+                              ? Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("PPN ${data.tax}%",style: TextStyle(fontSize: 38.sp)),
+                                    Text(
+                                        Utils.formatCurrency(data.nominalTax!),style: TextStyle(fontSize: 38.sp)),
+                                  ],
+                                )
+                              : SizedBox.shrink(),
                           Divider(),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text("Total Pembayaran"),
+                              Text("Total Pembayaran",style: TextStyle(fontSize: 38.sp,fontWeight: FontWeight.bold)),
                               Text(Utils.formatCurrency(
-                                  data.ttlSellingNominal!)),
+                                  data.ttlSellingNominal!),style: TextStyle(fontSize: 38.sp,fontWeight: FontWeight.bold)),
                             ],
                           ),
                           Spacer(),
@@ -359,9 +400,6 @@ class InvoicePage extends GetView<InvoiceController> {
                                 style: TextStyle(color: Colors.black),
                               ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 10,
                           ),
                           SizedBox(
                             width: double.infinity,
@@ -389,4 +427,25 @@ class InvoicePage extends GetView<InvoiceController> {
       ),
     );
   }
+}
+
+pw.Widget buildPdfInfoRow(String label, String? value) {
+  return pw.Padding(
+    padding: const pw.EdgeInsets.only(bottom: 4),
+    child: pw.Row(
+      crossAxisAlignment: pw.CrossAxisAlignment.start,
+      children: [
+        pw.Container(
+          width: 120, // atur lebar label agar sejajar
+          child: pw.Text(
+            '$label',
+            style: pw.TextStyle(fontWeight: pw.FontWeight.bold,fontSize: 32.sp),
+          ),
+        ),
+        pw.Expanded(
+          child: pw.Text(":  ${value ?? '-'}",style: pw.TextStyle(fontSize: 32.sp)),
+        ),
+      ],
+    ),
+  );
 }

@@ -19,7 +19,7 @@ class Pembayaran extends StatelessWidget {
             Expanded(
               child: Column(
                 children: [
-                  CardSaldo(saldo: "569.000",point: "1.556",),
+                  CardSaldo(),
                   SizedBox(height: 10,),
                   Divider(),
                   SizedBox(height: 10,),
