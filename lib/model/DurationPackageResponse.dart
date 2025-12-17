@@ -1,110 +1,136 @@
-/// status : true
-/// message : "data berhasil di temukan"
-/// data : [{"ph_id":4,"pack_id":4,"pack_hour":2,"pack_price":200000,"pack_price_disc":190000},{"ph_id":5,"pack_id":4,"pack_hour":3,"pack_price":300000,"pack_price_disc":285000},{"ph_id":6,"pack_id":4,"pack_hour":4,"pack_price":100000,"pack_price_disc":95000}]
-
 class DurationPackageResponse {
-  DurationPackageResponse({
-      bool? status, 
-      String? message, 
-      List<Data>? data,}){
-    _status = status;
-    _message = message;
-    _data = data;
+final bool? status;
+final String? message;
+final List<Data>? data;
+const DurationPackageResponse({this.status , this.message , this.data });
+DurationPackageResponse copyWith({bool? status, String? message, List<Data>? data}){
+return DurationPackageResponse(
+            status:status ?? this.status,
+message:message ?? this.message,
+data:data ?? this.data
+        );
+        }
+        
+Map<String,Object?> toJson(){
+    return {
+            'status': status,
+'message': message,
+'data': data?.map<Map<String,dynamic>>((data)=> data.toJson()).toList()
+    };
 }
 
-  DurationPackageResponse.fromJson(dynamic json) {
-    _status = json['status'];
-    _message = json['message'];
-    if (json['data'] != null) {
-      _data = [];
-      json['data'].forEach((v) {
-        _data?.add(Data.fromJson(v));
-      });
-    }
-  }
-  bool? _status;
-  String? _message;
-  List<Data>? _data;
-DurationPackageResponse copyWith({  bool? status,
-  String? message,
-  List<Data>? data,
-}) => DurationPackageResponse(  status: status ?? _status,
-  message: message ?? _message,
-  data: data ?? _data,
-);
-  bool? get status => _status;
-  String? get message => _message;
-  List<Data>? get data => _data;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['status'] = _status;
-    map['message'] = _message;
-    if (_data != null) {
-      map['data'] = _data?.map((v) => v.toJson()).toList();
-    }
-    return map;
-  }
-
+static DurationPackageResponse fromJson(Map<String , Object?> json){
+    return DurationPackageResponse(
+            status:json['status'] == null ? null : json['status'] as bool,
+message:json['message'] == null ? null : json['message'] as String,
+data:json['data'] == null ? null : (json['data'] as List).map<Data>((data)=> Data.fromJson(data  as Map<String,Object?>)).toList()
+    );
 }
 
-/// ph_id : 4
-/// pack_id : 4
-/// pack_hour : 2
-/// pack_price : 200000
-/// pack_price_disc : 190000
+@override
+String toString(){
+    return '''DurationPackageResponse(
+                status:$status,
+message:$message,
+data:${data.toString()}
+    ) ''';
+}
 
+@override
+bool operator ==(Object other){
+    return other is DurationPackageResponse && 
+        other.runtimeType == runtimeType &&
+        other.status == status && 
+other.message == message && 
+other.data == data;
+}
+      
+@override
+int get hashCode {
+    return Object.hash(
+                runtimeType,
+                status, 
+message, 
+data
+    );
+}
+    
+}
+      
+      
 class Data {
-  Data({
-      num? phId, 
-      num? packId, 
-      num? packHour, 
-      num? packPrice, 
-      num? packPriceDisc,}){
-    _phId = phId;
-    _packId = packId;
-    _packHour = packHour;
-    _packPrice = packPrice;
-    _packPriceDisc = packPriceDisc;
+final int? phId;
+final int? packId;
+final int? packHour;
+final int? packPrice;
+final int? packPriceDisc;
+const Data({this.phId , this.packId , this.packHour , this.packPrice , this.packPriceDisc });
+Data copyWith({int? phId, int? packId, int? packHour, int? packPrice, int? packPriceDisc}){
+return Data(
+            phId:phId ?? this.phId,
+packId:packId ?? this.packId,
+packHour:packHour ?? this.packHour,
+packPrice:packPrice ?? this.packPrice,
+packPriceDisc:packPriceDisc ?? this.packPriceDisc
+        );
+        }
+        
+Map<String,Object?> toJson(){
+    return {
+            'ph_id': phId,
+'pack_id': packId,
+'pack_hour': packHour,
+'pack_price': packPrice,
+'pack_price_disc': packPriceDisc
+    };
 }
 
-  Data.fromJson(dynamic json) {
-    _phId = json['ph_id'];
-    _packId = json['pack_id'];
-    _packHour = json['pack_hour'];
-    _packPrice = json['pack_price'];
-    _packPriceDisc = json['pack_price_disc'];
-  }
-  num? _phId;
-  num? _packId;
-  num? _packHour;
-  num? _packPrice;
-  num? _packPriceDisc;
-Data copyWith({  num? phId,
-  num? packId,
-  num? packHour,
-  num? packPrice,
-  num? packPriceDisc,
-}) => Data(  phId: phId ?? _phId,
-  packId: packId ?? _packId,
-  packHour: packHour ?? _packHour,
-  packPrice: packPrice ?? _packPrice,
-  packPriceDisc: packPriceDisc ?? _packPriceDisc,
-);
-  num? get phId => _phId;
-  num? get packId => _packId;
-  num? get packHour => _packHour;
-  num? get packPrice => _packPrice;
-  num? get packPriceDisc => _packPriceDisc;
-
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['ph_id'] = _phId;
-    map['pack_id'] = _packId;
-    map['pack_hour'] = _packHour;
-    map['pack_price'] = _packPrice;
-    map['pack_price_disc'] = _packPriceDisc;
-    return map;
-  }
-
+static Data fromJson(Map<String , Object?> json){
+    return Data(
+            phId:json['ph_id'] == null ? null : json['ph_id'] as int,
+packId:json['pack_id'] == null ? null : json['pack_id'] as int,
+packHour:json['pack_hour'] == null ? null : json['pack_hour'] as int,
+packPrice:json['pack_price'] == null ? null : json['pack_price'] as int,
+packPriceDisc:json['pack_price_disc'] == null ? null : json['pack_price_disc'] as int
+    );
 }
+
+@override
+String toString(){
+    return '''Data(
+                phId:$phId,
+packId:$packId,
+packHour:$packHour,
+packPrice:$packPrice,
+packPriceDisc:$packPriceDisc
+    ) ''';
+}
+
+@override
+bool operator ==(Object other){
+    return other is Data && 
+        other.runtimeType == runtimeType &&
+        other.phId == phId && 
+other.packId == packId && 
+other.packHour == packHour && 
+other.packPrice == packPrice && 
+other.packPriceDisc == packPriceDisc;
+}
+      
+@override
+int get hashCode {
+    return Object.hash(
+                runtimeType,
+                phId, 
+packId, 
+packHour, 
+packPrice, 
+packPriceDisc
+    );
+}
+    
+}
+      
+      
+  
+     

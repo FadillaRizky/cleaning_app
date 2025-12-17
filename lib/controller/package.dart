@@ -25,16 +25,16 @@ class PackageController extends GetxController {
   var selectedPackageName = ''.obs;
 
   var selectedPhId = ''.obs;
-  var selectedDiscount = ''.obs;
-  var selectedPriceDuration = ''.obs;
+  var selectedDiscountPrice = ''.obs;
+  var selectedRealPrice = ''.obs;
   var selectedDuration = ''.obs;
 
   void resetSelection() {
-  selectedPhId.value = '';
-  selectedDuration.value = '';
-  selectedPriceDuration.value = '';
-  selectedDiscount.value = '';
-}
+    selectedPhId.value = '';
+    selectedDuration.value = '';
+    selectedRealPrice.value = '';
+    selectedDiscountPrice.value = '';
+  }
 
   Future<Map<String, dynamic>> getDetailPackage(String id) async {
     final dataDetail = await Api.getDetailPackage(id);

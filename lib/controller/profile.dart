@@ -6,6 +6,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../api.dart';
 import '../widget/popup.dart';
@@ -24,6 +25,7 @@ class ProfileController extends GetxController {
   final RxString urlAvatar = ''.obs;
   final RxBool hasVoucher = false.obs;
   final RxInt valueVoucher = 0.obs;
+  final RxString levelMember = "".obs;
 
   var percentageData = 0.0.obs;
 
@@ -32,6 +34,7 @@ class ProfileController extends GetxController {
     super.onInit();
     getDetailUser();
   }
+
   @override
   void onClose() {
     firstNameController.dispose();
@@ -39,6 +42,15 @@ class ProfileController extends GetxController {
     emailController.dispose();
     ktpAddressController.dispose();
     super.onClose();
+  }
+
+  void shareApp() {
+    SharePlus.instance.share(ShareParams(
+      text: 'Yuk pakai aplikasi Utilizes GO!\n'
+          'Download di sini:\n'
+          'https://play.google.com/store/apps/details?id=com.utilizes.gocleaning',
+      subject: 'Bagikan Aplikasi Utilizes GO',
+    ));
   }
 
   Future<void> getDetailUser() async {
@@ -57,6 +69,9 @@ class ProfileController extends GetxController {
         urlAvatar.value = response.data!.avatarPath ?? "";
         hasVoucher.value = response.data!.discMember != 0 ? true : false;
         valueVoucher.value = response.data!.discMember ?? 0;
+        final level = response.data!.level ?? "";
+        levelMember.value =
+            level[0].toUpperCase() + level.substring(1).toLowerCase();
 
         // Update TextEditingController hanya jika controller masih aktif
         firstNameController.text = response.data!.firstName ?? "";
@@ -72,8 +87,8 @@ class ProfileController extends GetxController {
         if (ktpAddressController.text.trim().isNotEmpty) filledCount++;
 
         percentageData.value = (filledCount / 4) * 100;
-        print("Terisi: $filledCount/4 (${percentageData.value.toStringAsFixed(0)}%)");
-
+        print(
+            "Terisi: $filledCount/4 (${percentageData.value.toStringAsFixed(0)}%)");
       } else {
         if (!isClosed) SnackbarUtil.error("Gagal get detail user");
       }
@@ -124,8 +139,8 @@ class ProfileController extends GetxController {
     }
   }
 
-  Future<void> updateDetailUser()async {
-    try{
+  Future<void> updateDetailUser() async {
+    try {
       var data = {
         "first_name": firstNameController.text,
         "last_name": lastNameController.text,
@@ -140,16 +155,15 @@ class ProfileController extends GetxController {
       if (response.status == "success") {
         SnackbarUtil.success("Data updated!");
         update();
-      }  else{
+      } else {
         SnackbarUtil.error("Gagal Update");
       }
-    }catch(e){
+    } catch (e) {
       print('Update Data Error: $e');
       SnackbarUtil.error("Terjadi kesalahan: $e");
-    }finally{
+    } finally {
       isLoading.value = false;
     }
-
   }
 
   void clearImage() {

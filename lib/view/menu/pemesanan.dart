@@ -203,7 +203,8 @@ class Pemesanan extends GetView<PemesananController> {
                           SizedBox(
                             height: 10,
                           ),
-                          packController.category.value != "Daily Cleaning"
+                          packController.category.value != "Daily Cleaning" &&
+                                  packController.category.value != "inCarely"
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
@@ -396,7 +397,7 @@ class Pemesanan extends GetView<PemesananController> {
                                               Text(
                                                 Utils.formatCurrency(int.parse(
                                                     packController
-                                                        .selectedPriceDuration
+                                                        .selectedRealPrice
                                                         .value)),
                                                 style:
                                                     TextStyle(fontSize: 38.sp),
@@ -542,12 +543,12 @@ class Pemesanan extends GetView<PemesananController> {
                           PickDateTime(
                             controller: controller.timeController,
                             ontap: () {
-                               controller.selectTime(context);
+                              controller.selectTime(context);
                             },
                             hint: "Pilih Waktu",
                             icon: Icons.access_time_outlined,
                           ),
-                          ],
+                        ],
                       ),
                     ),
                     SizedBox(
@@ -573,8 +574,7 @@ class Pemesanan extends GetView<PemesananController> {
                             style: TextStyle(fontSize: 38.sp),
                             decoration: InputDecoration(
                               hintText: "Catatan (Opsional)",
-                              hintStyle:
-                                  TextStyle(color: Colors.grey),
+                              hintStyle: TextStyle(color: Colors.grey),
                               focusedBorder: OutlineInputBorder(
                                 borderSide:
                                     BorderSide(color: Colors.grey, width: 1),
@@ -600,7 +600,7 @@ class Pemesanan extends GetView<PemesananController> {
                           Text(
                             "Gender Mitra",
                             style: TextStyle(
-                                fontWeight: FontWeight.bold,fontSize: 40.sp),
+                                fontWeight: FontWeight.bold, fontSize: 40.sp),
                           ),
                           SizedBox(
                             height: 15.h,
@@ -654,7 +654,8 @@ class Pemesanan extends GetView<PemesananController> {
                           ),
                           Text(
                             "* Opsi ini dapat Anda sesuaikan apabila menginginkan mitra dengan gender tertentu untuk kenyamanan Anda selama layanan berlangsung.",
-                            style: TextStyle(fontSize: 25.sp, color: Colors.grey),
+                            style:
+                                TextStyle(fontSize: 25.sp, color: Colors.grey),
                           )
                         ],
                       ),
@@ -666,7 +667,7 @@ class Pemesanan extends GetView<PemesananController> {
           ),
           Container(
               width: double.infinity,
-              padding:  EdgeInsets.all(45.r),
+              padding: EdgeInsets.all(45.r),
               decoration: BoxDecoration(
                 color: Colors.white,
               ),
@@ -674,8 +675,12 @@ class Pemesanan extends GetView<PemesananController> {
                 String saldoString = homeController.amountSaldo.value;
                 int saldoInt = int.tryParse(saldoString) ?? 0;
 
-                bool hasDiscount = packController.resultDataObject
-                    .any((pack) => pack["pack_disc"] != 0);
+                bool hasDiscount = packController.category.value !=
+                        "Daily Cleaning"
+                    ? packController.resultDataObject
+                        .any((pack) => pack["pack_disc"] != 0)
+                    : packController.selectedRealPrice.value !=
+                        packController.selectedDiscountPrice.value;
 
                 int normalTotal = 0;
                 int total = 0;
@@ -699,7 +704,7 @@ class Pemesanan extends GetView<PemesananController> {
                 return Column(
                   children: [
                     packController.resultDataObject.isNotEmpty ||
-                            packController.selectedPriceDuration.isNotEmpty
+                            packController.selectedRealPrice.isNotEmpty
                         ? Column(
                             children: [
                               Row(
@@ -715,11 +720,14 @@ class Pemesanan extends GetView<PemesananController> {
                                   ),
                                   Text(
                                       packController.category.value !=
-                                              "Daily Cleaning"
+                                                  "Daily Cleaning" &&
+                                              packController.category.value !=
+                                                  "inCarely"
                                           ? Utils.formatCurrency(normalTotal)
                                           : Utils.formatCurrency(int.parse(
                                               packController
-                                                  .selectedDiscount.value)),
+                                                  .selectedDiscountPrice
+                                                  .value)),
                                       style: TextStyle(
                                           fontSize: 36.sp,
                                           fontWeight: FontWeight.bold)),
@@ -740,40 +748,53 @@ class Pemesanan extends GetView<PemesananController> {
                                               fontWeight: FontWeight.w500,
                                               color: Colors.red),
                                         ),
-                                        Text(
-                                            "- ${Utils.formatCurrency(normalTotal - total)}",
-                                            style: TextStyle(
-                                                fontSize: 36.sp,
-                                                fontWeight: FontWeight.bold)),
+                                        packController.category.value ==
+                                                "Daily Cleaning"
+                                            ? Text(
+                                                Utils.formatCurrency(int.parse(
+                                                        packController
+                                                            .selectedRealPrice
+                                                            .value) -
+                                                    int.parse(packController
+                                                        .selectedDiscountPrice
+                                                        .value)),
+                                                style: TextStyle(
+                                                    fontSize: 36.sp,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.red))
+                                            : Text("- ${Utils.formatCurrency(normalTotal - total)}",
+                                                style: TextStyle(
+                                                    fontSize: 36.sp,
+                                                    fontWeight: FontWeight.bold)),
                                       ],
                                     )
                                   : SizedBox.shrink(),
-                              packController.category.value == "Daily Cleaning"
-                                  ? Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(
-                                          "Discount",
-                                          style: TextStyle(
-                                              fontSize: 36.sp,
-                                              fontWeight: FontWeight.w500,
-                                              color: Colors.black),
-                                        ),
-                                        Text(
-                                            Utils.formatCurrency(int.parse(
-                                                    packController
-                                                        .selectedPriceDuration
-                                                        .value) -
-                                                int.parse(packController
-                                                    .selectedDiscount.value)),
-                                            style: TextStyle(
-                                                fontSize: 36.sp,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.red)),
-                                      ],
-                                    )
-                                  : SizedBox.shrink(),
+                              // packController.category.value == "Daily Cleaning"
+                              //     ? Row(
+                              //         mainAxisAlignment:
+                              //             MainAxisAlignment.spaceBetween,
+                              //         children: [
+                              //           Text(
+                              //             "Discount",
+                              //             style: TextStyle(
+                              //                 fontSize: 36.sp,
+                              //                 fontWeight: FontWeight.w500,
+                              //                 color: Colors.black),
+                              //           ),
+                              //           Text(
+                              //               Utils.formatCurrency(int.parse(
+                              //                       packController
+                              //                           .selectedPriceDuration
+                              //                           .value) -
+                              //                   int.parse(packController
+                              //                       .selectedDiscount.value)),
+                              //               style: TextStyle(
+                              //                   fontSize: 36.sp,
+                              //                   fontWeight: FontWeight.bold,
+                              //                   color: Colors.red)),
+                              //         ],
+                              //       )
+                              //     : SizedBox.shrink(),
                               controller.propertyType.value == "Apartement"
                                   ? Row(
                                       children: [
@@ -877,7 +898,7 @@ class Pemesanan extends GetView<PemesananController> {
                                                   : 0))
                                           : Utils.formatCurrency(int.parse(
                                                   packController
-                                                      .selectedPriceDuration
+                                                      .selectedRealPrice
                                                       .value) +
                                               2000 +
                                               (controller.propertyType.value ==
@@ -976,8 +997,8 @@ class Pemesanan extends GetView<PemesananController> {
                               final int baseFee = 2000;
                               final int apartmentFee = isApartment ? 20000 : 0;
                               final int hargaPaket = isDaily
-                                  ? int.parse(packController
-                                      .selectedPriceDuration.value)
+                                  ? int.parse(
+                                      packController.selectedRealPrice.value)
                                   : total;
 
                               final int totalHarga =
@@ -1003,7 +1024,7 @@ class Pemesanan extends GetView<PemesananController> {
                                     "category": packController.category.value,
                                     "due_date": controller.dateText.value,
                                     "due_time": controller.timeText.value,
-                                    "discount": "2",
+                                    // "discount": "2",
                                     "order_notes":
                                         controller.noteController.text,
                                     "property_id": controller.propertyId.value,
@@ -1023,13 +1044,13 @@ class Pemesanan extends GetView<PemesananController> {
                                     "data_pack[0][pack_category]":
                                         packController.category.value,
                                     "data_pack[0][ph_id]":
-                                        packController.selectedDuration.value,
+                                        packController.selectedPhId.value,
                                     "data_pack[0][object_id]": "",
                                     "data_pack[0][object_price]": "",
                                     "category": packController.category.value,
                                     "due_date": controller.dateText.value,
                                     "due_time": controller.timeText.value,
-                                    "discount": "2",
+                                    // "discount": "2",
                                     "order_notes":
                                         controller.noteController.text,
                                     "property_id": controller.propertyId.value,

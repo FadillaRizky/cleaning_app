@@ -10,6 +10,14 @@ import '../model/DetailOrderResponse.dart';
 
 class BookingController extends GetxController {
   var detailOrder = Rxn<DetailOrderResponse>();
+  var reviewController = TextEditingController();
+  var rating = 0.0.obs;
+  RxString hasAttribute = "ya".obs;
+
+  void selectAnswer(String value) {
+    hasAttribute.value = value;
+  }
+
   var currentStep = 0.obs;
   var selectedIndex = 1.obs;
   var selectedStatus = "aktif".obs;
@@ -69,6 +77,32 @@ class BookingController extends GetxController {
   void onInit() {
     super.onInit();
     getListOrder();
+  }
+
+  Future<void> storeRating(int orderid) async {
+    try {
+      EasyLoading.show();
+      var data = {
+        "orderid": orderid,
+        "client_rating": rating.toInt(),
+        "client_review": reviewController.text,
+        "partner_atribute": hasAttribute.value == "ya" ? 1 : 0,
+      };
+      final response = await Api.storeRating(data);
+
+      if (response.status == true) {
+        EasyLoading.showSuccess("Berhasil Menambahkan Rating");
+        fetchDetailOrder();
+      } else {
+        EasyLoading.showError("Gagal Kirim data");
+      }
+    } catch (e, stackTrace) {
+      print("Error: $e");
+      print("StackTrace: $stackTrace");
+      EasyLoading.showError("Gagal Kirim data: $e");
+    } finally {
+      EasyLoading.dismiss();
+    }
   }
 
   Future<void> getListOrder() async {

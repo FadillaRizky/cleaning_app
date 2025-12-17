@@ -32,7 +32,7 @@ class DetailDailyCleaning extends GetView<PackageController> {
 
   @override
   Widget build(BuildContext context) {
-    print("dddd : ${discPercent != null}");
+    print("id : $id");
     return WillPopScope(
       onWillPop: () async {
         controller.resetSelection();
@@ -158,13 +158,20 @@ class DetailDailyCleaning extends GetView<PackageController> {
                         shrinkWrap: true,
                         itemCount: duration.data!.length,
                         itemBuilder: (context, index) {
-                          // print("duration.data!.length");/
-                          // print(duration.data!.length);
+                          print("ph_id : ${duration.data![index].phId}");
+                          print("pack_Id : ${duration.data![index].packId}");
+                          print(
+                              "pack_hour : ${duration.data![index].packHour}");
+                          print(
+                              "pack_price : ${duration.data![index].packPrice}");
+                          print(
+                              "pack_price_disc : ${duration.data![index].packPriceDisc}");
                           return SelectDuration(
+                            category: detail.data!.pack!.packCategory!,
                             controller: controller,
                             ph_id: duration.data![index].phId!.toInt(),
                             title: duration.data![index].packHour!.toInt(),
-                            normalPrice:
+                            discountPrice:
                                 duration.data![index].packPrice!.toInt(),
                             realPrice:
                                 duration.data![index].packPriceDisc!.toInt(),
@@ -263,7 +270,7 @@ class DetailDailyCleaning extends GetView<PackageController> {
                 children: [
                   ((discPercent != null && discPercent != 0.0) ||
                               profileController.hasVoucher.value) &&
-                          controller.selectedPriceDuration.value != ""
+                          controller.selectedRealPrice.value != ""
                       ? Column(
                           children: [
                             Obx(() {
@@ -271,18 +278,19 @@ class DetailDailyCleaning extends GetView<PackageController> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                   Text(
+                                  Text(
                                     "Subtotal",
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.w500,fontSize: 38.sp),
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 38.sp),
                                   ),
                                   Text(
                                     Utils.formatCurrency(
                                       int.tryParse(controller
-                                              .selectedDiscount.value) ??
+                                              .selectedDiscountPrice.value) ??
                                           0,
                                     ),
-                                    style:  TextStyle(
+                                    style: TextStyle(
                                       fontSize: 38.sp,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -297,22 +305,21 @@ class DetailDailyCleaning extends GetView<PackageController> {
                                   "${profileController.hasVoucher.value ? "Voucher Member" : ""}"
                                   "${profileController.hasVoucher.value && discPercent != null && discPercent != 0.0 ? " + " : ""}"
                                   "${(discPercent != null && discPercent != 0.0) ? "Promo" : ""}",
-                                  style:  TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.red,
-                                    fontSize: 38.sp
-                                  ),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.red,
+                                      fontSize: 38.sp),
                                 ),
                                 Text(
                                   Utils.formatCurrency(
                                     (int.tryParse(controller
-                                                .selectedPriceDuration.value) ??
+                                                .selectedRealPrice.value) ??
                                             0) -
                                         (int.tryParse(controller
-                                                .selectedDiscount.value) ??
+                                                .selectedDiscountPrice.value) ??
                                             0),
                                   ),
-                                  style:  TextStyle(
+                                  style: TextStyle(
                                     fontSize: 38.sp,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.red,
@@ -324,20 +331,21 @@ class DetailDailyCleaning extends GetView<PackageController> {
                           ],
                         )
                       : const SizedBox.shrink(),
-                  controller.selectedPriceDuration.value != ""
+                  controller.selectedRealPrice.value != ""
                       ? Column(
                           children: [
-                            
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
                                   "Total",
-                                  style: TextStyle(fontWeight: FontWeight.w600,fontSize: 40.sp),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 40.sp),
                                 ),
                                 Text(
-                                    Utils.formatCurrency(int.parse(controller
-                                        .selectedPriceDuration.value)),
+                                    Utils.formatCurrency(int.parse(
+                                        controller.selectedRealPrice.value)),
                                     style: TextStyle(
                                         fontSize: 40.sp,
                                         fontWeight: FontWeight.bold)),
@@ -354,7 +362,7 @@ class DetailDailyCleaning extends GetView<PackageController> {
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         backgroundColor:
-                            controller.selectedPriceDuration.value != ""
+                            controller.selectedRealPrice.value != ""
                                 ? Colors.blue
                                 : Colors.grey,
                         padding: const EdgeInsets.symmetric(vertical: 12),
@@ -363,12 +371,13 @@ class DetailDailyCleaning extends GetView<PackageController> {
                           side: BorderSide.none,
                         ),
                       ),
-                      onPressed: controller.selectedPriceDuration.value != ""
+                      onPressed: controller.selectedRealPrice.value != ""
                           ? () {
                               controller.selectedPackageName.value =
                                   detail.data!.pack!.packName!;
                               controller.selectedPackageImg.value =
                                   detail.data!.pack!.packBannerPath ?? "";
+                              print("img ${detail.data!.pack!.packBannerPath}");
                               Get.toNamed("/pemesanan");
                             }
                           : null,
@@ -497,9 +506,10 @@ class cardLayanan extends StatelessWidget {
 }
 
 class SelectDuration extends StatelessWidget {
+  final String category;
   final int ph_id;
   final int title;
-  final int normalPrice;
+  final int discountPrice;
   final int realPrice;
   final PackageController controller;
 
@@ -507,28 +517,29 @@ class SelectDuration extends StatelessWidget {
     super.key,
     required this.ph_id,
     required this.title,
-    required this.normalPrice,
+    required this.discountPrice,
     required this.realPrice,
     required this.controller,
+    required this.category,
   });
 
   @override
   Widget build(BuildContext context) {
-    print("normalPrice : $normalPrice");
-    print("realprice : $realPrice");
+    // print("normalPrice : $normalPrice");
+    // print("realprice : $realPrice");
     return Obx(() {
       return RadioListTile(
         contentPadding: EdgeInsets.only(right: 30.r),
         title: Text(
-          "$title Jam",
+          "$title ${category == "InCarely" ? "Hari" : "Jam"}",
           style: TextStyle(fontSize: 38.sp, fontWeight: FontWeight.bold),
         ),
         secondary: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            (normalPrice != realPrice)
+            (discountPrice != realPrice)
                 ? Text(
-                    Utils.formatCurrency(normalPrice).toString(),
+                    Utils.formatCurrency(discountPrice).toString(),
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 33.sp,
@@ -547,10 +558,11 @@ class SelectDuration extends StatelessWidget {
         value: ph_id.toString(),
         groupValue: controller.selectedPhId.value,
         onChanged: (value) {
+          print(value);
           controller.selectedPhId.value = value!;
           controller.selectedDuration.value = title.toString();
-          controller.selectedPriceDuration.value = realPrice.toString();
-          controller.selectedDiscount.value = normalPrice.toString();
+          controller.selectedRealPrice.value = realPrice.toString();
+          controller.selectedDiscountPrice.value = discountPrice.toString();
         },
       );
     });

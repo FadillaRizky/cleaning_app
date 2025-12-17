@@ -23,6 +23,18 @@ class AlamatController extends GetxController {
   var latLocation = "".obs;
   var longLocation = "".obs;
   var idAddress = "".obs;
+  final Set<String> coveredArea = {
+    'jakarta barat',
+    'jakarta timur',
+    'jakarta pusat',
+    'jakarta utara',
+    'jakarta selatan',
+    'tangerang',
+    'bekasi',
+    'depok',
+  };
+
+  var isAreaCovered = false.obs;
 
   var isDefaultAddress = false.obs;
 
@@ -52,6 +64,7 @@ class AlamatController extends GetxController {
     latLocation.value = "";
     longLocation.value = "";
     pickedLocation.value = LatLng(-6.1754, 106.8272);
+    isAreaCovered.value = false;
   }
 
   Future<bool> checkLocationPermission(loc.Location location) async {
@@ -79,6 +92,18 @@ class AlamatController extends GetxController {
     return true;
   }
 
+  bool checkAreaCovered(String kabupaten) {
+    final normalized = kabupaten
+        .replaceFirst(
+          RegExp(r'^(Kota|Kabupaten)\s+', caseSensitive: false),
+          '',
+        )
+        .trim()
+        .toLowerCase();
+
+    return coveredArea.contains(normalized);
+  }
+
   getDetailLocation(LatLng latLng) async {
     try {
       List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(
@@ -96,26 +121,25 @@ class AlamatController extends GetxController {
 
         detailLocation.value = "$provinsi, $kabupaten, $kecamatan, $kelurahan";
         specificLocation.value = kelurahan!;
+        isAreaCovered.value = !checkAreaCovered(kabupaten!);
       }
     } catch (e) {
       print('Error: $e');
     }
   }
 
- 
   Future<void> fetchAddress(Map<String, dynamic> data, bool isDetail) async {
     try {
       EasyLoading.show();
       final response = isDetail
-        ? await Api.updateAddress(data)
-        : await Api.storeAddress(data);
+          ? await Api.updateAddress(data)
+          : await Api.storeAddress(data);
 
       if (response.status == true) {
-        
-        EasyLoading.showSuccess("Berhasil ${isDetail ? "Mengubah" : "Menambahkan"} Alamat");
+        EasyLoading.showSuccess(
+            "Berhasil ${isDetail ? "Mengubah" : "Menambahkan"} Alamat");
         resetForm();
         Get.back(result: 'refresh');
-        
       } else {
         EasyLoading.showError("Gagal ${isDetail ? "update" : "kirim"} data");
       }

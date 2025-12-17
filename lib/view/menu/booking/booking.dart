@@ -27,7 +27,7 @@ class Booking extends GetView<BookingController> {
           child: Column(
             children: [
               Padding(
-                padding:  EdgeInsets.symmetric(vertical: 25.h),
+                padding: EdgeInsets.symmetric(vertical: 25.h),
                 child: Obx(() {
                   return Row(
                     children: List.generate(
@@ -223,7 +223,7 @@ class Booking extends GetView<BookingController> {
                             item.category!,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style:  TextStyle(
+                            style: TextStyle(
                               fontSize: 45.sp,
                               fontWeight: FontWeight.w600,
                             ),
@@ -231,31 +231,35 @@ class Booking extends GetView<BookingController> {
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                               Icon(Icons.date_range,
+                              Icon(Icons.date_range,
                                   color: Colors.black54, size: 50.r),
                               const SizedBox(width: 5),
-                              Text(
-                                Utils.formatTanggal(item.dueDate ?? ''),
-                                style:  TextStyle(fontSize: 33.sp),
-                              ),
+                              Expanded(
+                                child: Text(
+                                  Utils.formatTanggal(item.dueDate ?? ''),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(fontSize: 33.sp),
+                                ),
+                              )
                             ],
                           ),
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                               Icon(Icons.access_time,
+                              Icon(Icons.access_time,
                                   color: Colors.black54, size: 50.r),
                               const SizedBox(width: 5),
                               Text(
                                 "${item.dueTime!.substring(0, 5)}",
-                                style:  TextStyle(fontSize: 33.sp),
+                                style: TextStyle(fontSize: 33.sp),
                               ),
                             ],
                           ),
                         ],
                       ),
                     ),
-                     SizedBox(width: 20.w),
+                    SizedBox(width: 20.w),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
@@ -279,7 +283,7 @@ class Booking extends GetView<BookingController> {
                           height: 30,
                         ),
                         Container(
-                          padding:  EdgeInsets.symmetric(
+                          padding: EdgeInsets.symmetric(
                               horizontal: 30.r, vertical: 12.r),
                           decoration: BoxDecoration(
                             color: Colors.blue[300],
@@ -293,7 +297,7 @@ class Booking extends GetView<BookingController> {
                               ),
                               Text(
                                 "Lihat Detail",
-                                style:  TextStyle(
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 34.sp,
                                 ),
@@ -333,10 +337,10 @@ class EmptyOrder extends StatelessWidget {
               'assets/icon/empty_order.png', // ganti dengan ilustrasi kamu
               height: 540.h,
             ),
-             SizedBox(height: 90.h),
+            SizedBox(height: 90.h),
 
             // 📝 Judul
-             Text(
+            Text(
               'Belum Ada Pesanan',
               style: TextStyle(
                 fontSize: 50.sp,
@@ -347,7 +351,7 @@ class EmptyOrder extends StatelessWidget {
             const SizedBox(height: 8),
 
             // 📄 Deskripsi
-             Text(
+            Text(
               'Yuk pesan sekarang untuk membuat rumahmu lebih bersih dan nyaman!',
               textAlign: TextAlign.center,
               style: TextStyle(

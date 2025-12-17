@@ -13,7 +13,7 @@ import '../../controller/invoice.dart';
 class InvoicePage extends GetView<InvoiceController> {
   const InvoicePage({super.key});
 
-  void _downloadInvoice(BuildContext context, Data.DetailOrderData data) async {
+  void _downloadInvoice(BuildContext context, Data.Data data) async {
     final pdf = pw.Document();
 
     pdf.addPage(
@@ -57,7 +57,7 @@ class InvoicePage extends GetView<InvoiceController> {
                                     pw.Text(
                                         "${items.objectName} x ${items.qty}",style: pw.TextStyle(fontSize: 32.sp)),
                                     pw.Text(Utils.formatCurrency(
-                                        items.objectPrice!),style: pw.TextStyle(fontSize: 32.sp)),
+                                        num.parse(items.objectPrice!)),style: pw.TextStyle(fontSize: 32.sp)),
                                   ],
                                 );
                               }).toList())
@@ -82,7 +82,7 @@ class InvoicePage extends GetView<InvoiceController> {
                   pw.Text(Utils.formatCurrency(data.ttlBasicPrice!),style: pw.TextStyle(fontSize: 32.sp)),
                 ],
               ),
-              (data.ttlDiscPercent != 0)
+              (data.ttlDiscPercent != 0.0)
                   ? pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
@@ -297,7 +297,7 @@ class InvoicePage extends GetView<InvoiceController> {
                                               Text(
                                                   "${items.objectName} x ${items.qty}",style: TextStyle(fontSize: 38.sp),),
                                               Text(Utils.formatCurrency(
-                                                  items.objectPrice!),style: TextStyle(fontSize: 38.sp)),
+                                                  num.parse(items.objectPrice!)),style: TextStyle(fontSize: 38.sp)),
                                             ],
                                           );
                                         }).toList()),
@@ -326,7 +326,7 @@ class InvoicePage extends GetView<InvoiceController> {
                               Text(Utils.formatCurrency(data.ttlBasicPrice!),style: TextStyle(fontSize: 38.sp)),
                             ],
                           ),
-                          (data.ttlDiscPercent != 0)
+                          (data.ttlDiscPercent != 0.0)
                               ? Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,

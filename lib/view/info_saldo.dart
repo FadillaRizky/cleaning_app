@@ -41,40 +41,86 @@ class InfoSaldo extends GetView<HomeController> {
                   Tab(text: "Saldo Keluar")
                 ],
               ),
-              FutureBuilder(
-                future: controller.fetchHistoryTransaksi(),
-                builder: (context,
-                    AsyncSnapshot<HistoryTransaksiResponse> snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
+              Expanded(
+                child: Obx(() {
+                  if (controller.isLoading.value) {
                     return Skeletonizer(
-                      child: ListTile(
-                        title: Text("asdasdasd"),
+                      child: ListView.builder(
+                        itemCount: 2,
+                        itemBuilder: (_, __) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(16),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  blurRadius: 10,
+                                  offset: Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: ListTile(
+                              leading: CircleAvatar(
+                                backgroundColor: Colors.grey[200],
+                              ),
+                              title: Text(
+                                "Top Up",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 40.sp,
+                                ),
+                              ),
+                              subtitle: Text(
+                                "Rp 100.000",
+                                style: TextStyle(
+                                    color: Colors.grey[600], fontSize: 38.sp),
+                              ),
+                              trailing: Text(
+                                "13 December 2025",
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 35.sp,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                     );
-                  } else if (snapshot.hasError) {
-                    return Text('Error: ${snapshot.error}');
-                  } else if (!snapshot.hasData ||
-                      snapshot.data!.data!.isEmpty) {
-                    return Center(
-                        child: const Text('Belum ada riwayat transaksi.'));
                   }
 
-                  return Expanded(
-                    child: TabBarView(children: [
+                  if (controller.historyList.isEmpty) {
+                    return RefreshIndicator(
+                      onRefresh: controller.refreshHistory,
+                      child: ListView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        children: const [
+                          SizedBox(height: 200),
+                          Center(child: Text('Belum ada riwayat transaksi.')),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return TabBarView(
+                    children: [
                       TractionBalanceWidget(
-                        data: snapshot.data!.data!
-                            .where((item) => item.tractionType == 'TOPUP')
+                        data: controller.historyList
+                            .where((e) => e.tractionType == 'TOPUP')
                             .toList(),
                       ),
                       TractionBalanceWidget(
-                        data: snapshot.data!.data!
-                            .where((item) => item.tractionType == 'EXPENSE')
+                        data: controller.historyList
+                            .where((e) => e.tractionType == 'EXPENSE')
                             .toList(),
-                      )
-                    ]),
+                      ),
+                    ],
                   );
-                },
-              )
+                }),
+              ),
             ],
           ),
         ),
@@ -83,7 +129,7 @@ class InfoSaldo extends GetView<HomeController> {
   }
 }
 
-class TractionBalanceWidget extends StatelessWidget {
+class TractionBalanceWidget extends GetView<HomeController> {
   final List<Data> data;
   const TractionBalanceWidget({
     super.key,
@@ -92,58 +138,71 @@ class TractionBalanceWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true, // ✅ Allows ListView inside Column
-      // physics: NeverScrollableScrollPhysics(),
-      itemCount: data.length,
-      itemBuilder: (context, index) {
-        final item = data[index];
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.2),
-                  blurRadius: 10,
-                  offset: Offset(0, 4),
-                ),
+    return RefreshIndicator(
+      onRefresh: controller.refreshHistory,
+      child: data.isNotEmpty
+          ? ListView.builder(
+              itemCount: data.length,
+              itemBuilder: (context, index) {
+                final item = data[index];
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.2),
+                          blurRadius: 10,
+                          offset: Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundColor: Colors.blueAccent,
+                        child: Icon(
+                          Icons.receipt_long,
+                          color: Colors.white,
+                          size: 60.r,
+                        ),
+                      ),
+                      title: Text(
+                        (item.tractionType! == "EXPENSE")
+                            ? "Transaksi"
+                            : "Top Up",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 40.sp,
+                        ),
+                      ),
+                      subtitle: Text(
+                        "${(item.tractionType == "EXPENSE" ? "-" : "")} ${Utils.formatCurrency(item.tractionNominal!)}", // assuming there's a `date` field
+                        style:
+                            TextStyle(color: Colors.grey[600], fontSize: 38.sp),
+                      ),
+                      trailing: Text(
+                        Utils.formatTanggal(
+                            item.tractionDate!), // assuming `amount` exists
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 35.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            )
+          : ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: const [
+                SizedBox(height: 200),
+                Center(child: Text('Belum ada riwayat transaksi.')),
               ],
             ),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: Colors.blueAccent,
-                child: Icon(Icons.receipt_long, color: Colors.white,size: 60.r,),
-              ),
-              title: Text(
-                (item.tractionType! == "EXPENSE") ? "Transaksi" : "Top Up",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 40.sp,
-                ),
-              ),
-              subtitle: Text(
-                "${(item.tractionType == "EXPENSE" ? "-" : "")} ${Utils.formatCurrency(item.tractionNominal!)}", // assuming there's a `date` field
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 38.sp
-                ),
-              ),
-              trailing: Text(
-                Utils.formatTanggal(
-                    item.tractionDate!), // assuming `amount` exists
-                style: TextStyle(
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 35.sp,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

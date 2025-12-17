@@ -363,7 +363,7 @@ class TagihanPage extends GetView<PemesananController> {
                             "category": packController.category.value,
                             "due_date": controller.dateText.value,
                             "due_time": controller.timeText.value,
-                            "discount": "2",
+                            // "discount": "2",
                             "order_notes": controller.noteController.text,
                             "property_id": controller.propertyId.value,
                             "property_city": Utils.extractSecondSentence(
@@ -382,13 +382,13 @@ class TagihanPage extends GetView<PemesananController> {
                             "data_pack[0][pack_category]":
                                 packController.category.value,
                             "data_pack[0][ph_id]":
-                                packController.selectedDuration.value,
+                                packController.selectedPhId.value,
                             "data_pack[0][object_id]": "",
                             "data_pack[0][object_price]": "",
                             "category": packController.category.value,
                             "due_date": controller.dateText.value,
                             "due_time": controller.timeText.value,
-                            "discount": "2",
+                            // "discount": "2",
                             "order_notes": controller.noteController.text,
                             "property_id": controller.propertyId.value,
                             "property_city": Utils.extractSecondSentence(

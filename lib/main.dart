@@ -6,6 +6,7 @@ import 'package:cleaning_app/view/instruksi_pembayaran.dart';
 import 'package:cleaning_app/view/introduction.dart';
 import 'package:cleaning_app/view/isi_saldo.dart';
 import 'package:cleaning_app/view/kebijakan_privasi.dart';
+import 'package:cleaning_app/view/ketentuan_layanan.dart';
 import 'package:cleaning_app/view/login.dart';
 import 'package:cleaning_app/view/menu.dart';
 import 'package:cleaning_app/view/menu/detail_daily_cleaning.dart';
@@ -15,6 +16,7 @@ import 'package:cleaning_app/view/menu/editprofile.dart';
 import 'package:cleaning_app/view/menu/home.dart';
 import 'package:cleaning_app/view/menu/invoice.dart';
 import 'package:cleaning_app/view/menu/booking/order_detail.dart';
+import 'package:cleaning_app/view/menu/level_member.dart';
 import 'package:cleaning_app/view/menu/pembayaran.dart';
 import 'package:cleaning_app/view/menu/pemesanan.dart';
 import 'package:cleaning_app/view/menu/profile.dart';
@@ -44,6 +46,7 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ScreenUtil.ensureScreenSize();
+  // await Upgrader().initialize();
 
   await GetStorage.init();
   await Firebase.initializeApp(
@@ -73,175 +76,184 @@ class MyApp extends StatelessWidget {
         minTextAdapt: true,
         splitScreenMode: true,
         builder: (_, child) {
-          return UpgradeAlert(
-            dialogStyle: UpgradeDialogStyle.material,
-            showIgnore: false,
-            showLater: true,
-            upgrader: Upgrader(
-              languageCode: 'id',
-              storeController: UpgraderStoreController(
-                onAndroid: () => UpgraderPlayStore(),
+          return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            initialBinding: InitialBindings(),
+            builder: EasyLoading.init(),
+            title: 'Cleaning App',
+            locale:
+                const Locale('id', 'ID'), // Set default locale to Indonesian
+            supportedLocales: const [
+              Locale('en', 'US'),
+              Locale('id', 'ID'),
+            ],
+            localizationsDelegates: const [
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            fallbackLocale: const Locale('en', 'US'),
+            theme: ThemeData(
+              colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
+              scaffoldBackgroundColor: Colors.grey[100],
+              appBarTheme: AppBarTheme(color: Colors.white),
+              iconTheme: IconThemeData(
+                color: Colors.white,
+              ),
+              fontFamily: 'Lato',
+              textTheme: const TextTheme(
+                displayLarge: TextStyle(
+                  fontFamily: 'Lato',
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                ),
+                bodyLarge: TextStyle(
+                  fontFamily: 'Lato',
+                  fontSize: 16,
+                  fontWeight: FontWeight.normal,
+                ),
+                // ... other styles
               ),
             ),
-            child: GetMaterialApp(
-              debugShowCheckedModeBanner: false,
-              initialBinding: InitialBindings(),
-              builder: EasyLoading.init(),
-              title: 'Cleaning App',
-              locale:
-                  const Locale('id', 'ID'), // Set default locale to Indonesian
-              supportedLocales: const [
-                Locale('en', 'US'),
-                Locale('id', 'ID'),
-              ],
-              localizationsDelegates: const [
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              fallbackLocale: const Locale('en', 'US'),
-              theme: ThemeData(
-                colorScheme: ColorScheme.fromSeed(seedColor: Colors.white),
-                scaffoldBackgroundColor: Colors.grey[100],
-                appBarTheme: AppBarTheme(color: Colors.white),
-                iconTheme: IconThemeData(
-                  color: Colors.white,
-                ),
-                fontFamily: 'Poppins',
-                textTheme: const TextTheme(
-                  displayLarge: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  bodyLarge: TextStyle(
-                    fontFamily: 'Poppins',
-                    fontSize: 16,
-                    fontWeight: FontWeight.normal,
-                  ),
-                  // ... other styles
-                ),
+            initialRoute: isFirstOpen
+                ? '/intro'
+                : isLoggedIn
+                    ? '/menu'
+                    : '/login',
+            getPages: [
+              GetPage(name: '/intro', page: () => IntroductionPage()),
+              GetPage(
+                  name: '/login',
+                  page: () => LoginPage(),
+                  binding: InitialBindings()),
+              GetPage(
+                  name: '/register',
+                  page: () => const RegisterPage(),
+                  binding: RegisterBindings()),
+              GetPage(
+                name: '/register-verify',
+                page: () => RegisterVerify.fromArguments(),
               ),
-              initialRoute: isFirstOpen
-                  ? '/intro'
-                  : isLoggedIn
-                      ? '/menu'
-                      : '/login',
-              getPages: [
-                GetPage(name: '/intro', page: () => IntroductionPage()),
-                GetPage(
-                    name: '/login',
-                    page: () => LoginPage(),
-                    binding: InitialBindings()),
-                GetPage(
-                    name: '/register',
-                    page: () => const RegisterPage(),
-                    binding: RegisterBindings()),
-                GetPage(
-                  name: '/register-verify',
-                  page: () => RegisterVerify.fromArguments(),
-                ),
-                GetPage(
-                    name: '/profile',
-                    page: () => ProfilePage(),
-                    binding: ProfileBindings()),
-                GetPage(name: '/edit-profile', page: () => EditProfile()),
-                GetPage(
-                  name: '/menu',
-                  page: () => Menu(),
-                  binding: MenuBindings(),
-                ),
-                GetPage(
-                  name: '/detail-category-daily',
-                  page: () => DetailCategory.fromArguments(),
-                  binding: DetailPackageBindings(),
-                ),
-                // GetPage(
-                //   name: '/detail-category-deep',
-                //   page: () =>  DetailCategoryDeep.fromArguments(),
-                //   binding: DetailPackageBindings(),
-                // ),
-                GetPage(
-                  name: '/detail-daily',
-                  page: () => DetailDailyCleaning.fromArguments(),
-                  binding: DetailDailyBindings(),
-                ),
-                GetPage(
-                    name: '/pemesanan',
-                    page: () => Pemesanan(),
-                    binding: PemesananBindings()),
-                GetPage(
-                  name: '/tagihan',
-                  page: () => TagihanPage.fromArguments(),
-                ),
-                GetPage(
-                  name: '/pembayaran',
-                  page: () => Pembayaran(),
-                ),
-                GetPage(
-                  name: '/booking-success',
-                  page: () => BookingSuccess(),
-                ),
-                GetPage(
-                    name: '/invoice',
-                    page: () => InvoicePage(),
-                    binding: InvoiceBindings()),
-                GetPage(
-                  name: '/isi-saldo',
-                  page: () => IsiSaldo(),
-                  binding: TopupBindings(),
-                ),
-                GetPage(
-                  name: '/upload-bukti-topup',
-                  page: () => UploadBuktiTopup(),
-                  binding: TopupBindings(),
-                ),
-                GetPage(
-                  name: '/topup-success',
-                  page: () => TopupSuccess(),
-                ),
-                GetPage(
-                  name: '/info-saldo',
-                  page: () => InfoSaldo(),
-                ),
-                GetPage(
-                    name: '/alamat',
-                    page: () => DaftarAlamat(),
-                    binding: AlamatBindings()),
-                GetPage(
-                    name: '/tambah-alamat',
-                    page: () => TambahAlamat(),
-                    binding: AlamatBindings()),
-                GetPage(
-                  name: '/detail-order',
-                  page: () => OrderDetail(),
-                ),
-                GetPage(
-                  name: '/detail-notif',
-                  page: () => DetailNotif.fromArguments(),
-                ),
-                GetPage(
-                  name: '/privacy_policy',
-                  page: () => KebijakanPrivasi(),
-                ),
-                GetPage(
-                  name: '/instruksi_pembayaran',
-                  page: () => InstructionPage.fromArguments(),
-                ),
-                GetPage(
-                  name: '/voucher',
-                  page: () => VoucherPage(),
-                ),
-                GetPage(
-                  name: '/package_description',
-                  page: () => PackageDescription(),
-                ),
-                GetPage(
-                  name: '/syarat_ketentuan',
-                  page: () => SyaratKetentuan(),
-                ),
-              ],
-            ),
+              GetPage(
+                  name: '/profile',
+                  page: () => ProfilePage(),
+                  binding: ProfileBindings()),
+              GetPage(name: '/edit-profile', page: () => EditProfile()),
+              GetPage(
+                name: '/menu',
+                page: () => UpgradeAlert(
+                    dialogStyle: UpgradeDialogStyle.material,
+                    showIgnore: false,
+                    showLater: true,
+                    upgrader: Upgrader(
+                      languageCode: 'id',
+                      storeController: UpgraderStoreController(
+                       onAndroid: () => UpgraderPlayStore(),
+                      )
+                      // debugDisplayAlways: true, 
+                      // debugDisplayOnce: false,
+                    ),
+                    child: Menu()),
+                binding: MenuBindings(),
+              ),
+              GetPage(
+                name: '/detail-category-daily',
+                page: () => DetailCategory.fromArguments(),
+                binding: DetailPackageBindings(),
+              ),
+              // GetPage(
+              //   name: '/detail-category-deep',
+              //   page: () =>  DetailCategoryDeep.fromArguments(),
+              //   binding: DetailPackageBindings(),
+              // ),
+              GetPage(
+                name: '/detail-daily',
+                page: () => DetailDailyCleaning.fromArguments(),
+                binding: DetailDailyBindings(),
+              ),
+              GetPage(
+                  name: '/pemesanan',
+                  page: () => Pemesanan(),
+                  binding: PemesananBindings()),
+              GetPage(
+                name: '/tagihan',
+                page: () => TagihanPage.fromArguments(),
+              ),
+              GetPage(
+                name: '/pembayaran',
+                page: () => Pembayaran(),
+              ),
+              GetPage(
+                name: '/booking-success',
+                page: () => BookingSuccess(),
+              ),
+              GetPage(
+                  name: '/invoice',
+                  page: () => InvoicePage(),
+                  binding: InvoiceBindings()),
+              GetPage(
+                name: '/isi-saldo',
+                page: () => IsiSaldo(),
+                binding: TopupBindings(),
+              ),
+              GetPage(
+                name: '/upload-bukti-topup',
+                page: () => UploadBuktiTopup(),
+                binding: TopupBindings(),
+              ),
+              GetPage(
+                name: '/topup-success',
+                page: () => TopupSuccess(),
+              ),
+              GetPage(
+                name: '/info-saldo',
+                page: () => InfoSaldo(),
+              ),
+              GetPage(
+                  name: '/alamat',
+                  page: () => DaftarAlamat(),
+                  binding: AlamatBindings()),
+              GetPage(
+                  name: '/tambah-alamat',
+                  page: () => TambahAlamat(),
+                  binding: AlamatBindings()),
+              GetPage(
+                name: '/detail-order',
+                page: () => OrderDetail(),
+              ),
+              GetPage(
+                name: '/detail-notif',
+                page: () => DetailNotif.fromArguments(),
+              ),
+              GetPage(
+                name: '/privacy_policy',
+                page: () => KebijakanPrivasi(),
+              ),
+              GetPage(
+                name: '/instruksi_pembayaran',
+                page: () => InstructionPage.fromArguments(),
+              ),
+              GetPage(
+                name: '/voucher',
+                page: () => VoucherPage(),
+              ),
+              GetPage(
+                name: '/package_description',
+                page: () => PackageDescription(),
+              ),
+              GetPage(
+                name: '/syarat_ketentuan',
+                page: () => SyaratKetentuan(),
+              ),
+              GetPage(
+                name: '/ketentuan-layanan',
+                page: () => TermsOfServicePage(),
+              ),
+              GetPage(
+                name: '/level-member',
+                page: () => LevelMemberPage.fromArguments(),
+              ),
+            ],
           );
         });
   }

@@ -66,25 +66,29 @@ class Home extends GetView<HomeController> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Obx(() {
-                                        return Text(
-                                          "Selamat ${controller.getGreetingByTime()} ‘${profileController.username}’ !",
-                                          style: TextStyle(
-                                              color: Colors.blue,
-                                              fontSize: 47.sp,
-                                              fontWeight: FontWeight.w600),
-                                        );
-                                      }),
-                                       Text(
-                                          "“Buat hidup anda jadi lebih mudah.”",
-                                          style: TextStyle(
-                                              fontSize: 35.sp,
-                                              fontWeight: FontWeight.w500)),
-                                    ],
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Obx(() {
+                                          return Text(
+                                            "Selamat ${controller.getGreetingByTime()} ‘${profileController.username}’ !",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: TextStyle(
+                                                color: Colors.blue,
+                                                fontSize: 47.sp,
+                                          
+                                                fontWeight: FontWeight.w600),
+                                          );
+                                        }),
+                                         Text(
+                                            "“Buat hidup anda jadi lebih mudah.”",
+                                            style: TextStyle(
+                                                fontSize: 35.sp,
+                                                fontWeight: FontWeight.w500)),
+                                      ],
+                                    ),
                                   ),
                                   Obx(() {
                                     return badges.Badge(

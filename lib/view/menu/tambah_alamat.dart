@@ -195,7 +195,10 @@ class TambahAlamat extends GetView<AlamatController> {
   Widget build(BuildContext context) {
     final data = Get.arguments;
     final isDetail = data != null;
-    if (!isDetail) {
+    if (isDetail) {
+      var area = controller.detailLocation.value.split(',')[1].trim();
+      controller.isAreaCovered.value = !controller.checkAreaCovered(area!);
+    } else {
       controller.detailLocation.value =
           "Daerah khusus Ibukota Jakarta, Kota Jakarta Pusat, Kecamatan Gambir, Gambir";
       controller.specificLocation.value = "Gambir";
@@ -363,8 +366,8 @@ class TambahAlamat extends GetView<AlamatController> {
                                                   ))
                                               : Text(
                                                   "Gunakan lokasi saat ini",
-                                                  style:
-                                                      TextStyle(fontSize: 33.sp),
+                                                  style: TextStyle(
+                                                      fontSize: 33.sp),
                                                 );
                                         })),
                                   )
@@ -393,13 +396,43 @@ class TambahAlamat extends GetView<AlamatController> {
                                       ),
                                       Text(
                                         controller.detailLocation.value,
-                                        style: TextStyle(color: Colors.grey,fontSize: 38.sp),
+                                        style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 38.sp),
                                       ),
                                     ],
                                   ),
                                 )
                               : SizedBox.shrink();
                         }),
+                        Obx(() => controller.isAreaCovered.value
+                            ? Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.amber[100],
+                                  borderRadius: BorderRadius.vertical(
+                                      bottom: Radius.circular(15)),
+                                ),
+                                padding: EdgeInsets.all(8),
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.warning,
+                                      color: Colors.amber,
+                                    ),
+                                    SizedBox(
+                                      width: 8,
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        "Maaf, layanan Utilizes belum tersedia di lokasi tersebut. Silakan ubah titik lokasi atau pilih area terdekat yang tersedia",
+                                        style: TextStyle(
+                                            color: Colors.red, fontSize: 38.sp),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : SizedBox.shrink())
                       ],
                     ),
                   ),
@@ -429,14 +462,15 @@ class TambahAlamat extends GetView<AlamatController> {
                           return DropdownButtonFormField<String>(
                               decoration: InputDecoration(
                                 labelText: 'Type Property',
-                                labelStyle: TextStyle(color: Colors.black,fontSize: 40.sp),
+                                labelStyle: TextStyle(
+                                    color: Colors.black, fontSize: 40.sp),
                                 border: InputBorder.none,
                               ),
                               value: controller.selectedProperty.value == ''
                                   ? null
                                   : controller.selectedProperty.value,
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 40.sp),
+                              style: TextStyle(
+                                  color: Colors.black, fontSize: 40.sp),
                               items: controller.typeProperty.map((property) {
                                 return DropdownMenuItem<String>(
                                   value: property,

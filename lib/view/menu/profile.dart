@@ -59,7 +59,7 @@ class ProfilePage extends GetView<ProfileController> {
                                 child: CircleAvatar(
                                   radius: 200.r,
                                   child: AvatarCircle(
-                                    imageUrl:  controller.urlAvatar.value,
+                                    imageUrl: controller.urlAvatar.value,
                                     size: 400.r,
                                   ),
                                 ),
@@ -184,8 +184,14 @@ class ProfilePage extends GetView<ProfileController> {
                       bottom: 45.r, left: 45.r, right: 45.r, top: 0),
                   child: Column(
                     children: [
-                      buildTileMenu(() {}, "Member Silver",
-                          subtitle: "Transaksi 35x lagi untuk naik ke Gold"),
+                      buildTileMenu(() {
+                        Get.toNamed('/level-member',arguments: {
+                                  "current_level": controller.levelMember.value,
+                                  "current_discount": controller.valueVoucher.value,
+                                });
+                      }, "Member ${controller.levelMember.value}",
+                          subtitle:
+                              "Yuk, tingkatkan transaksi kamu untuk menikmati diskon yang lebih besar!"),
                       SizedBox(
                         height: 30.h,
                       ),
@@ -201,19 +207,20 @@ class ProfilePage extends GetView<ProfileController> {
                                   size: 70.r,
                                 ),
                                 "Voucher",
-                                "0 Voucher"),
+                                "${controller.hasVoucher.value ? "1" : "0"} Voucher"),
                             SizedBox(
                               width: 10,
                             ),
-                            buildCardTile(
-                                () {},
+                            buildCardTile(() {
+                              controller.shareApp();
+                            },
                                 Icon(
-                                  LineIcons.userPlus,
+                                  Icons.share,
                                   color: Colors.black,
                                   size: 70.r,
                                 ),
-                                "Undang Teman",
-                                "0 Teman"),
+                                "Bagikan",
+                                "Undang Teman"),
                           ],
                         ),
                       ),
@@ -249,7 +256,9 @@ class ProfilePage extends GetView<ProfileController> {
                             buildListTile(
                               title: 'Ketentuan Layanan',
                               icon: LineIcons.clipboardList,
-                              ontap: () {},
+                              ontap: () {
+                                Get.toNamed('/ketentuan-layanan');
+                              },
                             ),
                             buildListTile(
                               title: 'Kebijakan Privasi',
@@ -358,7 +367,7 @@ class ProfilePage extends GetView<ProfileController> {
                   children: [
                     Text(
                       title,
-                      style: GoogleFonts.poppins(
+                      style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 38.sp,
                           color: Colors.white),
@@ -409,8 +418,14 @@ class buildListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       contentPadding: EdgeInsets.symmetric(horizontal: 0),
-      leading: Icon(icon,size: 65.r,),
-      title: Text(title,style: TextStyle(fontSize: 42.sp),),
+      leading: Icon(
+        icon,
+        size: 65.r,
+      ),
+      title: Text(
+        title,
+        style: TextStyle(fontSize: 42.sp),
+      ),
       trailing: trailing,
       onTap: ontap,
     );

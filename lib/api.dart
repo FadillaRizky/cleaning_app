@@ -16,6 +16,7 @@ import 'package:cleaning_app/model/LogoutResponse.dart';
 import 'package:cleaning_app/model/ObjectPackageResponse.dart';
 import 'package:cleaning_app/model/OrderPackageResponse.dart';
 import 'package:cleaning_app/model/PropertyAddressResponse.dart';
+import 'package:cleaning_app/model/RatingResponse.dart';
 import 'package:cleaning_app/model/RefreshTokenResponse.dart';
 import 'package:cleaning_app/model/RegisterResponse.dart';
 import 'package:cleaning_app/model/StoreAddressResponse.dart';
@@ -104,21 +105,19 @@ class Api {
       throw 'An unexpected error occurred during login.';
     }
   }
-  
+
   static Future<LogoutResponse> logout() async {
     try {
-      var url = "$baseUrl/partner/logout";
+      var url = "$baseUrl/user/logout";
       final response = await safeApiCall(() async {
         final token = await storage.read('token');
-        return await http
-            .get(
-              Uri.parse(url),
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer $token',
-              },
-            )
-            .timeout(const Duration(seconds: 10));
+        return await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+        ).timeout(const Duration(seconds: 10));
       });
       print(response.statusCode);
       if (response.statusCode == 200) {
@@ -206,7 +205,7 @@ class Api {
 
       if (response.statusCode == 200) {
         final decodedBody = utf8.decode(response.bodyBytes);
-      final data = jsonDecode(decodedBody);
+        final data = jsonDecode(decodedBody);
         return ListCategoryPackageResponse.fromJson(data);
       } else {
         final errorData = jsonDecode(response.body);
@@ -498,7 +497,6 @@ class Api {
       throw Exception("Failed to update issue: $e");
     }
   }
-  
 
   static Future<UpdateDetailUserResponse> updateDetailUser(
       Map<String, String> dataUser) async {
@@ -647,8 +645,8 @@ class Api {
 
         if (images != null) {
           request.files.add(
-          await http.MultipartFile.fromPath('receipt_document', images.path),
-        );
+            await http.MultipartFile.fromPath('receipt_document', images.path),
+          );
         }
 
         final streamedResponse = await request.send().timeout(
@@ -776,6 +774,37 @@ class Api {
     } catch (e) {
       print('Error Get Detail Order: $e');
       throw 'Terjadi kesalahan saat mengambil data Get Detail Order.';
+    }
+  }
+
+  static Future<RatingResponse> storeRating(Map<String, dynamic> data) async {
+    try {
+      final url = "$baseUrl/orders/rating/store";
+
+      final response = await safeApiCall(() async {
+        final token = await storage.read('token');
+        return await http
+            .post(Uri.parse(url),
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer $token',
+                },
+                body: jsonEncode(data))
+            .timeout(const Duration(seconds: 20));
+      });
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return RatingResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal store Rating: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Store Rating: $e');
+      throw 'Terjadi kesalahan saat kirim data Rating.';
     }
   }
 

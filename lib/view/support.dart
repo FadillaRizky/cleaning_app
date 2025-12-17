@@ -9,8 +9,8 @@ import '../widget/popup.dart';
 class SupportPage extends StatelessWidget {
   const SupportPage({super.key});
 
-  final String phoneNumberCS = "+6285158426044";
-  final String emailCS = "fadillarizky294@gmail.com";
+  final String phoneNumberCS = "+6282251111116";
+  final String emailCS = "Utilizesofficial@gmail.com";
   final String usernameIgCS = "fadillarizky294";
 
   Future<void> openWhatsApp({
@@ -117,12 +117,12 @@ class SupportPage extends StatelessWidget {
                         );
                       },
                     ),
-                    TileSupport(
-                      title: "Call Center",
-                      subtitle: "Senin - Minggu jam 07.00 - 22.00",
-                      icon: LineIcons.headset,
-                      ontap: () {},
-                    ),
+                    // TileSupport(
+                    //   title: "Call Center",
+                    //   subtitle: "Senin - Minggu jam 07.00 - 22.00",
+                    //   icon: LineIcons.headset,
+                    //   ontap: () {},
+                    // ),
                     TileSupport(
                       title: "Cakupan Area",
                       subtitle: "Jakarta, Bogor, Depok, Tangerang",

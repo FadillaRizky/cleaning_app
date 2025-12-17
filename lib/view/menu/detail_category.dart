@@ -159,7 +159,7 @@ class DetailCategory extends GetView<PackageController> {
                           SizedBox(
                             height: 10,
                           ),
-                          title != "Daily Cleaning"
+                          title != "Daily Cleaning" && title != "InCarely"
                               ? Column(
                                   children: [
                                     Text(
@@ -204,7 +204,7 @@ class DetailCategory extends GetView<PackageController> {
                                   physics: NeverScrollableScrollPhysics(),
                                   itemCount: snapshot.data!.data!.length,
                                   itemBuilder: (context, index) {
-                                    if (title != "Daily Cleaning") {
+                                    if (title != "Daily Cleaning" && title != "InCarely") {
                                       var data = snapshot.data!.data![index];
                                       return Column(
                                         children: [
@@ -432,6 +432,7 @@ class DetailCategory extends GetView<PackageController> {
                                                                           arguments: {
                                                                             'packName':
                                                                                 data.packName,
+                                                                                 'packImg': data.packBannerPath,
                                                                             'globalDesc':
                                                                                 data.packGlobalDescription,
                                                                             'objectDesc':
@@ -539,6 +540,8 @@ class DetailCategory extends GetView<PackageController> {
                                                 .discPercentage ??
                                             0.0,
                                         ontap: () {
+                                          print(snapshot
+                                              .data!.data![index].packId);
                                           controller.category.value = title;
                                           controller.selectedPackageId.value =
                                               snapshot
@@ -571,21 +574,22 @@ class DetailCategory extends GetView<PackageController> {
                 ),
               ),
             ),
-            title != "Daily Cleaning"
+            title != "Daily Cleaning" && title != "InCarely"
                 ? Container(
                     width: double.infinity,
                     padding: EdgeInsets.all(45.r),
                     decoration: BoxDecoration(
-                        color: Colors.white,
-                         boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2), // warna bayangan lembut
-            spreadRadius: 2, // seberapa jauh bayangan menyebar
-            blurRadius: 10, // seberapa lembut bayangan
-            offset: const Offset(0, 4), // posisi bayangan (x, y)
-          ),
-        ],
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey
+                              .withOpacity(0.2), // warna bayangan lembut
+                          spreadRadius: 2, // seberapa jauh bayangan menyebar
+                          blurRadius: 10, // seberapa lembut bayangan
+                          offset: const Offset(0, 4), // posisi bayangan (x, y)
                         ),
+                      ],
+                    ),
                     child: Obx(() {
                       int normalTotal = 0;
                       int total = 0;
@@ -757,343 +761,419 @@ class DetailCategory extends GetView<PackageController> {
           return (text.length <= 150) ? text : '${text.substring(0, 150)}...';
         }
 
-        return Center(
-          child: Container(
-            height: MediaQuery.of(context).size.height - 500.w,
-            width: MediaQuery.of(context).size.width - 100.w,
-            decoration: BoxDecoration(
-              color: Colors.transparent,
-            ),
-            child: Material(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(30.r),
-              child: Column(
-                children: [
-                  IntrinsicHeight(
-                    child: Stack(
-                      children: [
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.fromLTRB(15, 15, 15, 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(30.r),
-                                topRight: Radius.circular(30.r)),
-                            image: DecorationImage(
-                              image: NetworkImage(data.packBannerPath!),
-                              fit: BoxFit.fitWidth,
-                            ),
-                          ),
-                        ),
+        return WillPopScope(
+          onWillPop: () async {
+            // Jalankan logika custom saat user tekan tombol back
+            controller.tempDataObject.clear();
 
-                        // 🔹 Lapisan 2: Overlay gradient putih dari bawah
-                        Positioned.fill(
-                          child: Container(
+            if (action == "edit") {
+              if (!controller.selectObjectPackage.any((e) => e)) {
+                controller.resultDataObject.removeWhere(
+                  (element) => element["pack_id"] == data.packId,
+                );
+                onClose();
+              }
+            } else {
+              onClose();
+            }
+
+            // return true agar dialog benar-benar tertutup setelah kode dijalankan
+            return true;
+          },
+          child: Center(
+            child: Container(
+              height: MediaQuery.of(context).size.height - 500.w,
+              width: MediaQuery.of(context).size.width - 100.w,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+              ),
+              child: Material(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30.r),
+                child: Column(
+                  children: [
+                    IntrinsicHeight(
+                      child: Stack(
+                        children: [
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.fromLTRB(15, 15, 15, 10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(30.r),
                                   topRight: Radius.circular(30.r)),
-                              gradient: LinearGradient(
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                                colors: [
-                                  Color.fromARGB(230, 255, 255, 255),
-                                  Color.fromARGB(164, 255, 255, 255), // atas
-                                  Color.fromARGB(
-                                      96, 255, 255, 255), // transparan penuh
-                                ],
-                                stops: [0.0, 0.6, 1.0],
+                              image: DecorationImage(
+                                image: NetworkImage(data.packBannerPath!),
+                                fit: BoxFit.fitWidth,
                               ),
                             ),
                           ),
-                        ),
 
-                        // 🔹 Lapisan 3: Isi konten (teks dan tombol)
-                        Container(
-                          width: double.infinity,
-                          padding: EdgeInsets.all(45.r),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Header baris atas
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      data.packName!,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                        fontSize: 60.sp,
-                                        fontWeight: FontWeight.bold,
+                          // 🔹 Lapisan 2: Overlay gradient putih dari bawah
+                          Positioned.fill(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(30.r),
+                                    topRight: Radius.circular(30.r)),
+                                gradient: LinearGradient(
+                                  begin: Alignment.bottomCenter,
+                                  end: Alignment.topCenter,
+                                  colors: [
+                                    Color.fromARGB(230, 255, 255, 255),
+                                    Color.fromARGB(164, 255, 255, 255), // atas
+                                    Color.fromARGB(
+                                        96, 255, 255, 255), // transparan penuh
+                                  ],
+                                  stops: [0.0, 0.6, 1.0],
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // 🔹 Lapisan 3: Isi konten (teks dan tombol)
+                          Container(
+                            width: double.infinity,
+                            padding: EdgeInsets.all(45.r),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Header baris atas
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        data.packName!,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(
+                                          fontSize: 60.sp,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  GestureDetector(
-                                    onTap: () {
-                                      controller.tempDataObject.clear();
-                                      Get.back();
+                                    GestureDetector(
+                                      onTap: () {
+                                        controller.tempDataObject.clear();
+                                        Get.back();
 
-                                      if (action == "edit") {
-                                        if (!controller.selectObjectPackage
-                                            .any((e) => e)) {
-                                          controller.resultDataObject
-                                              .removeWhere(
-                                            (element) =>
-                                                element["pack_id"] ==
-                                                data.packId,
-                                          );
+                                        if (action == "edit") {
+                                          if (!controller.selectObjectPackage
+                                              .any((e) => e)) {
+                                            controller.resultDataObject
+                                                .removeWhere(
+                                              (element) =>
+                                                  element["pack_id"] ==
+                                                  data.packId,
+                                            );
+                                            onClose();
+                                          }
+                                        } else {
                                           onClose();
                                         }
-                                      } else {
-                                        onClose();
-                                      }
-                                    },
-                                    child: const Icon(Icons.close,
-                                        color: Colors.black),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(height: 45.h),
-
-                              // Deskripsi + tombol selengkapnya
-                              Stack(
-                                children: [
-                                  Text(
-                                    truncateWithEllipsis(
-                                        data.packGlobalDescription ?? ""),
-                                    maxLines: 4,
-                                    // overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color: Colors.black87,
-                                      fontSize: 35.sp,
-                                    ),
-                                  ),
-                                  Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        Get.toNamed("/package_description",
-                                            arguments: {
-                                              'packName': data.packName,
-                                              'globalDesc':
-                                                  data.packGlobalDescription,
-                                              'objectDesc':
-                                                  data.packObjectDescription,
-                                              'jobDesc':
-                                                  data.packJobDescription,
-                                            });
                                       },
-                                      child: Padding(
-                                        padding: EdgeInsets.only(left: 4),
-                                        child: Text(
-                                          "Selengkapnya",
-                                          style: TextStyle(
-                                            color: Colors.blue,
-                                            fontSize: 38.sp,
-                                            fontWeight: FontWeight.bold,
+                                      child: const Icon(Icons.close,
+                                          color: Colors.black),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 45.h),
+
+                                // Deskripsi + tombol selengkapnya
+                                Stack(
+                                  children: [
+                                    Text(
+                                      truncateWithEllipsis(
+                                          data.packGlobalDescription ?? ""),
+                                      maxLines: 4,
+                                      // overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: Colors.black87,
+                                        fontSize: 35.sp,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 0,
+                                      right: 0,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          Get.toNamed("/package_description",
+                                              arguments: {
+                                                'packName': data.packName,
+                                                'packImg': data.packBannerPath,
+                                                'globalDesc':
+                                                    data.packGlobalDescription,
+                                                'objectDesc':
+                                                    data.packObjectDescription,
+                                                'jobDesc':
+                                                    data.packJobDescription,
+                                              });
+                                        },
+                                        child: Padding(
+                                          padding: EdgeInsets.only(left: 4),
+                                          child: Text(
+                                            "Selengkapnya",
+                                            style: TextStyle(
+                                              color: Colors.blue,
+                                              fontSize: 38.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  Expanded(
-                      child: SingleChildScrollView(
-                    child: Padding(
-                      padding: EdgeInsets.fromLTRB(15.r, 15.r, 45.r, 15.r),
-                      child: FutureBuilder(
-                          future: controller
-                              .getObjectPackage(data.packId.toString()),
-                          builder: (context,
-                              AsyncSnapshot<ObjectPackageResponse> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Skeletonizer(
-                                  child: Text(
-                                      "asdkjhkjhhkdajshkdjhsakdjhaskdjhaksjdh"));
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else if (!snapshot.hasData) {
-                              return const Text('No list packages found.');
-                            }
-                            final options = snapshot.data!.data!;
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: options.length,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        controller.selectObjectPackage[index] =
-                                            !controller
-                                                .selectObjectPackage[index];
-                                        if (controller
-                                            .selectObjectPackage[index]) {
-                                          controller.tempDataObject.add({
-                                            "object_id":
-                                                options[index].objectId,
-                                            "object_name":
-                                                options[index].objectName,
-                                            "object_normal_price":
-                                                options[index].objectPrice,
-                                            "object_price":
-                                                options[index].objectPriceDisc,
-                                            "object_amount": controller
-                                                .amountObjectPackage[index],
-                                          });
-                                        } else {
-                                          controller.tempDataObject.removeWhere(
-                                              (item) =>
-                                                  item['object_id'] ==
-                                                  options[index].objectId);
-                                        }
-                                      },
-                                      child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Obx(() {
-                                            return Checkbox(
-                                              value: controller
-                                                  .selectObjectPackage[index],
-                                              onChanged: (bool? value) {
-                                                controller.selectObjectPackage[
-                                                    index] = value!;
-                                                if (controller
-                                                        .selectObjectPackage[
-                                                    index]) {
-                                                  controller.tempDataObject
-                                                      .add({
-                                                    "object_id":
-                                                        options[index].objectId,
-                                                    "object_name":
-                                                        options[index]
-                                                            .objectName,
-                                                    "object_normal_price":
-                                                        options[index]
-                                                            .objectPrice,
-                                                    "object_price":
-                                                        options[index]
-                                                            .objectPriceDisc,
-                                                    "object_amount": controller
-                                                            .amountObjectPackage[
-                                                        index],
-                                                  });
-                                                } else {
-                                                  controller.tempDataObject
-                                                      .removeWhere((item) =>
-                                                          item['object_id'] ==
+                    Expanded(
+                        child: SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.fromLTRB(15.r, 15.r, 45.r, 15.r),
+                        child: FutureBuilder(
+                            future: controller
+                                .getObjectPackage(data.packId.toString()),
+                            builder: (context,
+                                AsyncSnapshot<ObjectPackageResponse> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Skeletonizer(
+                                    child: Text(
+                                        "asdkjhkjhhkdajshkdjhsakdjhaskdjhaksjdh"));
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (!snapshot.hasData) {
+                                return const Text('No list packages found.');
+                              }
+                              final options = snapshot.data!.data!;
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: options.length,
+                                itemBuilder: (context, index) {
+                                  return Column(
+                                    children: [
+                                      GestureDetector(
+                                        onTap: () {
+                                          controller
+                                                  .selectObjectPackage[index] =
+                                              !controller
+                                                  .selectObjectPackage[index];
+                                          if (controller
+                                              .selectObjectPackage[index]) {
+                                            controller.tempDataObject.add({
+                                              "object_id":
+                                                  options[index].objectId,
+                                              "object_name":
+                                                  options[index].objectName,
+                                              "object_normal_price":
+                                                  options[index].objectPrice,
+                                              "object_price": options[index]
+                                                  .objectPriceDisc,
+                                              "object_amount": controller
+                                                  .amountObjectPackage[index],
+                                            });
+                                          } else {
+                                            controller.tempDataObject
+                                                .removeWhere((item) =>
+                                                    item['object_id'] ==
+                                                    options[index].objectId);
+                                          }
+                                        },
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Obx(() {
+                                              return Checkbox(
+                                                value: controller
+                                                    .selectObjectPackage[index],
+                                                onChanged: (bool? value) {
+                                                  controller
+                                                          .selectObjectPackage[
+                                                      index] = value!;
+                                                  if (controller
+                                                          .selectObjectPackage[
+                                                      index]) {
+                                                    controller.tempDataObject
+                                                        .add({
+                                                      "object_id":
                                                           options[index]
-                                                              .objectId);
-                                                }
-                                              },
-                                            );
-                                          }),
-                                          SizedBox(width: 8),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  options[index].objectName ??
-                                                      "",
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      fontSize: 38.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                  options[index]
-                                                          .objectDescription ??
-                                                      "",
-                                                  maxLines: 2,
-                                                  style: TextStyle(
-                                                      fontSize: 35.sp),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: 3,
-                                          ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              (options[index].objectPriceDisc !=
-                                                      options[index]
-                                                          .objectPrice)
-                                                  ? Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .end,
-                                                      children: [
-                                                        Text(
-                                                            Utils.formatCurrency(
-                                                                options[index]
-                                                                    .objectPriceDisc!),
-                                                            style: TextStyle(
-                                                              fontSize: 36.sp,
-                                                            )),
-                                                        Text(
-                                                            Utils.formatCurrency(
-                                                                options[index]
-                                                                    .objectPrice!),
-                                                            style: TextStyle(
-                                                              fontSize: 32.sp,
-                                                              decoration:
-                                                                  TextDecoration
-                                                                      .lineThrough,
-                                                            )),
-                                                      ],
-                                                    )
-                                                  : Text(
-                                                      Utils.formatCurrency(
+                                                              .objectId,
+                                                      "object_name":
                                                           options[index]
-                                                              .objectPrice!),
-                                                      style: TextStyle(
-                                                        fontSize: 36.sp,
-                                                      )),
-                                              SizedBox(
-                                                height: 10,
+                                                              .objectName,
+                                                      "object_normal_price":
+                                                          options[index]
+                                                              .objectPrice,
+                                                      "object_price":
+                                                          options[index]
+                                                              .objectPriceDisc,
+                                                      "object_amount": controller
+                                                              .amountObjectPackage[
+                                                          index],
+                                                    });
+                                                  } else {
+                                                    controller.tempDataObject
+                                                        .removeWhere((item) =>
+                                                            item['object_id'] ==
+                                                            options[index]
+                                                                .objectId);
+                                                  }
+                                                },
+                                              );
+                                            }),
+                                            SizedBox(width: 8),
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    options[index].objectName ??
+                                                        "",
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        fontSize: 38.sp,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  Text(
+                                                    options[index]
+                                                            .objectDescription ??
+                                                        "",
+                                                    maxLines: 2,
+                                                    style: TextStyle(
+                                                        fontSize: 35.sp),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                  )
+                                                ],
                                               ),
-                                              Obx(() {
-                                                return controller
-                                                            .selectObjectPackage[
-                                                        index]
-                                                    ? Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
+                                            ),
+                                            SizedBox(
+                                              width: 3,
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                (options[index]
+                                                            .objectPriceDisc !=
+                                                        options[index]
+                                                            .objectPrice)
+                                                    ? Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .end,
                                                         children: [
-                                                          InkWell(
-                                                            onTap: () {
-                                                              if (controller
+                                                          Text(
+                                                              Utils.formatCurrency(
+                                                                  options[index]
+                                                                      .objectPriceDisc!),
+                                                              style: TextStyle(
+                                                                fontSize: 36.sp,
+                                                              )),
+                                                          Text(
+                                                              Utils.formatCurrency(
+                                                                  options[index]
+                                                                      .objectPrice!),
+                                                              style: TextStyle(
+                                                                fontSize: 32.sp,
+                                                                decoration:
+                                                                    TextDecoration
+                                                                        .lineThrough,
+                                                              )),
+                                                        ],
+                                                      )
+                                                    : Text(
+                                                        Utils.formatCurrency(
+                                                            options[index]
+                                                                .objectPrice!),
+                                                        style: TextStyle(
+                                                          fontSize: 36.sp,
+                                                        )),
+                                                SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Obx(() {
+                                                  return controller
+                                                              .selectObjectPackage[
+                                                          index]
+                                                      ? Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            InkWell(
+                                                              onTap: () {
+                                                                if (controller
+                                                                            .amountObjectPackage[
+                                                                        index] !=
+                                                                    1) {
+                                                                  controller
                                                                           .amountObjectPackage[
-                                                                      index] !=
-                                                                  1) {
+                                                                      index]--;
+                                                                  controller.updateObjectAmount(
+                                                                      options[index]
+                                                                          .objectId!
+                                                                          .toInt(),
+                                                                      controller
+                                                                              .amountObjectPackage[
+                                                                          index]);
+                                                                }
+                                                              },
+                                                              child:
+                                                                  IconPlusMinus(
+                                                                icon: Icons
+                                                                    .remove,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 10),
+                                                            Container(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                      horizontal:
+                                                                          30.r,
+                                                                      vertical:
+                                                                          15.r),
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            5),
+                                                                color: Colors
+                                                                    .grey[100],
+                                                              ),
+                                                              child: Text(
+                                                                  controller
+                                                                      .amountObjectPackage[
+                                                                          index]
+                                                                      .toString(),
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          34.sp)),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 10),
+                                                            InkWell(
+                                                              onTap: () {
                                                                 controller
                                                                         .amountObjectPackage[
-                                                                    index]--;
+                                                                    index]++;
                                                                 controller.updateObjectAmount(
                                                                     options[index]
                                                                         .objectId!
@@ -1101,148 +1181,101 @@ class DetailCategory extends GetView<PackageController> {
                                                                     controller
                                                                             .amountObjectPackage[
                                                                         index]);
-                                                              }
-                                                            },
-                                                            child:
-                                                                IconPlusMinus(
-                                                              icon:
-                                                                  Icons.remove,
+                                                              },
+                                                              child:
+                                                                  IconPlusMinus(
+                                                                icon: Icons.add,
+                                                              ),
                                                             ),
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 10),
-                                                          Container(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    horizontal:
-                                                                        30.r,
-                                                                    vertical:
-                                                                        15.r),
-                                                            alignment: Alignment
-                                                                .center,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5),
-                                                              color: Colors
-                                                                  .grey[100],
-                                                            ),
-                                                            child: Text(
-                                                                controller
-                                                                    .amountObjectPackage[
-                                                                        index]
-                                                                    .toString(),
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        34.sp)),
-                                                          ),
-                                                          const SizedBox(
-                                                              width: 10),
-                                                          InkWell(
-                                                            onTap: () {
-                                                              controller
-                                                                      .amountObjectPackage[
-                                                                  index]++;
-                                                              controller.updateObjectAmount(
-                                                                  options[index]
-                                                                      .objectId!
-                                                                      .toInt(),
-                                                                  controller
-                                                                          .amountObjectPackage[
-                                                                      index]);
-                                                            },
-                                                            child:
-                                                                IconPlusMinus(
-                                                              icon: Icons.add,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      )
-                                                    : SizedBox.shrink();
-                                              })
-                                            ],
-                                          ),
-                                        ],
+                                                          ],
+                                                        )
+                                                      : SizedBox.shrink();
+                                                })
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
+                                      Divider(
+                                        indent: 10,
+                                      )
+                                    ],
+                                  );
+                                },
+                              );
+                            }),
+                      ),
+                    )),
+                    Obx(() {
+                      return controller.selectObjectPackage.any((e) => e)
+                          ? Container(
+                              padding: EdgeInsets.all(30.r),
+                              child: Obx(() {
+                                return Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Total Item",
+                                          style: TextStyle(fontSize: 38.sp),
+                                        ),
+                                        Text(
+                                          controller
+                                              .amountObjectQty()
+                                              .toString(),
+                                          style: TextStyle(fontSize: 38.sp),
+                                        ),
+                                      ],
                                     ),
-                                    Divider(
-                                      indent: 10,
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text("Total Harga",
+                                            style: TextStyle(fontSize: 38.sp)),
+                                        Text(controller.amountObjectPrice(),
+                                            style: TextStyle(fontSize: 38.sp)),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: 20.h,
+                                    ),
+                                    SizedBox(
+                                      width: double.infinity,
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor: Colors.blue,
+                                              foregroundColor: Colors.white),
+                                          onPressed: () {
+                                            controller.addResultDataObject(
+                                              data.packId!.toInt(),
+                                              data.packName ?? "",
+                                              data.packBannerPath ?? "",
+                                              (data.discPercentage as num?)
+                                                      ?.toDouble() ??
+                                                  0.0,
+                                              controller.tempDataObject
+                                                  .toList(),
+                                            );
+                                            controller.tempDataObject.clear();
+
+                                            Get.back();
+                                          },
+                                          child: Text(
+                                            "Simpan",
+                                            style: TextStyle(fontSize: 38.sp),
+                                          )),
                                     )
                                   ],
                                 );
-                              },
-                            );
-                          }),
-                    ),
-                  )),
-                  Obx(() {
-                    return controller.selectObjectPackage.any((e) => e)
-                        ? Container(
-                            padding: EdgeInsets.all(30.r),
-                            child: Obx(() {
-                              return Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        "Total Item",
-                                        style: TextStyle(fontSize: 38.sp),
-                                      ),
-                                      Text(
-                                        controller.amountObjectQty().toString(),
-                                        style: TextStyle(fontSize: 38.sp),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text("Total Harga",
-                                          style: TextStyle(fontSize: 38.sp)),
-                                      Text(controller.amountObjectPrice(),
-                                          style: TextStyle(fontSize: 38.sp)),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 20.h,
-                                  ),
-                                  SizedBox(
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                        style: ElevatedButton.styleFrom(
-                                            backgroundColor: Colors.blue,
-                                            foregroundColor: Colors.white),
-                                        onPressed: () {
-                                          controller.addResultDataObject(
-                                            data.packId!.toInt(),
-                                            data.packName ?? "",
-                                            data.packBannerPath ?? "",
-                                            (data.discPercentage as num?)
-                                                    ?.toDouble() ??
-                                                0.0,
-                                            controller.tempDataObject.toList(),
-                                          );
-                                          controller.tempDataObject.clear();
-
-                                          Get.back();
-                                        },
-                                        child: Text(
-                                          "Simpan",
-                                          style: TextStyle(fontSize: 38.sp),
-                                        )),
-                                  )
-                                ],
-                              );
-                            }),
-                          )
-                        : SizedBox.shrink();
-                  })
-                ],
+                              }),
+                            )
+                          : SizedBox.shrink();
+                    })
+                  ],
+                ),
               ),
             ),
           ),

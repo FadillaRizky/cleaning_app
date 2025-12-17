@@ -11,11 +11,12 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 import '../api.dart';
-import '../model/HistoryTransaksiResponse.dart';
+import '../model/HistoryTransaksiResponse.dart' as Data;
 import '../widget/popup.dart';
 
 class HomeController extends GetxController {
   final userController = Get.find<ProfileController>();
+
   final RxInt currentIndex = 0.obs;
   final _storage = GetStorage();
   RxString userName = ''.obs;
@@ -33,10 +34,10 @@ class HomeController extends GetxController {
   var notifLength = 0.obs;
 
   /// Keterangan Jumlah Saldo
-  var amountSaldo = "".obs;
+  var amountSaldo = "0".obs;
 
-  var isLoading = false.obs;
-  
+  final isLoading = false.obs;
+  final RxList<Data.Data> historyList = <Data.Data>[].obs;
 
   Future<void> refreshPackage() async {
     // await Future.delayed(Duration(seconds: 2));
@@ -54,7 +55,9 @@ class HomeController extends GetxController {
       final response = await Api.getSaldo();
       print(response.data!.totalBalance);
       if (response.status == true) {
-        amountSaldo.value = response.data!.totalBalance == null ? "0" : response.data!.totalBalance.toString() ;
+        amountSaldo.value = response.data!.totalBalance == null
+            ? "0"
+            : response.data!.totalBalance.toString();
       }
     } catch (e) {
       print("gagal get saldo : $e");
@@ -63,8 +66,25 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<HistoryTransaksiResponse> fetchHistoryTransaksi() {
+  Future<Data.HistoryTransaksiResponse> fetchHistoryTransaksi() {
     return Api.getHistoryTransaksi();
+  }
+
+  Future<void> fetchHistory() async {
+    try {
+      isLoading.value = true;
+      final response = await fetchHistoryTransaksi();
+      historyList.value = response.data ?? [];
+    } catch (e) {
+      Get.snackbar('Error', e.toString());
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  Future<void> refreshHistory() async {
+    print("jalan");
+    await fetchHistory();
   }
 
   String getGreetingByTime() {
@@ -125,6 +145,7 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     futurePackageList = Api.getCategoryPackageList();
+    fetchHistory();
     fetchSaldo();
     userName.value = _storage.read('name') ?? 'Anonymous';
     fetchNotif();
