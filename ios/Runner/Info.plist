@@ -45,5 +45,38 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- CAMERA -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app requires camera access</string>
+
+	<!-- PHOTO LIBRARY -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app requires access to your photo library</string>
+
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs permission to save images</string>
+
+	<!-- LOCATION -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs your location to function properly</string>
+
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs location access even when running in background</string>
+
+	<!-- INTERNET (FOR API / FIREBASE) -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+
+	<!-- URL LAUNCHER -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>http</string>
+		<string>https</string>
+		<string>tel</string>
+		<string>mailto</string>
+	</array>
 </dict>
 </plist>
