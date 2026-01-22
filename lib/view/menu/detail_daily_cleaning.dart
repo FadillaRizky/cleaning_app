@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:readmore/readmore.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -125,7 +126,95 @@ class DetailDailyCleaning extends GetView<PackageController> {
                             fontSize: 60.sp, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
-                        height: 10,
+                        height: 15.h,
+                      ),
+                      Row(children: [
+                         profileController.hasVoucher.value != false
+                              ? Row(
+                                children: [
+                                  Stack(
+                                    children: [
+                                      Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8, vertical: 2),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.red.shade300, width: 1),
+                                            borderRadius: BorderRadius.circular(4),
+                                          ),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              Icon(
+                                                LineIcons.alternateTicket,
+                                                color: Colors.red,
+                                                size: 35.r,
+                                              ),
+                                              const SizedBox(width: 4),
+                                              Text(
+                                                "Voucher Member",
+                                                style: TextStyle(
+                                                  fontSize: 25.sp,
+                                                  color: Colors.red.shade400,
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 4),
+                                            ],
+                                          ),
+                                        ),
+                                        Positioned(
+                                          bottom:-1,
+                                          right: -1,
+                                          child: Icon(Icons.check_circle,size: 35.r,color: Colors.red,))
+                                    ],
+                                  ),
+                               SizedBox(width: 15.w,)
+                                ],
+                              )
+                              : SizedBox.shrink(),
+                               discPercent != null && discPercent != 0.0
+                              ? Stack(
+                                children: [
+                                  Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.red.shade300, width: 1),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            LineIcons.alternateTicket,
+                                            color: Colors.red,
+                                            size: 35.r,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            "Promo",
+                                            style: TextStyle(
+                                              fontSize: 25.sp,
+                                              color: Colors.red.shade400,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                        ],
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom:-1,
+                                      right: -1,
+                                      child: Icon(Icons.check_circle,size: 35.r,color: Colors.red,))
+                                ],
+                              )
+                              : SizedBox.shrink(),
+                      ],),
+                      SizedBox(
+                        height: 15.h,
                       ),
                       ReadMoreText(
                         detail.data!.pack!.packGlobalDescription!,
@@ -172,9 +261,9 @@ class DetailDailyCleaning extends GetView<PackageController> {
                             ph_id: duration.data![index].phId!.toInt(),
                             title: duration.data![index].packHour!.toInt(),
                             discountPrice:
-                                duration.data![index].packPrice!.toInt(),
-                            realPrice:
                                 duration.data![index].packPriceDisc!.toInt(),
+                            realPrice:
+                                duration.data![index].packPrice!.toInt(),
                           );
                         },
                       ),
@@ -287,7 +376,7 @@ class DetailDailyCleaning extends GetView<PackageController> {
                                   Text(
                                     Utils.formatCurrency(
                                       int.tryParse(controller
-                                              .selectedDiscountPrice.value) ??
+                                              .selectedRealPrice.value) ??
                                           0,
                                     ),
                                     style: TextStyle(
@@ -345,7 +434,7 @@ class DetailDailyCleaning extends GetView<PackageController> {
                                 ),
                                 Text(
                                     Utils.formatCurrency(int.parse(
-                                        controller.selectedRealPrice.value)),
+                                        controller.selectedDiscountPrice.value)),
                                     style: TextStyle(
                                         fontSize: 40.sp,
                                         fontWeight: FontWeight.bold)),
@@ -539,7 +628,7 @@ class SelectDuration extends StatelessWidget {
           children: [
             (discountPrice != realPrice)
                 ? Text(
-                    Utils.formatCurrency(discountPrice).toString(),
+                    Utils.formatCurrency(realPrice).toString(),
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 33.sp,
@@ -549,7 +638,7 @@ class SelectDuration extends StatelessWidget {
                 : SizedBox.shrink(),
             const SizedBox(width: 8),
             Text(
-              Utils.formatCurrency(realPrice).toString(),
+              Utils.formatCurrency(discountPrice).toString(),
               style: TextStyle(fontSize: 36.sp, fontWeight: FontWeight.bold),
             ),
           ],

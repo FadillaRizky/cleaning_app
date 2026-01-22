@@ -589,7 +589,7 @@ class OrderDetail extends GetView<BookingController> {
                                 SizedBox(
                                   height: 10.h,
                                 ),
-                                (result.category != "Daily Cleaning")
+                                (result.category != "Daily Cleaning" && result.category != "InCarely")
                                     ? Column(
                                         children: result.dataPack!.map((item) {
                                           return Column(

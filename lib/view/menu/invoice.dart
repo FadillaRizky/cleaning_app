@@ -38,7 +38,7 @@ class InvoicePage extends GetView<InvoiceController> {
               pw.Text(data.category!,
                   style: pw.TextStyle(fontWeight: pw.FontWeight.bold,fontSize: 32.sp)),
               pw.SizedBox(height: 5),
-              (data.category != "Daily Cleaning")
+              (data.category != "Daily Cleaning" && data.category != "InCarely")
                   ? pw.Column(
                       children: data.dataPack!.map((item) {
                         return pw.Column(
@@ -274,7 +274,7 @@ class InvoicePage extends GetView<InvoiceController> {
                             style: TextStyle(
                                 fontSize: 42.sp, fontWeight: FontWeight.bold),
                           ),
-                          (data.category != "Daily Cleaning")
+                          (data.category != "Daily Cleaning" && data.category != "InCarely")
                               ? Column(
                                   children: data.dataPack!.map((item) {
                                     return Column(

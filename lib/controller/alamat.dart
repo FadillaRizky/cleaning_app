@@ -15,7 +15,7 @@ class AlamatController extends GetxController {
   late TextEditingController phoneNumberController;
   late TextEditingController detailAddressController;
   // late TextEditingController typePropertyController;
-  var typeProperty = ['Rumah', 'Apartement', 'Kontrakan', 'Kos'].obs;
+  var typeProperty = ['Rumah', 'Apartement', 'Kontrakan', 'Kos','Ruko','Gudang'].obs;
   var selectedProperty = "".obs;
   var detailLocation = "".obs;
   var specificLocation = "".obs;
