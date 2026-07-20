@@ -9,6 +9,7 @@ class DailyCleaningCard extends StatelessWidget {
   final String imgPath;
   final String title;
   final dynamic discPercent;
+  final bool hasVoucher;
   // final int price;
   final String subtitle;
   final VoidCallback ontap;
@@ -18,6 +19,7 @@ class DailyCleaningCard extends StatelessWidget {
       required this.imgPath,
       required this.title,
       required this.subtitle,
+      required this.hasVoucher,
       required this.ontap,
       required this.discPercent})
       : super(key: key);
@@ -56,27 +58,27 @@ class DailyCleaningCard extends StatelessWidget {
                       width: 190.w,
                     ),
                   ),
-                  if (discPercent != 0.0)
-                    Positioned(
-                      top: 4,
-                      left: 4,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: Colors.redAccent,
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        child: Text(
-                          "PROMO",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 24.sp,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
+                  // if (discPercent != 0.0)
+                  //   Positioned(
+                  //     top: 4,
+                  //     left: 4,
+                  //     child: Container(
+                  //       padding: const EdgeInsets.symmetric(
+                  //           horizontal: 6, vertical: 2),
+                  //       decoration: BoxDecoration(
+                  //         color: Colors.redAccent,
+                  //         borderRadius: BorderRadius.circular(3),
+                  //       ),
+                  //       child: Text(
+                  //         "PROMO",
+                  //         style: TextStyle(
+                  //           color: Colors.white,
+                  //           fontSize: 24.sp,
+                  //           fontWeight: FontWeight.bold,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
                 ],
               ),
               SizedBox(width: 35.w),
@@ -108,9 +110,31 @@ class DailyCleaningCard extends StatelessWidget {
           ),
           SizedBox(height: 15.h),
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  if (discPercent != 0.0)
+                    Row(
+                      children: [
+                        Badge(
+                          label: "Promo",
+                          color: Colors.redAccent,
+                        ),
+                        SizedBox(
+                          width: 15.w,
+                        )
+                      ],
+                    ),
+                  if (hasVoucher == true)
+                    Badge(
+                      label: "Voucher Member",
+                      color: Colors.redAccent,
+                    ),
+                ],
+              ),
               ElevatedButton(
                 onPressed: ontap,
                 style: ElevatedButton.styleFrom(
@@ -128,6 +152,32 @@ class DailyCleaningCard extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class Badge extends StatelessWidget {
+  final String label;
+  final Color color;
+
+  const Badge({required this.label, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+      decoration: BoxDecoration(
+        color: color,
+        borderRadius: BorderRadius.circular(3),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 24.sp,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }

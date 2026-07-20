@@ -26,6 +26,7 @@ import 'package:cleaning_app/view/menu/voucher.dart';
 import 'package:cleaning_app/view/package_deskription.dart';
 import 'package:cleaning_app/view/register.dart';
 import 'package:cleaning_app/view/register_verify.dart';
+import 'package:cleaning_app/view/splash_screen.dart';
 import 'package:cleaning_app/view/syarat_ketentuan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -52,22 +53,17 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  print("init");
-  final storage = GetStorage();
-  final isFirstOpen = await storage.read('isFirstOpen') ?? true;
-  final isLoggedIn = await storage.read('token') != null;
-  print(isLoggedIn);
-  runApp(MyApp(
-    isLoggedIn: isLoggedIn,
-    isFirstOpen: isFirstOpen,
-  ));
+  // print("init");
+  // final storage = GetStorage();
+  // final isFirstOpen = await storage.read('isFirstOpen') ?? true;
+  // final isLoggedIn = await storage.read('token') != null;
+  // print(isLoggedIn);
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  final bool isLoggedIn;
-  final bool isFirstOpen;
 
-  const MyApp({super.key, required this.isLoggedIn, required this.isFirstOpen});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -115,12 +111,14 @@ class MyApp extends StatelessWidget {
                 // ... other styles
               ),
             ),
-            initialRoute: isFirstOpen
-                ? '/intro'
-                : isLoggedIn
-                    ? '/menu'
-                    : '/login',
+            // initialRoute: isFirstOpen
+            //     ? '/intro'
+            //     : isLoggedIn
+            //         ? '/menu'
+            //         : '/login',
+            initialRoute: '/splash',
             getPages: [
+              GetPage(name: '/splash', page: () => SplashScreen()),
               GetPage(name: '/intro', page: () => IntroductionPage()),
               GetPage(
                   name: '/login',

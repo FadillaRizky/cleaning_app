@@ -30,7 +30,7 @@ class TagihanPage extends GetView<PemesananController> {
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding:  EdgeInsets.all(45.r),
+                  padding: EdgeInsets.all(45.r),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -51,7 +51,7 @@ class TagihanPage extends GetView<PemesananController> {
                                   ),
                                 ),
                                 child: Padding(
-                                  padding:  EdgeInsets.all(75.r),
+                                  padding: EdgeInsets.all(75.r),
                                   child: Column(
                                     children: [
                                       Row(
@@ -64,8 +64,8 @@ class TagihanPage extends GetView<PemesananController> {
                                               height: 80.h),
                                         ],
                                       ),
-                                       SizedBox(height: 30.h),
-                                       Text(
+                                      SizedBox(height: 30.h),
+                                      Text(
                                         "UTILIZES GO SERVICE",
                                         style: TextStyle(
                                           fontSize: 45.sp,
@@ -74,7 +74,7 @@ class TagihanPage extends GetView<PemesananController> {
                                         ),
                                       ),
                                       const SizedBox(height: 5),
-                                       Text(
+                                      Text(
                                         "NMID : ID2025429865343",
                                         style: TextStyle(
                                           fontSize: 38.sp,
@@ -85,7 +85,7 @@ class TagihanPage extends GetView<PemesananController> {
                                       const SizedBox(height: 8),
                                       Text(
                                         Utils.formatCurrency(totalHarga),
-                                        style:  TextStyle(
+                                        style: TextStyle(
                                           fontSize: 55.sp,
                                           fontWeight: FontWeight.bold,
                                           color: Colors.white,
@@ -93,7 +93,7 @@ class TagihanPage extends GetView<PemesananController> {
                                       ),
                                       const SizedBox(height: 12),
                                       Container(
-                                        padding:  EdgeInsets.all(25.r),
+                                        padding: EdgeInsets.all(25.r),
                                         decoration: BoxDecoration(
                                           color: Colors.white,
                                           borderRadius:
@@ -101,7 +101,10 @@ class TagihanPage extends GetView<PemesananController> {
                                         ),
                                         child: Image.asset(
                                           "assets/QRIS.jpg",
-                                          height: MediaQuery.of(context).size.width * 0.5,
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .width *
+                                              0.5,
                                           fit: BoxFit.cover,
                                         ),
                                       ),
@@ -136,35 +139,40 @@ class TagihanPage extends GetView<PemesananController> {
                                           fontSize: 38.sp,
                                           color: Colors.white),
                                     ),
-                                    SizedBox(height: 30.h,),
-                                     Text(
+                                    SizedBox(
+                                      height: 30.h,
+                                    ),
+                                    Text(
                                       "Nomor Rekening",
-                                      style: TextStyle(color: Colors.white,fontSize: 36.sp),
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 36.sp),
                                     ),
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                         Text(
+                                        Text(
                                           "168 0370 628",
-                                          style: TextStyle(color: Colors.white,fontSize: 38.sp),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 38.sp),
                                         ),
                                         GestureDetector(
                                           onTap: () {
                                             Clipboard.setData(
                                                 const ClipboardData(
-                                                    text:
-                                                        "168 0370 628"));
+                                                    text: "168 0370 628"));
                                             IconSnackBar.show(context,
                                                 snackBarType:
                                                     SnackBarType.alert,
                                                 label:
                                                     'Text berhasil disalin.');
                                           },
-                                          child:  Text(
+                                          child: Text(
                                             "Salin",
-                                            style:
-                                                TextStyle(color: Colors.white,fontSize: 38.sp),
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 38.sp),
                                           ),
                                         ),
                                       ],
@@ -174,13 +182,11 @@ class TagihanPage extends GetView<PemesananController> {
                               ),
                             ),
 
-                     
-
                       metodePembayaran == "QRIS"
                           ? Column(
-                            children: [
-                               SizedBox(height: 30.h),
-                              SizedBox(
+                              children: [
+                                SizedBox(height: 30.h),
+                                SizedBox(
                                   width: double.infinity,
                                   child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
@@ -192,21 +198,22 @@ class TagihanPage extends GetView<PemesananController> {
                                     child: const Text("Download QRIS"),
                                   ),
                                 ),
-                            ],
-                          )
+                              ],
+                            )
                           : SizedBox.shrink(),
 
-                       SizedBox(height: 30.h),
+                      SizedBox(height: 30.h),
                       Center(
                           child: GestureDetector(
                               onTap: () {
-                                Get.toNamed("instruksi_pembayaran",arguments: {
+                                Get.toNamed("instruksi_pembayaran", arguments: {
                                   "metode_pembayaran": metodePembayaran
                                 });
                               },
                               child: Text(
                                 "Lihat Instruksi Pembayaran",
-                                style: TextStyle(color: Colors.blue,fontSize: 36.sp),
+                                style: TextStyle(
+                                    color: Colors.blue, fontSize: 36.sp),
                               ))),
                       const SizedBox(height: 10),
 
@@ -221,7 +228,7 @@ class TagihanPage extends GetView<PemesananController> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                             Icon(Icons.warning_amber_rounded,
+                            Icon(Icons.warning_amber_rounded,
                                 color: Colors.red, size: 63.r),
                             const SizedBox(width: 8),
                             Expanded(
@@ -249,7 +256,7 @@ class TagihanPage extends GetView<PemesananController> {
                           style: TextStyle(fontSize: 40.sp),
                         ),
                       ),
-                       SizedBox(height: 30.h),
+                      SizedBox(height: 30.h),
 
                       Obx(() {
                         return Center(
@@ -270,7 +277,7 @@ class TagihanPage extends GetView<PemesananController> {
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
-                                        children:  [
+                                        children: [
                                           Icon(Icons.cloud_upload,
                                               size: 130.r, color: Colors.blue),
                                           SizedBox(height: 8),
@@ -354,7 +361,8 @@ class TagihanPage extends GetView<PemesananController> {
                           return;
                         }
 
-                        if (packController.category.value != "Daily Cleaning") {
+                        if (packController.category.value != "Daily Cleaning" &&
+                            packController.category.value != "InCarely") {
                           Map<String, dynamic> dataPackMap =
                               controller.getListDataPack();
 

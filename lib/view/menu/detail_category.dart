@@ -107,33 +107,47 @@ class DetailCategory extends GetView<PackageController> {
                             height: 4,
                           ),
                           profileController.hasVoucher.value != false
-                              ? Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 2),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.red.shade300, width: 1),
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Icon(
-                                        LineIcons.alternateTicket,
-                                        color: Colors.red,
-                                        size: 48.r,
+                              ? Stack(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 8, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.red.shade300,
+                                            width: 1),
+                                        borderRadius: BorderRadius.circular(4),
                                       ),
-                                      const SizedBox(width: 4),
-                                      Text(
-                                        "Voucher Member",
-                                        style: TextStyle(
-                                          fontSize: 32.sp,
-                                          color: Colors.red.shade400,
-                                          fontWeight: FontWeight.w500,
-                                        ),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          Icon(
+                                            LineIcons.alternateTicket,
+                                            color: Colors.red,
+                                            size: 35.r,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            "Voucher Member",
+                                            style: TextStyle(
+                                              fontSize: 25.sp,
+                                              color: Colors.red.shade400,
+                                              fontWeight: FontWeight.w500,
+                                            ),
+                                          ),
+                                          const SizedBox(width: 4),
+                                        ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    Positioned(
+                                        bottom: -1,
+                                        right: -1,
+                                        child: Icon(
+                                          Icons.check_circle,
+                                          size: 35.r,
+                                          color: Colors.red,
+                                        ))
+                                  ],
                                 )
                               : SizedBox.shrink(),
                           SizedBox(
@@ -189,7 +203,8 @@ class DetailCategory extends GetView<PackageController> {
                                         title: "Jasa Borongan Cleaning",
                                         subtitle:
                                             "Tersedia pilihan jasa cleaning berdasarkan luas area, jumlah tenaga kerja, waktu pengerjaan atau jenis acara/kegiatan.",
-                                        discPercent: null,
+                                        discPercent: 0.0,
+                                        hasVoucher: false,
                                         ontap: () {},
                                       ),
                                     ],
@@ -204,7 +219,8 @@ class DetailCategory extends GetView<PackageController> {
                                   physics: NeverScrollableScrollPhysics(),
                                   itemCount: snapshot.data!.data!.length,
                                   itemBuilder: (context, index) {
-                                    if (title != "Daily Cleaning" && title != "InCarely") {
+                                    if (title != "Daily Cleaning" &&
+                                        title != "InCarely") {
                                       var data = snapshot.data!.data![index];
                                       return Column(
                                         children: [
@@ -259,7 +275,13 @@ class DetailCategory extends GetView<PackageController> {
                                                               controller
                                                                       .selectPackageDeep[
                                                                   index] = false;
-                                                            }, "tambah");
+                                                            },
+                                                                "tambah",
+                                                                profileController
+                                                                    .hasVoucher
+                                                                    .value,
+                                                                data.discPercentage !=
+                                                                    null);
                                                           } else {
                                                             controller
                                                                 .resultDataObject
@@ -286,7 +308,13 @@ class DetailCategory extends GetView<PackageController> {
                                                           controller
                                                                   .selectPackageDeep[
                                                               index] = false;
-                                                        }, "tambah");
+                                                        },
+                                                            "tambah",
+                                                            profileController
+                                                                .hasVoucher
+                                                                .value,
+                                                            data.discPercentage !=
+                                                                null);
                                                       } else {
                                                         controller
                                                             .resultDataObject
@@ -384,7 +412,13 @@ class DetailCategory extends GetView<PackageController> {
                                                                       controller
                                                                               .selectPackageDeep[index] =
                                                                           false;
-                                                                    }, "tambah");
+                                                                    },
+                                                                        "tambah",
+                                                                        profileController
+                                                                            .hasVoucher
+                                                                            .value,
+                                                                        data.discPercentage !=
+                                                                            null);
                                                                   } else {
                                                                     controller
                                                                         .resultDataObject
@@ -432,7 +466,8 @@ class DetailCategory extends GetView<PackageController> {
                                                                           arguments: {
                                                                             'packName':
                                                                                 data.packName,
-                                                                                 'packImg': data.packBannerPath,
+                                                                            'packImg':
+                                                                                data.packBannerPath,
                                                                             'globalDesc':
                                                                                 data.packGlobalDescription,
                                                                             'objectDesc':
@@ -502,7 +537,7 @@ class DetailCategory extends GetView<PackageController> {
                                                                               onPressed: () {
                                                                                 popupObjectPackage(context, data, () {
                                                                                   controller.selectPackageDeep[index] = false;
-                                                                                }, "edit");
+                                                                                }, "edit", profileController.hasVoucher.value, data.discPercentage != null);
                                                                               },
                                                                               child: Text(
                                                                                 "Detail",
@@ -539,6 +574,8 @@ class DetailCategory extends GetView<PackageController> {
                                         discPercent: snapshot.data!.data![index]
                                                 .discPercentage ??
                                             0.0,
+                                        hasVoucher:
+                                            profileController.hasVoucher.value,
                                         ontap: () {
                                           print(snapshot
                                               .data!.data![index].packId);
@@ -659,7 +696,8 @@ class DetailCategory extends GetView<PackageController> {
                                                       style: TextStyle(
                                                           fontSize: 38.sp,
                                                           fontWeight:
-                                                              FontWeight.bold)),
+                                                              FontWeight.bold,
+                                                          color: Colors.red)),
                                                 ],
                                               ),
                                             ],
@@ -752,13 +790,19 @@ class DetailCategory extends GetView<PackageController> {
     Data.Data data,
     VoidCallback onClose,
     String action,
+    bool hasVoucher,
+    bool hasPromo,
   ) {
     return showDialog(
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
+       
         String truncateWithEllipsis(String text) {
-          return (text.length <= 150) ? text : '${text.substring(0, 150)}...';
+           
+           String normalizedText = text.replaceAll('\t', ' ');
+           print(text);
+          return (text.length >= 120) ? '${normalizedText.substring(0, 120)}...' : text;
         }
 
         return WillPopScope(
@@ -877,6 +921,126 @@ class DetailCategory extends GetView<PackageController> {
                                       child: const Icon(Icons.close,
                                           color: Colors.black),
                                     ),
+                                  ],
+                                ),
+                                SizedBox(height: 15.h),
+                                Row(
+                                  children: [
+                                    hasVoucher != false
+                                        ? Row(
+                                            children: [
+                                              Stack(
+                                                children: [
+                                                  Container(
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 2),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white,
+                                                      border: Border.all(
+                                                          color: Colors
+                                                              .red.shade300,
+                                                          width: 1),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4),
+                                                    ),
+                                                    child: Row(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        Icon(
+                                                          LineIcons
+                                                              .alternateTicket,
+                                                          color: Colors.red,
+                                                          size: 35.r,
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 4),
+                                                        Text(
+                                                          "Voucher Member",
+                                                          style: TextStyle(
+                                                            fontSize: 25.sp,
+                                                            color: Colors
+                                                                .red.shade400,
+                                                            fontWeight:
+                                                                FontWeight.w500,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 4),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  Positioned(
+                                                      bottom: -1,
+                                                      right: -1,
+                                                      child: Icon(
+                                                        Icons.check_circle,
+                                                        size: 35.r,
+                                                        color: Colors.red,
+                                                      ))
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                width: 15.w,
+                                              )
+                                            ],
+                                          )
+                                        : SizedBox.shrink(),
+                                    hasPromo != false
+                                        ? Stack(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8,
+                                                        vertical: 2),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  border: Border.all(
+                                                      color:
+                                                          Colors.red.shade300,
+                                                      width: 1),
+                                                  borderRadius:
+                                                      BorderRadius.circular(4),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    Icon(
+                                                      LineIcons.alternateTicket,
+                                                      color: Colors.red,
+                                                      size: 35.r,
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                    Text(
+                                                      "Promo",
+                                                      style: TextStyle(
+                                                        fontSize: 25.sp,
+                                                        color:
+                                                            Colors.red.shade400,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 4),
+                                                  ],
+                                                ),
+                                              ),
+                                              Positioned(
+                                                  bottom: -1,
+                                                  right: -1,
+                                                  child: Icon(
+                                                    Icons.check_circle,
+                                                    size: 35.r,
+                                                    color: Colors.red,
+                                                  ))
+                                            ],
+                                          )
+                                        : SizedBox.shrink(),
                                   ],
                                 ),
                                 SizedBox(height: 45.h),
