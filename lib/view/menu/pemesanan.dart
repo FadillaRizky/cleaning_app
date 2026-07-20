@@ -4,12 +4,14 @@ import 'package:cleaning_app/controller/package.dart';
 import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/model/PropertyAddressResponse.dart';
 import 'package:cleaning_app/view/menu/voucher.dart';
+import 'package:cleaning_app/widget/glassmorphic_textfield.dart';
 import 'package:cleaning_app/widget/popup.dart';
 import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:day_night_time_picker/lib/state/time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -30,611 +32,581 @@ class Pemesanan extends GetView<PemesananController> {
       body: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.all(30.r),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    GetBuilder<PemesananController>(builder: (_) {
-                      return FutureBuilder(
-                          future: controller.listAddressFuture,
-                          builder: (context,
-                              AsyncSnapshot<PropertyAddressResponse> snapshot) {
-                            if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Skeletonizer(
-                                  child: Column(
-                                children: [
-                                  SizedBox(
-                                    height: 100,
-                                    width: double.infinity,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(
-                                        20, 20, 20, 0),
+            child: KeyboardActions(
+              config: buildKeyboardActionsConfig(
+          context,
+          fields: [
+            (focusNode: controller.noteFocus,    nextFocusNode: null),
+          ],
+        ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(30.r),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      GetBuilder<PemesananController>(builder: (_) {
+                        return FutureBuilder(
+                            future: controller.listAddressFuture.value,
+                            builder: (context,
+                                AsyncSnapshot<PropertyAddressResponse> snapshot) {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Skeletonizer(
                                     child: Column(
-                                      children: [
-                                        Text("Daily Cleaning"),
-                                        Text(
-                                            "Layanan kebersihan rutin yang dilakukan setiap hari untuk menjaga kebersihan dan kerapian sebuah hunian. Tujuannya adalah untuk mencegah penumpukan kotoran, debu, dan sampah, serta menciptakan lingkungan yang bersih, sehat, dan nyaman."),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ));
-                            } else if (snapshot.hasError) {
-                              return Text('Error: ${snapshot.error}');
-                            } else if (snapshot.hasData &&
-                                snapshot.data!.data!.isNotEmpty) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                final data = snapshot.data!.data!.first;
-                                controller.picName.value = data.picName!;
-                                controller.propertyAddress.value =
-                                    data.propertyAddress!;
-                                controller.propertyId.value =
-                                    data.id.toString();
-                                controller.propertyType.value =
-                                    data.propertyType.toString();
-                                controller.selectedProperty.value =
-                                    data.id!.toInt();
-                              });
-
-                              return Container(
-                                padding: EdgeInsets.all(30.r),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
-                                      "Alamat",
-                                      style: TextStyle(
-                                          fontSize: 40.sp,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    Divider(),
-                                    Obx(() {
-                                      return ListTile(
-                                        contentPadding:
-                                            EdgeInsets.only(left: 15.w),
-                                        leading: Icon(Icons.home),
-                                        title: Text(
-                                          controller.picName.value,
-                                          style: TextStyle(fontSize: 38.sp),
-                                        ),
-                                        subtitle: Text(
-                                          controller.propertyAddress.value,
-                                          style: TextStyle(fontSize: 34.sp),
-                                        ),
-                                        trailing: TextButton(
-                                          style: ButtonStyle(
-                                            overlayColor:
-                                                MaterialStateProperty.all(
-                                                    Colors.transparent),
-                                          ),
-                                          onPressed: () {
-                                            selectAddress(context, snapshot);
-                                          },
-                                          child: Text(
-                                            "Ubah",
-                                            style: TextStyle(
-                                              fontSize: 38.sp,
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                                  ],
-                                ),
-                              );
-                            }
-
-                            return Container(
-                                padding: EdgeInsets.all(30.r),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10)),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      "Alamat",
-                                      style: TextStyle(
-                                          fontSize: 40.sp,
-                                          fontWeight: FontWeight.bold),
-                                    ),
-                                    Divider(),
-                                    ListTile(
-                                        contentPadding: EdgeInsets.only(
-                                          left: 15.w,
-                                        ),
-                                        title: Text(
-                                          "Tambah Alamat ",
-                                          style: TextStyle(fontSize: 38.sp),
-                                        ),
-                                        subtitle: Text(
-                                          "Alamat belum ditambahkan",
-                                          style: TextStyle(fontSize: 36.sp),
-                                        ),
-                                        trailing: ElevatedButton.icon(
-                                          style: ElevatedButton.styleFrom(
-                                              backgroundColor: Colors.blue,
-                                              foregroundColor: Colors.white,
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10))),
-                                          onPressed: () async {
-                                            var result = await Get.toNamed(
-                                                "/tambah-alamat");
-                                            if (result == 'refresh') {
-                                              controller.refreshAddress();
-                                            }
-                                          },
-                                          label: Text("Tambah"),
-                                          icon: Icon(LineIcons.plus),
-                                        ))
-                                  ],
-                                ));
-                          });
-                    }),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Detail Pesanan",
-                              style: TextStyle(
-                                  fontSize: 43.sp,
-                                  fontWeight: FontWeight.w600)),
-                          Divider(),
-                          Text(packController.category.value,
-                              style: TextStyle(
-                                  fontSize: 38.sp,
-                                  fontWeight: FontWeight.bold)),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          packController.category.value != "Daily Cleaning" &&
-                                  packController.category.value != "InCarely"
-                              ? ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount:
-                                      packController.resultDataObject.length,
-                                  itemBuilder: (context, index) {
-                                    return Column(
-                                      children: [
-                                        Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Stack(
-                                              children: [
-                                                ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(8),
-                                                  child: CachedNetworkImage(
-                                                    imageUrl: packController
-                                                            .resultDataObject[
-                                                        index]['pack_img'],
-                                                    fit: BoxFit.cover,
-                                                    height: 190.w,
-                                                    width: 190.w,
-                                                    placeholder: (context,
-                                                            url) =>
-                                                        const CircularProgressIndicator(),
-                                                    errorWidget:
-                                                        (context, url, error) =>
-                                                            Icon(
-                                                      Icons.person,
-                                                      size: 130.r,
-                                                      color: Colors.grey,
-                                                    ),
-                                                  ),
-                                                ),
-                                                if (packController
-                                                            .resultDataObject[
-                                                        index]['pack_disc'] !=
-                                                    0)
-                                                  Positioned(
-                                                    top: 12.r,
-                                                    left: 12.r,
-                                                    child: Container(
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                        horizontal: 6,
-                                                        vertical: 2,
-                                                      ),
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.redAccent,
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(6),
-                                                      ),
-                                                      child: Text(
-                                                        "- ${packController.resultDataObject[index]['pack_disc']} %",
-                                                        style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 25.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                              ],
-                                            ),
-                                            SizedBox(width: 45.w),
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Row(
-                                                    children: [
-                                                      Flexible(
-                                                        child: Text(
-                                                          packController
-                                                                  .resultDataObject[
-                                                              index]['pack_name'],
-                                                          style: TextStyle(
-                                                            fontSize: 38.sp,
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                          ),
-                                                          softWrap: true,
-                                                          overflow: TextOverflow
-                                                              .visible,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(width: 8),
-                                                      if (packController
-                                                                  .resultDataObject[
-                                                              index]['pack_disc'] !=
-                                                          0)
-                                                        Row(
-                                                          children: [
-                                                            Icon(
-                                                              LineIcons
-                                                                  .alternateTicket,
-                                                              color: Colors.red,
-                                                              size: 30.r,
-                                                            ),
-                                                            SizedBox(width: 3),
-                                                            Text(
-                                                              "Dengan Promo",
-                                                              style: TextStyle(
-                                                                fontSize: 25.sp,
-                                                                color:
-                                                                    Colors.red,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                    ],
-                                                  ),
-                                                  Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: packController
-                                                        .resultDataObject[index]
-                                                            ["data_object"]
-                                                        .map<Widget>((item) {
-                                                      return Text(
-                                                        "\u2022 ${item['object_name']}    x ${item['object_amount']}",
-                                                        style: TextStyle(
-                                                            fontSize: 35.sp),
-                                                        softWrap: true,
-                                                        overflow: TextOverflow
-                                                            .visible,
-                                                      );
-                                                    }).toList(),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        SizedBox(height: 30.h),
-                                      ],
-                                    );
-                                  },
-                                )
-                              : Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: CachedNetworkImage(
-                                        imageUrl: packController
-                                            .selectedPackageImg.value,
-                                        fit: BoxFit.cover,
-                                        height: 190.w,
-                                        width: 190.w,
-                                        placeholder: (context, url) =>
-                                            const CircularProgressIndicator(),
-                                        errorWidget: (context, url, error) =>
-                                            Icon(
-                                          Icons.person,
-                                          size: 130.r,
-                                          color: Colors.grey,
-                                        ),
-                                      ),
-                                    ),
                                     SizedBox(
-                                      width: 45.w,
+                                      height: 100,
+                                      width: double.infinity,
                                     ),
-                                    Expanded(
+                                    Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          20, 20, 20, 0),
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
                                         children: [
+                                          Text("Daily Cleaning"),
                                           Text(
-                                            packController
-                                                .selectedPackageName.value,
-                                            style: TextStyle(
-                                                fontSize: 40.sp,
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          Text(
-                                            "${packController.selectedDuration.value} ${packController.category.value != "Daily Cleaning" ? "Hari" : "Jam"}",
-                                            style: TextStyle(fontSize: 38.sp),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              packController.selectedRealPrice
-                                                          .value !=
-                                                      packController
-                                                          .selectedDiscountPrice
-                                                          .value
-                                                  ? Text(
-                                                      Utils.formatCurrency(int
-                                                          .parse(packController
-                                                              .selectedRealPrice
-                                                              .value)),
-                                                      style: TextStyle(
-                                                        fontSize: 33.sp,
-                                                        color: Colors.grey,
-                                                        decoration:
-                                                            TextDecoration
-                                                                .lineThrough,
-                                                      ),
-                                                    )
-                                                  : SizedBox.shrink(),
-                                              SizedBox(
-                                                width: 15.w,
-                                              ),
-                                              Text(
-                                                Utils.formatCurrency(int.parse(
-                                                    packController
-                                                        .selectedDiscountPrice
-                                                        .value)),
-                                                style:
-                                                    TextStyle(fontSize: 38.sp),
-                                              ),
-                                            ],
-                                          )
+                                              "Layanan kebersihan rutin yang dilakukan setiap hari untuk menjaga kebersihan dan kerapian sebuah hunian. Tujuannya adalah untuk mencegah penumpukan kotoran, debu, dan sampah, serta menciptakan lingkungan yang bersih, sehat, dan nyaman."),
                                         ],
                                       ),
                                     ),
                                   ],
-                                ),
-                        ],
+                                ));
+                              } else if (snapshot.hasError) {
+                                return Text('Error: ${snapshot.error}');
+                              } else if (snapshot.hasData &&
+                                  snapshot.data!.data!.isNotEmpty) {
+                                WidgetsBinding.instance.addPostFrameCallback((_) {
+                                  final data = snapshot.data!.data!.first;
+                                  controller.picName.value = data.picName!;
+                                  controller.propertyAddress.value =
+                                      data.propertyAddress!;
+                                  controller.propertyId.value =
+                                      data.id.toString();
+                                  controller.propertyType.value =
+                                      data.propertyType.toString();
+                                  controller.selectedProperty.value =
+                                      data.id!.toInt();
+                                });
+              
+                                return Container(
+                                  padding: EdgeInsets.all(30.r),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Alamat",
+                                        style: TextStyle(
+                                            fontSize: 40.sp,
+                                            fontWeight: FontWeight.w600),
+                                      ),
+                                      Divider(),
+                                      Obx(() {
+                                        return ListTile(
+                                          contentPadding:
+                                              EdgeInsets.only(left: 15.w),
+                                          leading: Icon(Icons.home),
+                                          title: Text(
+                                            controller.picName.value,
+                                            style: TextStyle(fontSize: 38.sp),
+                                          ),
+                                          subtitle: Text(
+                                            controller.propertyAddress.value,
+                                            style: TextStyle(fontSize: 34.sp),
+                                          ),
+                                          trailing: TextButton(
+                                            style: ButtonStyle(
+                                              overlayColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.transparent),
+                                            ),
+                                            onPressed: () {
+                                              selectAddress(context, snapshot);
+                                            },
+                                            child: Text(
+                                              "Ubah",
+                                              style: TextStyle(
+                                                fontSize: 38.sp,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      }),
+                                    ],
+                                  ),
+                                );
+                              }
+              
+                              return Container(
+                                  padding: EdgeInsets.all(30.r),
+                                  decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Alamat",
+                                        style: TextStyle(
+                                            fontSize: 40.sp,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      Divider(),
+                                      ListTile(
+                                          contentPadding: EdgeInsets.only(
+                                            left: 15.w,
+                                          ),
+                                          title: Text(
+                                            "Tambah Alamat ",
+                                            style: TextStyle(fontSize: 38.sp),
+                                          ),
+                                          subtitle: Text(
+                                            "Alamat belum ditambahkan",
+                                            style: TextStyle(fontSize: 36.sp),
+                                          ),
+                                          trailing: ElevatedButton.icon(
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor: Colors.blue,
+                                                foregroundColor: Colors.white,
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10))),
+                                            onPressed: () async {
+                                              var result = await Get.toNamed(
+                                                  "/tambah-alamat");
+                                              if (result == 'refresh') {
+                                                controller.refreshAddress();
+                                              }
+                                            },
+                                            label: Text("Tambah"),
+                                            icon: Icon(LineIcons.plus),
+                                          ))
+                                    ],
+                                  ));
+                            });
+                      }),
+                      SizedBox(
+                        height: 10,
                       ),
-                    ),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        voucherModal(context);
-                      },
-                      child: Container(
+                      Container(
                         padding: EdgeInsets.all(10),
                         decoration: BoxDecoration(
                             color: Colors.white,
                             borderRadius: BorderRadius.circular(10)),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              children: [
-                                Icon(
-                                  LineIcons.alternateTicket,
-                                  color: Colors.red,
-                                  size: 50.r,
-                                ),
-                                SizedBox(
-                                  width: 25.w,
-                                ),
-                                Text(
-                                  "Voucher Anda",
-                                  style: TextStyle(
-                                      fontSize: 38.sp,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                              ],
+                            Text("Detail Pesanan",
+                                style: TextStyle(
+                                    fontSize: 43.sp,
+                                    fontWeight: FontWeight.w600)),
+                            Divider(),
+                            Text(packController.category.value,
+                                style: TextStyle(
+                                    fontSize: 38.sp,
+                                    fontWeight: FontWeight.bold)),
+                            SizedBox(
+                              height: 10,
                             ),
-                            Row(
-                              children: [
-                                (profileController.hasVoucher.value)
-                                    ? Container(
-                                        padding: const EdgeInsets.symmetric(
-                                            horizontal: 7, vertical: 0),
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.red.shade300,
-                                              width: 1),
-                                          // borderRadius: BorderRadius.circular(4),
+                            packController.category.value != "Daily Cleaning" &&
+                                    packController.category.value != "InCarely"
+                                ? ListView.builder(
+                                    shrinkWrap: true,
+                                    physics: const NeverScrollableScrollPhysics(),
+                                    itemCount:
+                                        packController.resultDataObject.length,
+                                    itemBuilder: (context, index) {
+                                      return Column(
+                                        children: [
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Stack(
+                                                children: [
+                                                  ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(8),
+                                                    child: CachedNetworkImage(
+                                                      imageUrl: packController
+                                                              .resultDataObject[
+                                                          index]['pack_img'],
+                                                      fit: BoxFit.cover,
+                                                      height: 190.w,
+                                                      width: 190.w,
+                                                      placeholder: (context,
+                                                              url) =>
+                                                          const CircularProgressIndicator(),
+                                                      errorWidget:
+                                                          (context, url, error) =>
+                                                              Icon(
+                                                        Icons.person,
+                                                        size: 130.r,
+                                                        color: Colors.grey,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  if (packController
+                                                              .resultDataObject[
+                                                          index]['pack_disc'] !=
+                                                      0)
+                                                    Positioned(
+                                                      top: 12.r,
+                                                      left: 12.r,
+                                                      child: Container(
+                                                        padding: const EdgeInsets
+                                                            .symmetric(
+                                                          horizontal: 6,
+                                                          vertical: 2,
+                                                        ),
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.redAccent,
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(6),
+                                                        ),
+                                                        child: Text(
+                                                          "- ${packController.resultDataObject[index]['pack_disc']} %",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 25.sp,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                ],
+                                              ),
+                                              SizedBox(width: 45.w),
+                                              Expanded(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        Flexible(
+                                                          child: Text(
+                                                            packController
+                                                                    .resultDataObject[
+                                                                index]['pack_name'],
+                                                            style: TextStyle(
+                                                              fontSize: 38.sp,
+                                                              fontWeight:
+                                                                  FontWeight.bold,
+                                                            ),
+                                                            softWrap: true,
+                                                            overflow: TextOverflow
+                                                                .visible,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(width: 8),
+                                                        if (packController
+                                                                    .resultDataObject[
+                                                                index]['pack_disc'] !=
+                                                            0)
+                                                          Row(
+                                                            children: [
+                                                              Icon(
+                                                                LineIcons
+                                                                    .alternateTicket,
+                                                                color: Colors.red,
+                                                                size: 30.r,
+                                                              ),
+                                                              SizedBox(width: 3),
+                                                              Text(
+                                                                "Dengan Promo",
+                                                                style: TextStyle(
+                                                                  fontSize: 25.sp,
+                                                                  color:
+                                                                      Colors.red,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                      ],
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: packController
+                                                          .resultDataObject[index]
+                                                              ["data_object"]
+                                                          .map<Widget>((item) {
+                                                        return Text(
+                                                          "\u2022 ${item['object_name']}    x ${item['object_amount']}",
+                                                          style: TextStyle(
+                                                              fontSize: 35.sp),
+                                                          softWrap: true,
+                                                          overflow: TextOverflow
+                                                              .visible,
+                                                        );
+                                                      }).toList(),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          SizedBox(height: 30.h),
+                                        ],
+                                      );
+                                    },
+                                  )
+                                : Row(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: CachedNetworkImage(
+                                          imageUrl: packController
+                                              .selectedPackageImg.value,
+                                          fit: BoxFit.cover,
+                                          height: 190.w,
+                                          width: 190.w,
+                                          placeholder: (context, url) =>
+                                              const CircularProgressIndicator(),
+                                          errorWidget: (context, url, error) =>
+                                              Icon(
+                                            Icons.person,
+                                            size: 130.r,
+                                            color: Colors.grey,
+                                          ),
                                         ),
-                                        child: Text(
-                                          "- ${profileController.valueVoucher.value} %",
-                                          style: TextStyle(
-                                              fontSize: 30.sp,
-                                              color: Colors.red),
-                                        ))
-                                    : SizedBox.shrink(),
-                                Icon(
-                                  Icons.arrow_right,
-                                  color: Colors.grey,
-                                ),
-                              ],
+                                      ),
+                                      SizedBox(
+                                        width: 45.w,
+                                      ),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              packController
+                                                  .selectedPackageName.value,
+                                              style: TextStyle(
+                                                  fontSize: 40.sp,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                            Text(
+                                              "${packController.selectedDuration.value} ${packController.category.value != "Daily Cleaning" ? "Hari" : "Jam"}",
+                                              style: TextStyle(fontSize: 38.sp),
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                packController.selectedRealPrice
+                                                            .value !=
+                                                        packController
+                                                            .selectedDiscountPrice
+                                                            .value
+                                                    ? Text(
+                                                        Utils.formatCurrency(int
+                                                            .parse(packController
+                                                                .selectedRealPrice
+                                                                .value)),
+                                                        style: TextStyle(
+                                                          fontSize: 33.sp,
+                                                          color: Colors.grey,
+                                                          decoration:
+                                                              TextDecoration
+                                                                  .lineThrough,
+                                                        ),
+                                                      )
+                                                    : SizedBox.shrink(),
+                                                SizedBox(
+                                                  width: 15.w,
+                                                ),
+                                                Text(
+                                                  Utils.formatCurrency(int.parse(
+                                                      packController
+                                                          .selectedDiscountPrice
+                                                          .value)),
+                                                  style:
+                                                      TextStyle(fontSize: 38.sp),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          voucherModal(context);
+                        },
+                        child: Container(
+                          padding: EdgeInsets.all(10),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Icon(
+                                    LineIcons.alternateTicket,
+                                    color: Colors.red,
+                                    size: 50.r,
+                                  ),
+                                  SizedBox(
+                                    width: 25.w,
+                                  ),
+                                  Text(
+                                    "Voucher Anda",
+                                    style: TextStyle(
+                                        fontSize: 38.sp,
+                                        fontWeight: FontWeight.w400),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  (profileController.hasVoucher.value)
+                                      ? Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 7, vertical: 0),
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.red.shade300,
+                                                width: 1),
+                                            // borderRadius: BorderRadius.circular(4),
+                                          ),
+                                          child: Text(
+                                            "- ${profileController.valueVoucher.value} %",
+                                            style: TextStyle(
+                                                fontSize: 30.sp,
+                                                color: Colors.red),
+                                          ))
+                                      : SizedBox.shrink(),
+                                  Icon(
+                                    Icons.arrow_right,
+                                    color: Colors.grey,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(30.r),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(30.r)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Metode Pembayaran",
+                              style: TextStyle(
+                                  fontSize: 40.sp, fontWeight: FontWeight.w600),
+                            ),
+                            Divider(),
+                            RadioPayment(
+                              controller: controller,
+                              value: 'Saldo',
+                              title: "Saldo",
+                              icon: Icons.account_balance_wallet,
+                            ),
+                            RadioPayment(
+                              controller: controller,
+                              value: 'QRIS',
+                              title: "QRIS",
+                              icon: Icons.qr_code,
+                            ),
+                            RadioPayment(
+                              controller: controller,
+                              value: 'Bank Transfer',
+                              title: "Bank Transfer",
+                              icon: Icons.account_balance,
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(30.r),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30.r)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Metode Pembayaran",
-                            style: TextStyle(
-                                fontSize: 40.sp, fontWeight: FontWeight.w600),
-                          ),
-                          Divider(),
-                          RadioPayment(
-                            controller: controller,
-                            value: 'Saldo',
-                            title: "Saldo",
-                            icon: Icons.account_balance_wallet,
-                          ),
-                          RadioPayment(
-                            controller: controller,
-                            value: 'QRIS',
-                            title: "QRIS",
-                            icon: Icons.qr_code,
-                          ),
-                          RadioPayment(
-                            controller: controller,
-                            value: 'Bank Transfer',
-                            title: "Bank Transfer",
-                            icon: Icons.account_balance,
-                          ),
-                        ],
+                      SizedBox(
+                        height: 30.h,
                       ),
-                    ),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(30.r),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30.r)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Waktu Layanan",
-                            style: TextStyle(
-                                fontSize: 40.sp, fontWeight: FontWeight.w600),
-                          ),
-                          Divider(),
-                          PickDateTime(
-                            controller: controller.dateController,
-                            ontap: () {
-                              controller.selectDate(context);
-                            },
-                            hint: "Pilih Tanggal",
-                            icon: Icons.calendar_month_rounded,
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          PickDateTime(
-                            controller: controller.timeController,
-                            ontap: () {
-                              controller.selectTime(context);
-                            },
-                            hint: "Pilih Waktu",
-                            icon: Icons.access_time_outlined,
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                      height: 30.h,
-                    ),
-                    Container(
-                      padding: EdgeInsets.all(30.r),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30.r)),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Tambahan",
-                            style: TextStyle(
-                                fontSize: 40.sp, fontWeight: FontWeight.bold),
-                          ),
-                          Divider(),
-                          TextField(
-                            maxLines: 3,
-                            controller: controller.noteController,
-                            style: TextStyle(fontSize: 38.sp),
-                            decoration: InputDecoration(
-                              hintText: "Catatan (Opsional)",
-                              hintStyle: TextStyle(color: Colors.grey),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey, width: 1),
-                                borderRadius: BorderRadius.circular(30.r),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(30.r),
-                              ),
-                              disabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    BorderSide(color: Colors.grey.shade300),
-                                borderRadius: BorderRadius.circular(30.r),
-                              ),
-                              filled: true,
-                              fillColor: Color(0xfff7f9fc),
+                      Container(
+                        padding: EdgeInsets.all(30.r),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(30.r)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Waktu Layanan",
+                              style: TextStyle(
+                                  fontSize: 40.sp, fontWeight: FontWeight.w600),
                             ),
-                          ),
-                          SizedBox(
-                            height: 30.h,
-                          ),
-                          Text(
-                            "Gender Mitra",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 40.sp),
-                          ),
-                          SizedBox(
-                            height: 15.h,
-                          ),
-                          Obx(() {
-                            return DropdownButtonFormField<String>(
+                            Divider(),
+                            PickDateTime(
+                              controller: controller.dateController,
+                              ontap: () {
+                                controller.selectDate(context);
+                              },
+                              hint: "Pilih Tanggal",
+                              icon: Icons.calendar_month_rounded,
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            PickDateTime(
+                              controller: controller.timeController,
+                              ontap: () {
+                                controller.selectTime(context);
+                              },
+                              hint: "Pilih Waktu",
+                              icon: Icons.access_time_outlined,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30.h,
+                      ),
+                      Container(
+                        padding: EdgeInsets.all(30.r),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(30.r)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Tambahan",
+                              style: TextStyle(
+                                  fontSize: 40.sp, fontWeight: FontWeight.bold),
+                            ),
+                            Divider(),
+                            TextField(
+                              maxLines: 3,
+                              focusNode: controller.noteFocus,
+                              controller: controller.noteController,
+                              style: TextStyle(fontSize: 38.sp),
                               decoration: InputDecoration(
-                                hintText: 'Pilih',
-                                hintStyle:
-                                    TextStyle(color: Colors.red, fontSize: 15),
-                                contentPadding: EdgeInsets.symmetric(
-                                    vertical: 2, horizontal: 10),
+                                hintText: "Catatan (Opsional)",
+                                hintStyle: TextStyle(color: Colors.grey),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: Colors.grey, width: 1),
@@ -652,37 +624,76 @@ class Pemesanan extends GetView<PemesananController> {
                                 ),
                                 filled: true,
                                 fillColor: Color(0xfff7f9fc),
-                                // contentPadding: EdgeInsets.symmetric(vertical: 10)
                               ),
-                              value: controller.selectedGender.value == ''
-                                  ? null
-                                  : controller.selectedGender.value,
+                            ),
+                            SizedBox(
+                              height: 30.h,
+                            ),
+                            Text(
+                              "Gender Mitra",
                               style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 38.sp,
-                              ),
-                              items: controller.genderMitra.map((gender) {
-                                return DropdownMenuItem<String>(
-                                  value: gender,
-                                  child: Text(gender),
-                                );
-                              }).toList(),
-                              onChanged: (val) =>
-                                  controller.selectedGender.value = val!,
-                            );
-                          }),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "* Opsi ini dapat Anda sesuaikan apabila menginginkan mitra dengan gender tertentu untuk kenyamanan Anda selama layanan berlangsung.",
-                            style:
-                                TextStyle(fontSize: 25.sp, color: Colors.grey),
-                          )
-                        ],
-                      ),
-                    )
-                  ],
+                                  fontWeight: FontWeight.bold, fontSize: 40.sp),
+                            ),
+                            SizedBox(
+                              height: 15.h,
+                            ),
+                            Obx(() {
+                              return DropdownButtonFormField<String>(
+                                decoration: InputDecoration(
+                                  hintText: 'Pilih',
+                                  hintStyle:
+                                      TextStyle(color: Colors.red, fontSize: 15),
+                                  contentPadding: EdgeInsets.symmetric(
+                                      vertical: 2, horizontal: 10),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey, width: 1),
+                                    borderRadius: BorderRadius.circular(30.r),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey.shade300),
+                                    borderRadius: BorderRadius.circular(30.r),
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: Colors.grey.shade300),
+                                    borderRadius: BorderRadius.circular(30.r),
+                                  ),
+                                  filled: true,
+                                  fillColor: Color(0xfff7f9fc),
+                                  // contentPadding: EdgeInsets.symmetric(vertical: 10)
+                                ),
+                                value: controller.selectedGender.value == ''
+                                    ? null
+                                    : controller.selectedGender.value,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 38.sp,
+                                ),
+                                items: controller.genderMitra.map((gender) {
+                                  return DropdownMenuItem<String>(
+                                    value: gender,
+                                    child: Text(gender),
+                                  );
+                                }).toList(),
+                                onChanged: (val) =>
+                                    controller.selectedGender.value = val!,
+                              );
+                            }),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "* Opsi ini dapat Anda sesuaikan apabila menginginkan mitra dengan gender tertentu untuk kenyamanan Anda selama layanan berlangsung.",
+                              style:
+                                  TextStyle(fontSize: 25.sp, color: Colors.grey),
+                            )
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -959,149 +970,156 @@ class Pemesanan extends GetView<PemesananController> {
                                 side: BorderSide.none,
                               ),
                             ),
-                            onPressed: () {
-                              if (controller.propertyId.value.isEmpty) {
-                                SnackbarUtil.show("Alamat Kosong",
-                                    "Silakan tambahkan alamat terlebih dahulu");
-                                return;
-                              }
-                              if (controller.dateText.value.isEmpty) {
-                                SnackbarUtil.show("Tanggal Layanan Kosong",
-                                    "Silakan pilih tanggal layanan terlebih dahulu");
-                                return;
-                              }
-                              if (controller.timeText.value.isEmpty) {
-                                SnackbarUtil.show("Waktu Layanan Kosong",
-                                    "Silakan pilih waktu layanan terlebih dahulu");
-                                return;
-                              }
-                              try {
-                                final selectedDate =
-                                    DateTime.parse(controller.dateText.value);
-                                final selectedTimeParts =
-                                    controller.timeText.value.split(':');
-                                final selectedDateTime = DateTime(
-                                  selectedDate.year,
-                                  selectedDate.month,
-                                  selectedDate.day,
-                                  int.parse(selectedTimeParts[0]),
-                                  int.parse(selectedTimeParts[1]),
-                                );
+                            onPressed:controller.isProcessing.value
+      ? null
+      : () {
+        controller.handlePayment(
+            total: total,
+            saldo: saldoInt,
+          );
 
-                                final now = DateTime.now();
+                              // if (controller.propertyId.value.isEmpty) {
+                              //   SnackbarUtil.show("Alamat Kosong",
+                              //       "Silakan tambahkan alamat terlebih dahulu");
+                              //   return;
+                              // }
+                              // if (controller.dateText.value.isEmpty) {
+                              //   SnackbarUtil.show("Tanggal Layanan Kosong",
+                              //       "Silakan pilih tanggal layanan terlebih dahulu");
+                              //   return;
+                              // }
+                              // if (controller.timeText.value.isEmpty) {
+                              //   SnackbarUtil.show("Waktu Layanan Kosong",
+                              //       "Silakan pilih waktu layanan terlebih dahulu");
+                              //   return;
+                              // }
+                              // try {
+                              //   final selectedDate =
+                              //       DateTime.parse(controller.dateText.value);
+                              //   final selectedTimeParts =
+                              //       controller.timeText.value.split(':');
+                              //   final selectedDateTime = DateTime(
+                              //     selectedDate.year,
+                              //     selectedDate.month,
+                              //     selectedDate.day,
+                              //     int.parse(selectedTimeParts[0]),
+                              //     int.parse(selectedTimeParts[1]),
+                              //   );
 
-                                if (selectedDateTime.isBefore(now)) {
-                                  SnackbarUtil.show(
-                                    "Waktu Tidak Valid",
-                                    "Waktu layanan yang dipilih sudah lewat. Silakan pilih waktu yang sesuai.",
-                                  );
-                                  return;
-                                }
-                              } catch (e) {
-                                SnackbarUtil.show(
-                                  "Data Tidak Valid",
-                                  e.toString(),
-                                );
-                                return;
-                              }
-                              if (controller.selectedGender.value == "") {
-                                SnackbarUtil.show("Gender Mitra Kosong",
-                                    "Silakan pilih preferensi gender mitra yang diinginkan");
-                                return;
-                              }
-                              if (controller.selectedPayment.value == "") {
-                                SnackbarUtil.show("Pilih metode pembayaran",
-                                    "Silakan pilih metode pembayaran yang diinginkan");
-                                return;
-                              }
+                              //   final now = DateTime.now();
 
-                              final isDaily = packController.category.value ==
-                                      "Daily Cleaning" ||
-                                  packController.category.value == "InCarely";
-                              final bool isApartment =
-                                  controller.propertyType.value == "Apartement";
+                              //   if (selectedDateTime.isBefore(now)) {
+                              //     SnackbarUtil.show(
+                              //       "Waktu Tidak Valid",
+                              //       "Waktu layanan yang dipilih sudah lewat. Silakan pilih waktu yang sesuai.",
+                              //     );
+                              //     return;
+                              //   }
+                              // } catch (e) {
+                              //   SnackbarUtil.show(
+                              //     "Data Tidak Valid",
+                              //     e.toString(),
+                              //   );
+                              //   return;
+                              // }
+                              // if (controller.selectedGender.value == "") {
+                              //   SnackbarUtil.show("Gender Mitra Kosong",
+                              //       "Silakan pilih preferensi gender mitra yang diinginkan");
+                              //   return;
+                              // }
+                              // if (controller.selectedPayment.value == "") {
+                              //   SnackbarUtil.show("Pilih metode pembayaran",
+                              //       "Silakan pilih metode pembayaran yang diinginkan");
+                              //   return;
+                              // }
 
-                              final int baseFee = 2000;
-                              final int apartmentFee = isApartment ? 20000 : 0;
-                              final int hargaPaket = isDaily
-                                  ? int.parse(
-                                      packController.selectedDiscountPrice.value)
-                                  : total;
+                              // final isDaily = packController.category.value ==
+                              //         "Daily Cleaning" ||
+                              //     packController.category.value == "InCarely";
+                              // final bool isApartment =
+                              //     controller.propertyType.value == "Apartement";
 
-                              final int totalHarga =
-                                  hargaPaket + baseFee + apartmentFee;
+                              // final int baseFee = 2000;
+                              // final int apartmentFee = isApartment ? 20000 : 0;
+                              // final int hargaPaket = isDaily
+                              //     ? int.parse(
+                              //         packController.selectedDiscountPrice.value)
+                              //     : total;
 
-                              if (controller.selectedPayment.value == "Saldo") {
-                                if (saldoInt < totalHarga) {
-                                  SnackbarUtil.show(
-                                    "Saldo Tidak Mencukupi",
-                                    "Silakan top up saldo terlebih dahulu",
-                                  );
-                                  return;
-                                }
+                              // final int totalHarga =
+                              //     hargaPaket + baseFee + apartmentFee;
 
-                                if (packController.category.value !=
-                                        "Daily Cleaning" &&
-                                    packController.category.value != "InCarely") {
-                                  Map<String, dynamic> dataPackMap =
-                                      controller.getListDataPack();
+                              // if (controller.selectedPayment.value == "Saldo") {
+                              //   if (saldoInt < totalHarga) {
+                              //     SnackbarUtil.show(
+                              //       "Saldo Tidak Mencukupi",
+                              //       "Silakan top up saldo terlebih dahulu",
+                              //     );
+                              //     return;
+                              //   }
 
-                                  var dataDeep = {
-                                    // "data_pack": controller.getListDataPack(),
-                                    ...dataPackMap,
-                                    "category": packController.category.value,
-                                    "due_date": controller.dateText.value,
-                                    "due_time": controller.timeText.value,
-                                    // "discount": "2",
-                                    "order_notes":
-                                        controller.noteController.text,
-                                    "property_id": controller.propertyId.value,
-                                    "property_city":
-                                        Utils.extractSecondSentence(
-                                            controller.propertyAddress.value),
-                                    "mitra_gender":
-                                        controller.selectedGender.value,
-                                    "payment_type": "balance"
-                                  };
-                                  print(dataDeep);
-                                  controller.confirmPayment(dataDeep);
-                                } else {
-                                  var dataDaily = {
-                                    "data_pack[0][pack_id]":
-                                        packController.selectedPackageId.value,
-                                    "data_pack[0][pack_category]":
-                                        packController.category.value,
-                                    "data_pack[0][ph_id]":
-                                        packController.selectedPhId.value,
-                                    "data_pack[0][object_id]": "",
-                                    "data_pack[0][object_price]": "",
-                                    "category": packController.category.value,
-                                    "due_date": controller.dateText.value,
-                                    "due_time": controller.timeText.value,
-                                    // "discount": "2",
-                                    "order_notes":
-                                        controller.noteController.text,
-                                    "property_id": controller.propertyId.value,
-                                    "property_city":
-                                        Utils.extractSecondSentence(
-                                            controller.propertyAddress.value),
-                                    "mitra_gender":
-                                        controller.selectedGender.value,
-                                    "payment_type": "balance"
-                                  };
-                                  print(dataDaily);
-                                  controller.confirmPayment(dataDaily);
-                                }
-                              } else if (controller.selectedPayment.value ==
-                                      "QRIS" ||
-                                  controller.selectedPayment.value ==
-                                      "Bank Transfer") {
-                                Get.toNamed("/tagihan", arguments: {
-                                  'metode_pembayaran':
-                                      controller.selectedPayment.value,
-                                  'total_harga': totalHarga
-                                });
-                              }
+                              //   if (packController.category.value !=
+                              //           "Daily Cleaning" &&
+                              //       packController.category.value != "InCarely") {
+                              //     Map<String, dynamic> dataPackMap =
+                              //         controller.getListDataPack();
+
+                              //     var dataDeep = {
+                              //       // "data_pack": controller.getListDataPack(),
+                              //       ...dataPackMap,
+                              //       "category": packController.category.value,
+                              //       "due_date": controller.dateText.value,
+                              //       "due_time": controller.timeText.value,
+                              //       // "discount": "2",
+                              //       "order_notes":
+                              //           controller.noteController.text,
+                              //       "property_id": controller.propertyId.value,
+                              //       "property_city":
+                              //           Utils.extractSecondSentence(
+                              //               controller.propertyAddress.value),
+                              //       "mitra_gender":
+                              //           controller.selectedGender.value,
+                              //       "payment_type": "balance"
+                              //     };
+                              //     print(dataDeep);
+                              //     controller.confirmPayment(dataDeep);
+                              //   } else {
+                              //     var dataDaily = {
+                              //       "data_pack[0][pack_id]":
+                              //           packController.selectedPackageId.value,
+                              //       "data_pack[0][pack_category]":
+                              //           packController.category.value,
+                              //       "data_pack[0][ph_id]":
+                              //           packController.selectedPhId.value,
+                              //       "data_pack[0][object_id]": "",
+                              //       "data_pack[0][object_price]": "",
+                              //       "category": packController.category.value,
+                              //       "due_date": controller.dateText.value,
+                              //       "due_time": controller.timeText.value,
+                              //       // "discount": "2",
+                              //       "order_notes":
+                              //           controller.noteController.text,
+                              //       "property_id": controller.propertyId.value,
+                              //       "property_city":
+                              //           Utils.extractSecondSentence(
+                              //               controller.propertyAddress.value),
+                              //       "mitra_gender":
+                              //           controller.selectedGender.value,
+                              //       "payment_type": "balance"
+                              //     };
+                              //     print(dataDaily);
+                              //     controller.confirmPayment(dataDaily);
+                              //   }
+                              // } else if (controller.selectedPayment.value ==
+                              //         "QRIS" ||
+                              //     controller.selectedPayment.value ==
+                              //         "Bank Transfer") {
+                              //   Get.toNamed("/tagihan", arguments: {
+                              //     'metode_pembayaran':
+                              //         controller.selectedPayment.value,
+                              //     'total_harga': totalHarga
+                              //   });
+                              // }
                             },
                             child: Text(
                               "Bayar Sekarang",
@@ -1148,60 +1166,72 @@ class Pemesanan extends GetView<PemesananController> {
 
                 // ListView.builder for displaying the addresses
                 SizedBox(
-                  height: 200,
-                  // Set the height of the list view
-                  child: ListView.builder(
-                    itemCount: snapshot.data!.data!.length,
-                    itemBuilder: (context, index) {
-                      return Obx(() {
-                        return GestureDetector(
-                          onTap: () {
-                            controller.selectedProperty.value =
-                                snapshot.data!.data![index].id!.toInt();
-                            controller.picName.value =
-                                snapshot.data!.data![index].picName!;
-                            controller.propertyAddress.value =
-                                snapshot.data!.data![index].propertyAddress!;
-                            controller.propertyId.value =
-                                snapshot.data!.data![index].id.toString();
-                            controller.propertyType.value = snapshot
-                                .data!.data![index].propertyType
-                                .toString();
-                          },
-                          child: ListTile(
-                            contentPadding: EdgeInsets.only(left: 5, right: 0),
-                            leading: Icon(Icons.home),
-                            title: Text(
-                              snapshot.data!.data![index].picName!,
-                              style: TextStyle(fontSize: 13),
-                            ),
-                            subtitle: Text(
-                              snapshot.data!.data![index].propertyAddress!,
-                              style: TextStyle(fontSize: 12),
-                            ),
-                            trailing: Radio(
-                                value: snapshot.data!.data![index].id,
-                                groupValue: controller.selectedProperty.value,
-                                onChanged: (value) {
-                                  controller.selectedProperty.value =
-                                      value!.toInt();
-                                  controller.picName.value =
-                                      snapshot.data!.data![index].picName!;
-                                  controller.propertyAddress.value = snapshot
-                                      .data!.data![index].propertyAddress!;
-                                  controller.propertyId.value =
-                                      snapshot.data!.data![index].id.toString();
-                                  controller.propertyType.value = snapshot
-                                      .data!.data![index].propertyType
-                                      .toString();
-                                  print(controller.propertyType.value);
-                                }),
-                          ),
-                        );
-                      });
+                height: 200,
+                child: Obx(() {
+                  return FutureBuilder<PropertyAddressResponse>(
+                    future: controller.listAddressFuture.value,
+                    builder: (context, freshSnapshot) {
+                      if (freshSnapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (freshSnapshot.hasError) {
+                        return Text('Error: ${freshSnapshot.error}');
+                      } else if (!freshSnapshot.hasData || 
+                                  freshSnapshot.data!.data!.isEmpty) {
+                        return Text('Tidak ada alamat');
+                      }
+
+                      return ListView.builder(
+                        itemCount: freshSnapshot.data!.data!.length,
+                        itemBuilder: (context, index) {
+                          return Obx(() {
+                            return GestureDetector(
+                              onTap: () {
+                                controller.selectedProperty.value =
+                                    freshSnapshot.data!.data![index].id!.toInt();
+                                controller.picName.value =
+                                    freshSnapshot.data!.data![index].picName!;
+                                controller.propertyAddress.value =
+                                    freshSnapshot.data!.data![index].propertyAddress!;
+                                controller.propertyId.value =
+                                    freshSnapshot.data!.data![index].id.toString();
+                                controller.propertyType.value =
+                                    freshSnapshot.data!.data![index].propertyType.toString();
+                              },
+                              child: ListTile(
+                                contentPadding: EdgeInsets.only(left: 5, right: 0),
+                                leading: Icon(Icons.home),
+                                title: Text(
+                                  freshSnapshot.data!.data![index].picName!,
+                                  style: TextStyle(fontSize: 13),
+                                ),
+                                subtitle: Text(
+                                  freshSnapshot.data!.data![index].propertyAddress!,
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                                trailing: Radio(
+                                  value: freshSnapshot.data!.data![index].id,
+                                  groupValue: controller.selectedProperty.value,
+                                  onChanged: (value) {
+                                    controller.selectedProperty.value = value!.toInt();
+                                    controller.picName.value =
+                                        freshSnapshot.data!.data![index].picName!;
+                                    controller.propertyAddress.value =
+                                        freshSnapshot.data!.data![index].propertyAddress!;
+                                    controller.propertyId.value =
+                                        freshSnapshot.data!.data![index].id.toString();
+                                    controller.propertyType.value =
+                                        freshSnapshot.data!.data![index].propertyType.toString();
+                                  },
+                                ),
+                              ),
+                            );
+                          });
+                        },
+                      );
                     },
-                  ),
-                ),
+                  );
+                }),
+              ),
 
                 // Button to close the dialog
                 SizedBox(height: 20),
@@ -1210,6 +1240,21 @@ class Pemesanan extends GetView<PemesananController> {
                     child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10))),
+                        onPressed: () async{
+                           var result = await Get.toNamed("tambah-alamat");
+                    if (result == 'refresh') {
+                      controller.refreshAddress(); // trigger Obx rebuild otomatis
+                    }
+                        },
+                        child: Text("Tambah Alamat"))),
+                         SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(10))),
@@ -1351,6 +1396,7 @@ class RadioPayment extends StatelessWidget {
         onTap: () {
           controller.selectPayment(value);
         },
+        behavior: HitTestBehavior.opaque,
         child: Row(
           children: [
             Icon(

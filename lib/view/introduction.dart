@@ -13,7 +13,7 @@ class IntroductionPage extends StatelessWidget {
   void _onIntroEnd(context) {
     final storage = GetStorage();
     storage.write('isFirstOpen', false);
-    Get.offAll(() => LoginPage());
+    Get.offAllNamed('/menu');
   }
 
   @override

@@ -17,6 +17,13 @@ class ProfileController extends GetxController {
   final emailController = TextEditingController();
   final ktpAddressController = TextEditingController();
 
+  final FocusNode firstNameFocus = FocusNode();
+  final FocusNode lastNameFocus = FocusNode();
+  final FocusNode emailFocus = FocusNode();
+  final FocusNode addressFocus = FocusNode();
+
+
+
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
 
@@ -25,9 +32,13 @@ class ProfileController extends GetxController {
   final RxString urlAvatar = ''.obs;
   final RxBool hasVoucher = false.obs;
   final RxInt valueVoucher = 0.obs;
-  final RxString levelMember = "".obs;
+  final RxString levelMember = ''.obs;
 
   var percentageData = 0.0.obs;
+
+  String get displayUsername {
+    return username.value.isEmpty ? "Guest" : username.value;
+  }
 
   @override
   void onInit() {
@@ -41,62 +52,94 @@ class ProfileController extends GetxController {
     lastNameController.dispose();
     emailController.dispose();
     ktpAddressController.dispose();
+
+    firstNameFocus.dispose();
+    lastNameFocus.dispose();
+    emailFocus.dispose();
+    addressFocus.dispose();
+
     super.onClose();
   }
 
-  void shareApp() {
-    SharePlus.instance.share(ShareParams(
-      text: 'Yuk pakai aplikasi Utilizes GO!\n'
-          'Download di sini:\n'
-          'https://play.google.com/store/apps/details?id=com.utilizes.gocleaning',
-      subject: 'Bagikan Aplikasi Utilizes GO',
-    ));
+
+
+  bool get checkToken {
+    final box = GetStorage();
+    return box.read('token') != null;
   }
 
+  Future<void> shareApp(BuildContext context) async {
+  try {
+    final box = context.findRenderObject() as RenderBox?;
+
+    await SharePlus.instance.share(
+      ShareParams(
+        text: 'Yuk pakai aplikasi Utilizes GO!\n'
+            'Download di sini:\n'
+            'https://play.google.com/store/apps/details?id=com.utilizes.gocleaning',
+        subject: 'Bagikan Aplikasi Utilizes GO',
+        sharePositionOrigin:
+            box!.localToGlobal(Offset.zero) & box.size,
+      ),
+    );
+  } catch (e) {
+    debugPrint('Share error: $e');
+  }
+}
+
   Future<void> getDetailUser() async {
-    if (isClosed) return; // ✅ Cegah update jika controller sudah dispose
+    print("🟡 getDetailUser dipanggil | checkToken=$checkToken | ${DateTime.now()}");
+    if (checkToken) {
+      if (isClosed) return; // ✅ Cegah update jika controller sudah dispose
 
-    try {
-      print("get detail user");
-      final response = await Api.getDetailUser();
+      try {
+         print("🟢 getDetailUser LOLOS checkToken, mulai fetch API | ${DateTime.now()}");
+        print("get detail user");
+        final response = await Api.getDetailUser();
 
-      if (isClosed) return; // ✅ Cek lagi setelah await
+        if (isClosed) return; // ✅ Cek lagi setelah await
 
-      if (response.status == "success") {
-        // Update reactive variable
-        username.value = response.data!.firstName ?? "";
-        email.value = response.data!.email ?? "";
-        urlAvatar.value = response.data!.avatarPath ?? "";
-        hasVoucher.value = response.data!.discMember != 0 ? true : false;
-        valueVoucher.value = response.data!.discMember ?? 0;
-        final level = response.data!.level ?? "";
-        levelMember.value =
-            level[0].toUpperCase() + level.substring(1).toLowerCase();
+        if (response.status == "success") {
+          print("hhh");
+          // Update reactive variable
+          username.value = response.data!.firstName ?? "";
+          email.value = response.data!.email ?? "";
+          urlAvatar.value = response.data!.avatarPath ?? "";
+          hasVoucher.value = response.data!.discMember != 0 ? true : false;
+          valueVoucher.value = response.data!.discMember ?? 0;
+          final level = response.data!.level ?? "";
+          levelMember.value = level[0].toUpperCase() + level.substring(1).toLowerCase();
 
-        // Update TextEditingController hanya jika controller masih aktif
-        firstNameController.text = response.data!.firstName ?? "";
-        lastNameController.text = response.data!.lastName ?? "";
-        emailController.text = response.data!.email ?? "";
-        ktpAddressController.text = response.data!.ktpAddress ?? "";
+          // Update TextEditingController hanya jika controller masih aktif
+          firstNameController.text = response.data!.firstName ?? "";
+          lastNameController.text = response.data!.lastName ?? "";
+          emailController.text = response.data!.email ?? "";
+          ktpAddressController.text = response.data!.ktpAddress ?? "";
 
-        // Hitung persentase kelengkapan data
-        int filledCount = 0;
-        if (firstNameController.text.trim().isNotEmpty) filledCount++;
-        if (lastNameController.text.trim().isNotEmpty) filledCount++;
-        if (emailController.text.trim().isNotEmpty) filledCount++;
-        if (ktpAddressController.text.trim().isNotEmpty) filledCount++;
+          // Hitung persentase kelengkapan data
+          int filledCount = 0;
+          if (firstNameController.text.trim().isNotEmpty) filledCount++;
+          if (lastNameController.text.trim().isNotEmpty) filledCount++;
+          if (emailController.text.trim().isNotEmpty) filledCount++;
+          if (ktpAddressController.text.trim().isNotEmpty) filledCount++;
 
-        percentageData.value = (filledCount / 4) * 100;
-        print(
-            "Terisi: $filledCount/4 (${percentageData.value.toStringAsFixed(0)}%)");
-      } else {
-        if (!isClosed) SnackbarUtil.error("Gagal get detail user");
+          percentageData.value = (filledCount / 4) * 100;
+          print("Terisi: $filledCount/4 (${percentageData.value.toStringAsFixed(0)}%)");
+          update();
+          print("✅ update() dipanggil, username = ${username.value} | ${DateTime.now()}");
+        } else {
+          if (!isClosed) SnackbarUtil.error("Gagal get detail user");
+        }
+        print("update di instance: ${identityHashCode(this)} -> $username");
+      } catch (e) {
+        if (!isClosed) {
+          print('Get Detail User Error: $e');
+          SnackbarUtil.error("Terjadi kesalahan: $e");
+        }
       }
-    } catch (e) {
-      if (!isClosed) {
-        print('Get Detail User Error: $e');
-        SnackbarUtil.error("Terjadi kesalahan: $e");
-      }
+    }
+    else{
+      print("🔴 getDetailUser DI-SKIP karena checkToken masih false | ${DateTime.now()}");
     }
   }
 
@@ -169,6 +212,7 @@ class ProfileController extends GetxController {
   void clearImage() {
     imageFile.value = null;
   }
+  
 
   // Future<void> selectDate(BuildContext context) async {
   //   DateTime? pickedDate = await showDatePicker(

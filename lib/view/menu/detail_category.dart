@@ -31,8 +31,7 @@ class DetailCategory extends GetView<PackageController> {
     required this.img_url,
     required this.description,
   });
-  final CarouselSliderController _carouselController =
-      CarouselSliderController();
+  final CarouselSliderController _carouselController = CarouselSliderController();
   final ProfileController profileController = Get.find<ProfileController>();
 
   @override
@@ -57,9 +56,7 @@ class DetailCategory extends GetView<PackageController> {
                           itemCount: img_url.length,
                           itemBuilder: (context, index, realIndex) {
                             return CachedImage(
-                                imgUrl: img_url[index],
-                                height: 200,
-                                width: double.infinity);
+                                imgUrl: img_url[index], height: 200, width: double.infinity);
                           },
                           options: CarouselOptions(
                             viewportFraction: 1,
@@ -100,8 +97,7 @@ class DetailCategory extends GetView<PackageController> {
                         children: [
                           Text(
                             title,
-                            style: TextStyle(
-                                fontSize: 60.sp, fontWeight: FontWeight.bold),
+                            style: TextStyle(fontSize: 60.sp, fontWeight: FontWeight.bold),
                           ),
                           SizedBox(
                             height: 4,
@@ -110,12 +106,10 @@ class DetailCategory extends GetView<PackageController> {
                               ? Stack(
                                   children: [
                                     Container(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8, vertical: 2),
+                                      padding:
+                                          const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                       decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.red.shade300,
-                                            width: 1),
+                                        border: Border.all(color: Colors.red.shade300, width: 1),
                                         borderRadius: BorderRadius.circular(4),
                                       ),
                                       child: Row(
@@ -162,13 +156,9 @@ class DetailCategory extends GetView<PackageController> {
                             trimExpandedText: 'Read less',
                             style: TextStyle(fontSize: 37.sp),
                             moreStyle: TextStyle(
-                                fontSize: 38.sp,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.blue),
+                                fontSize: 38.sp, fontWeight: FontWeight.w500, color: Colors.blue),
                             lessStyle: TextStyle(
-                                fontSize: 38.sp,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.blue),
+                                fontSize: 38.sp, fontWeight: FontWeight.w500, color: Colors.blue),
                           ),
                           SizedBox(
                             height: 10,
@@ -178,9 +168,8 @@ class DetailCategory extends GetView<PackageController> {
                                   children: [
                                     Text(
                                       "Pilihan Paket",
-                                      style: TextStyle(
-                                          fontSize: 50.sp,
-                                          fontWeight: FontWeight.bold),
+                                      style:
+                                          TextStyle(fontSize: 50.sp, fontWeight: FontWeight.bold),
                                     ),
                                     SizedBox(
                                       height: 5,
@@ -190,11 +179,8 @@ class DetailCategory extends GetView<PackageController> {
                               : SizedBox.shrink(),
                           FutureBuilder(
                               future: (controller.getlistPackage(title)),
-                              builder: (context,
-                                  AsyncSnapshot<Data.ListPackageResponse>
-                                      snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
+                              builder: (context, AsyncSnapshot<Data.ListPackageResponse> snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
                                   return Skeletonizer(
                                       child: Column(
                                     children: [
@@ -219,122 +205,80 @@ class DetailCategory extends GetView<PackageController> {
                                   physics: NeverScrollableScrollPhysics(),
                                   itemCount: snapshot.data!.data!.length,
                                   itemBuilder: (context, index) {
-                                    if (title != "Daily Cleaning" &&
-                                        title != "InCarely") {
+                                    if (title != "Daily Cleaning" && title != "InCarely") {
                                       var data = snapshot.data!.data![index];
                                       return Column(
                                         children: [
                                           Container(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 30.r, 30.r, 30.r),
+                                              padding: EdgeInsets.fromLTRB(0, 30.r, 30.r, 30.r),
                                               decoration: BoxDecoration(
                                                 color: Colors.white,
-                                                border: Border.all(
-                                                    color:
-                                                        Colors.grey.shade300),
-                                                borderRadius:
-                                                    BorderRadius.circular(35.r),
+                                                border: Border.all(color: Colors.grey.shade300),
+                                                borderRadius: BorderRadius.circular(35.r),
                                                 boxShadow: [
                                                   BoxShadow(
-                                                    color: Colors.grey.withOpacity(
-                                                        0.2), // warna bayangan lembut
+                                                    color: Colors.grey
+                                                        .withOpacity(0.2), // warna bayangan lembut
                                                     spreadRadius:
                                                         2, // seberapa jauh bayangan menyebar
-                                                    blurRadius:
-                                                        10, // seberapa lembut bayangan
-                                                    offset: const Offset(0,
-                                                        4), // posisi bayangan (x, y)
+                                                    blurRadius: 10, // seberapa lembut bayangan
+                                                    offset: const Offset(
+                                                        0, 4), // posisi bayangan (x, y)
                                                   ),
                                                 ],
                                               ),
                                               child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
                                                   Obx(() {
                                                     return Checkbox(
-                                                        value: controller
-                                                                .selectPackageDeep[
-                                                            index],
-                                                        activeColor:
-                                                            Colors.blue,
-                                                        side: BorderSide(
-                                                            color: Colors
-                                                                .grey[500]!),
-                                                        onChanged:
-                                                            (bool? value) {
-                                                          controller
-                                                                  .selectPackageDeep[
-                                                              index] = value!;
-                                                          if (controller
-                                                                  .selectPackageDeep[
-                                                              index]) {
-                                                            popupObjectPackage(
-                                                                context, data,
-                                                                () {
-                                                              controller
-                                                                      .selectPackageDeep[
-                                                                  index] = false;
+                                                        value: controller.selectPackageDeep[index],
+                                                        activeColor: Colors.blue,
+                                                        side: BorderSide(color: Colors.grey[500]!),
+                                                        onChanged: (bool? value) {
+                                                          controller.selectPackageDeep[index] =
+                                                              value!;
+                                                          if (controller.selectPackageDeep[index]) {
+                                                            popupObjectPackage(context, data, () {
+                                                              controller.selectPackageDeep[index] =
+                                                                  false;
                                                             },
                                                                 "tambah",
-                                                                profileController
-                                                                    .hasVoucher
-                                                                    .value,
-                                                                data.discPercentage !=
-                                                                    null);
+                                                                profileController.hasVoucher.value,
+                                                                data.discPercentage != null);
                                                           } else {
-                                                            controller
-                                                                .resultDataObject
-                                                                .removeWhere(
-                                                                    (element) =>
-                                                                        element[
-                                                                            "pack_id"] ==
-                                                                        data.packId);
+                                                            controller.resultDataObject.removeWhere(
+                                                                (element) =>
+                                                                    element["pack_id"] ==
+                                                                    data.packId);
                                                           }
                                                         });
                                                   }),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      controller
-                                                              .selectPackageDeep[
-                                                          index] = !controller
-                                                              .selectPackageDeep[
-                                                          index];
-                                                      if (controller
-                                                              .selectPackageDeep[
-                                                          index]) {
-                                                        popupObjectPackage(
-                                                            context, data, () {
-                                                          controller
-                                                                  .selectPackageDeep[
-                                                              index] = false;
+                                                      controller.selectPackageDeep[index] =
+                                                          !controller.selectPackageDeep[index];
+                                                      if (controller.selectPackageDeep[index]) {
+                                                        // print(object);
+                                                        popupObjectPackage(context, data, () {
+                                                          controller.selectPackageDeep[index] =
+                                                              false;
                                                         },
                                                             "tambah",
-                                                            profileController
-                                                                .hasVoucher
-                                                                .value,
-                                                            data.discPercentage !=
-                                                                null);
+                                                            profileController.hasVoucher.value,
+                                                            data.discPercentage != null);
                                                       } else {
-                                                        controller
-                                                            .resultDataObject
-                                                            .removeWhere((element) =>
-                                                                element[
-                                                                    "pack_id"] ==
-                                                                data.packId);
+                                                        controller.resultDataObject.removeWhere(
+                                                            (element) =>
+                                                                element["pack_id"] == data.packId);
                                                       }
                                                     },
                                                     child: Stack(
                                                       children: [
                                                         ClipRRect(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      28.r),
+                                                          borderRadius: BorderRadius.circular(28.r),
                                                           child: CachedImage(
-                                                            imgUrl:
-                                                                data.packBannerPath ??
-                                                                    "",
+                                                            imgUrl: data.packBannerPath ?? "",
                                                             height: 190.w,
                                                             width: 190.w,
                                                           ),
@@ -345,33 +289,19 @@ class DetailCategory extends GetView<PackageController> {
                                                             top: 4,
                                                             left: 4,
                                                             child: Container(
-                                                              padding:
-                                                                  const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                          6,
-                                                                      vertical:
-                                                                          2),
-                                                              decoration:
-                                                                  BoxDecoration(
-                                                                color: Colors
-                                                                    .redAccent,
+                                                              padding: const EdgeInsets.symmetric(
+                                                                  horizontal: 6, vertical: 2),
+                                                              decoration: BoxDecoration(
+                                                                color: Colors.redAccent,
                                                                 borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            3),
+                                                                    BorderRadius.circular(3),
                                                               ),
                                                               child: Text(
                                                                 "PROMO",
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize:
-                                                                      24.sp,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold,
+                                                                style: TextStyle(
+                                                                  color: Colors.white,
+                                                                  fontSize: 24.sp,
+                                                                  fontWeight: FontWeight.bold,
                                                                 ),
                                                               ),
                                                             ),
@@ -384,83 +314,59 @@ class DetailCategory extends GetView<PackageController> {
                                                   ),
                                                   Expanded(
                                                     child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
                                                       children: [
                                                         Row(
                                                           mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceBetween,
+                                                              MainAxisAlignment.spaceBetween,
                                                           children: [
                                                             Expanded(
-                                                              child:
-                                                                  GestureDetector(
+                                                              child: GestureDetector(
                                                                 onTap: () {
                                                                   controller.selectPackageDeep[
                                                                           index] =
                                                                       !controller
-                                                                              .selectPackageDeep[
-                                                                          index];
+                                                                          .selectPackageDeep[index];
                                                                   if (controller
-                                                                          .selectPackageDeep[
-                                                                      index]) {
+                                                                      .selectPackageDeep[index]) {
                                                                     popupObjectPackage(
-                                                                        context,
-                                                                        data,
-                                                                        () {
-                                                                      controller
-                                                                              .selectPackageDeep[index] =
-                                                                          false;
+                                                                        context, data, () {
+                                                                      controller.selectPackageDeep[
+                                                                          index] = false;
                                                                     },
                                                                         "tambah",
                                                                         profileController
-                                                                            .hasVoucher
-                                                                            .value,
+                                                                            .hasVoucher.value,
                                                                         data.discPercentage !=
                                                                             null);
                                                                   } else {
-                                                                    controller
-                                                                        .resultDataObject
+                                                                    controller.resultDataObject
                                                                         .removeWhere((element) =>
                                                                             element["pack_id"] ==
                                                                             data.packId);
                                                                   }
                                                                 },
                                                                 child: Text(
-                                                                  data.packName! ??
-                                                                      "",
+                                                                  data.packName! ?? "",
                                                                   style: TextStyle(
-                                                                      fontSize:
-                                                                          42.sp,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold,
+                                                                      fontSize: 42.sp,
+                                                                      fontWeight: FontWeight.bold,
                                                                       overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis),
+                                                                          TextOverflow.ellipsis),
                                                                 ),
                                                               ),
                                                             ),
-                                                            (data.packCategory !=
-                                                                    "Daily Cleaning")
-                                                                ? TextButton
-                                                                    .icon(
-                                                                    style: TextButton
-                                                                        .styleFrom(
+                                                            (data.packCategory != "Daily Cleaning")
+                                                                ? TextButton.icon(
+                                                                    style: TextButton.styleFrom(
                                                                       padding: EdgeInsets.symmetric(
-                                                                          horizontal:
-                                                                              5),
-                                                                      minimumSize:
-                                                                          Size(
-                                                                              0,
-                                                                              0),
+                                                                          horizontal: 5),
+                                                                      minimumSize: Size(0, 0),
                                                                       tapTargetSize:
                                                                           MaterialTapTargetSize
                                                                               .shrinkWrap,
                                                                     ),
-                                                                    onPressed:
-                                                                        () {
+                                                                    onPressed: () {
                                                                       Get.toNamed(
                                                                           "/package_description",
                                                                           arguments: {
@@ -468,88 +374,108 @@ class DetailCategory extends GetView<PackageController> {
                                                                                 data.packName,
                                                                             'packImg':
                                                                                 data.packBannerPath,
-                                                                            'globalDesc':
-                                                                                data.packGlobalDescription,
-                                                                            'objectDesc':
-                                                                                data.packObjectDescription,
-                                                                            'jobDesc':
-                                                                                data.packJobDescription,
+                                                                            'globalDesc': data
+                                                                                .packGlobalDescription,
+                                                                            'objectDesc': data
+                                                                                .packObjectDescription,
+                                                                            'jobDesc': data
+                                                                                .packJobDescription,
                                                                           });
                                                                     },
                                                                     icon: Icon(
-                                                                      Icons
-                                                                          .info_outline,
-                                                                      size:
-                                                                          45.r,
+                                                                      Icons.info_outline,
+                                                                      size: 45.r,
                                                                     ),
                                                                     label: Text(
                                                                       "Info",
                                                                       style: TextStyle(
-                                                                          fontSize:
-                                                                              34.sp),
+                                                                          fontSize: 34.sp),
                                                                     ),
                                                                   )
-                                                                : SizedBox
-                                                                    .shrink()
+                                                                : SizedBox.shrink()
                                                           ],
                                                         ),
                                                         Obx(() {
                                                           final count = controller
-                                                              .amountItemperPackage(
-                                                                  data.packId!);
+                                                              .amountItemperPackage(data.packId!);
                                                           // print("count ${data.packId}: $count");
                                                           return count > 0
                                                               ? Row(
                                                                   crossAxisAlignment:
-                                                                      CrossAxisAlignment
-                                                                          .end,
+                                                                      CrossAxisAlignment.end,
                                                                   children: [
                                                                     Column(
                                                                       crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .start,
+                                                                          CrossAxisAlignment.start,
                                                                       children: [
                                                                         Text(
                                                                           "$count Item",
-                                                                          style:
-                                                                              TextStyle(fontSize: 35.sp),
+                                                                          style: TextStyle(
+                                                                              fontSize: 35.sp),
                                                                         ),
                                                                         Text(
                                                                             "Total : ${Utils.formatCurrency(controller.amountPriceperPackage(data.packId!))}",
-                                                                            style:
-                                                                                TextStyle(fontSize: 35.sp)),
+                                                                            style: TextStyle(
+                                                                                fontSize: 35.sp)),
                                                                       ],
                                                                     ),
                                                                     Spacer(),
                                                                     Column(
                                                                       crossAxisAlignment:
-                                                                          CrossAxisAlignment
-                                                                              .end,
+                                                                          CrossAxisAlignment.end,
                                                                       mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .end,
+                                                                          MainAxisAlignment.end,
                                                                       children: [
                                                                         SizedBox(
-                                                                          height:
-                                                                              25,
+                                                                          height: 25,
                                                                           child: ElevatedButton(
-                                                                              style: ElevatedButton.styleFrom(padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)), backgroundColor: Colors.blue, foregroundColor: Colors.white, textStyle: TextStyle(fontSize: 12)),
+                                                                              style: ElevatedButton.styleFrom(
+                                                                                  padding: EdgeInsets
+                                                                                      .symmetric(
+                                                                                          horizontal:
+                                                                                              10,
+                                                                                          vertical:
+                                                                                              4),
+                                                                                  shape: RoundedRectangleBorder(
+                                                                                      borderRadius:
+                                                                                          BorderRadius
+                                                                                              .circular(
+                                                                                                  5)),
+                                                                                  backgroundColor:
+                                                                                      Colors.blue,
+                                                                                  foregroundColor:
+                                                                                      Colors.white,
+                                                                                  textStyle:
+                                                                                      TextStyle(
+                                                                                          fontSize:
+                                                                                              12)),
                                                                               onPressed: () {
-                                                                                popupObjectPackage(context, data, () {
-                                                                                  controller.selectPackageDeep[index] = false;
-                                                                                }, "edit", profileController.hasVoucher.value, data.discPercentage != null);
+                                                                                popupObjectPackage(
+                                                                                    context, data,
+                                                                                    () {
+                                                                                  controller
+                                                                                          .selectPackageDeep[
+                                                                                      index] = false;
+                                                                                },
+                                                                                    "edit",
+                                                                                    profileController
+                                                                                        .hasVoucher
+                                                                                        .value,
+                                                                                    data.discPercentage !=
+                                                                                        null);
                                                                               },
                                                                               child: Text(
                                                                                 "Detail",
-                                                                                style: TextStyle(fontSize: 34.sp),
+                                                                                style: TextStyle(
+                                                                                    fontSize:
+                                                                                        34.sp),
                                                                               )),
                                                                         )
                                                                       ],
                                                                     )
                                                                   ],
                                                                 )
-                                                              : SizedBox
-                                                                  .shrink();
+                                                              : SizedBox.shrink();
                                                         }),
                                                       ],
                                                     ),
@@ -563,38 +489,24 @@ class DetailCategory extends GetView<PackageController> {
                                       );
                                     } else {
                                       return DailyCleaningCard(
-                                        imgPath: snapshot.data!.data![index]
-                                                .packBannerPath ??
-                                            "",
-                                        title: snapshot
-                                                .data!.data![index].packName ??
-                                            "-",
-                                        subtitle: snapshot.data!.data![index]
-                                            .packGlobalDescription!,
-                                        discPercent: snapshot.data!.data![index]
-                                                .discPercentage ??
-                                            0.0,
-                                        hasVoucher:
-                                            profileController.hasVoucher.value,
+                                        imgPath: snapshot.data!.data![index].packBannerPath ?? "",
+                                        title: snapshot.data!.data![index].packName ?? "-",
+                                        subtitle:
+                                            snapshot.data!.data![index].packGlobalDescription!,
+                                        discPercent:
+                                            snapshot.data!.data![index].discPercentage ?? 0.0,
+                                        hasVoucher: profileController.hasVoucher.value,
                                         ontap: () {
-                                          print(snapshot
-                                              .data!.data![index].packId);
+                                          print(snapshot.data!.data![index].packId);
                                           controller.category.value = title;
                                           controller.selectedPackageId.value =
-                                              snapshot
-                                                  .data!.data![index].packId!
-                                                  .toString();
+                                              snapshot.data!.data![index].packId!.toString();
                                           Get.toNamed(
                                             '/detail-daily',
                                             arguments: {
-                                              'id': snapshot
-                                                  .data!.data![index].packId!
-                                                  .toString(),
-                                              'title': snapshot
-                                                  .data!.data![index].packName!,
-                                              'discPercent': snapshot
-                                                  .data!
-                                                  .data![index]
+                                              'id': snapshot.data!.data![index].packId!.toString(),
+                                              'title': snapshot.data!.data![index].packName!,
+                                              'discPercent': snapshot.data!.data![index]
                                                   .discPercentage, // biarkan null
                                             },
                                           );
@@ -619,8 +531,7 @@ class DetailCategory extends GetView<PackageController> {
                       color: Colors.white,
                       boxShadow: [
                         BoxShadow(
-                          color: Colors.grey
-                              .withOpacity(0.2), // warna bayangan lembut
+                          color: Colors.grey.withOpacity(0.2), // warna bayangan lembut
                           spreadRadius: 2, // seberapa jauh bayangan menyebar
                           blurRadius: 10, // seberapa lembut bayangan
                           offset: const Offset(0, 4), // posisi bayangan (x, y)
@@ -644,50 +555,40 @@ class DetailCategory extends GetView<PackageController> {
                           qty += amount;
                         }
                       }
-                      bool hasDiscount = controller.resultDataObject
-                          .any((pack) => pack["pack_disc"] != 0);
+                      bool hasDiscount =
+                          controller.resultDataObject.any((pack) => pack["pack_disc"] != 0);
                       return Column(
                         children: [
                           controller.resultDataObject.isNotEmpty
                               ? Column(
                                   children: [
-                                    (profileController.hasVoucher.value ||
-                                            hasDiscount)
+                                    (profileController.hasVoucher.value || hasDiscount)
                                         ? Column(
                                             children: [
                                               Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Text(
                                                     "Subtotal",
                                                     style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
+                                                        fontWeight: FontWeight.w500,
                                                         fontSize: 38.sp),
                                                   ),
-                                                  Text(
-                                                      Utils.formatCurrency(
-                                                          normalTotal),
+                                                  Text(Utils.formatCurrency(normalTotal),
                                                       style: TextStyle(
                                                           fontSize: 38.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold)),
+                                                          fontWeight: FontWeight.bold)),
                                                 ],
                                               ),
                                               Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Text(
                                                     "${profileController.hasVoucher.value ? "Voucher Member" : ""}"
                                                     "${profileController.hasVoucher.value && hasDiscount ? " + " : ""}"
                                                     "${hasDiscount ? "Promo" : ""}",
                                                     style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
+                                                        fontWeight: FontWeight.w500,
                                                         fontSize: 38.sp,
                                                         color: Colors.red),
                                                   ),
@@ -695,8 +596,7 @@ class DetailCategory extends GetView<PackageController> {
                                                       "- ${Utils.formatCurrency(normalTotal - total)}",
                                                       style: TextStyle(
                                                           fontSize: 38.sp,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          fontWeight: FontWeight.bold,
                                                           color: Colors.red)),
                                                 ],
                                               ),
@@ -704,8 +604,7 @@ class DetailCategory extends GetView<PackageController> {
                                           )
                                         : SizedBox.shrink(),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "Total",
@@ -716,13 +615,11 @@ class DetailCategory extends GetView<PackageController> {
                                         ),
                                         Text(Utils.formatCurrency(total),
                                             style: TextStyle(
-                                                fontSize: 38.sp,
-                                                fontWeight: FontWeight.bold)),
+                                                fontSize: 38.sp, fontWeight: FontWeight.bold)),
                                       ],
                                     ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "Qty",
@@ -733,8 +630,7 @@ class DetailCategory extends GetView<PackageController> {
                                         ),
                                         Text("$qty Item",
                                             style: TextStyle(
-                                                fontSize: 38.sp,
-                                                fontWeight: FontWeight.bold)),
+                                                fontSize: 38.sp, fontWeight: FontWeight.bold)),
                                       ],
                                     ),
                                     SizedBox(
@@ -747,12 +643,10 @@ class DetailCategory extends GetView<PackageController> {
                             width: double.infinity,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor:
-                                    controller.resultDataObject.isNotEmpty
-                                        ? Colors.blue
-                                        : Colors.grey,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 12),
+                                backgroundColor: controller.resultDataObject.isNotEmpty
+                                    ? Colors.blue
+                                    : Colors.grey,
+                                padding: const EdgeInsets.symmetric(vertical: 12),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                   side: BorderSide.none,
@@ -760,10 +654,13 @@ class DetailCategory extends GetView<PackageController> {
                               ),
                               onPressed: controller.resultDataObject.isNotEmpty
                                   ? () {
-                                      print(
-                                          "result = ${controller.resultDataObject}");
-                                      controller.category.value = title;
-                                      Get.toNamed("/pemesanan");
+                                      if (profileController.checkToken) {
+                                        print("result = ${controller.resultDataObject}");
+                                        controller.category.value = title;
+                                        Get.toNamed("/pemesanan");
+                                      }else{
+                                        Get.toNamed("/login");
+                                      }
                                     }
                                   : null,
                               child: Text(
@@ -797,11 +694,9 @@ class DetailCategory extends GetView<PackageController> {
       context: context,
       barrierDismissible: false,
       builder: (BuildContext context) {
-       
         String truncateWithEllipsis(String text) {
-           
-           String normalizedText = text.replaceAll('\t', ' ');
-           print(text);
+          String normalizedText = text.replaceAll('\t', ' ');
+          print(text);
           return (text.length >= 120) ? '${normalizedText.substring(0, 120)}...' : text;
         }
 
@@ -844,8 +739,7 @@ class DetailCategory extends GetView<PackageController> {
                             padding: const EdgeInsets.fromLTRB(15, 15, 15, 10),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
-                                  topLeft: Radius.circular(30.r),
-                                  topRight: Radius.circular(30.r)),
+                                  topLeft: Radius.circular(30.r), topRight: Radius.circular(30.r)),
                               image: DecorationImage(
                                 image: NetworkImage(data.packBannerPath!),
                                 fit: BoxFit.fitWidth,
@@ -866,8 +760,7 @@ class DetailCategory extends GetView<PackageController> {
                                   colors: [
                                     Color.fromARGB(230, 255, 255, 255),
                                     Color.fromARGB(164, 255, 255, 255), // atas
-                                    Color.fromARGB(
-                                        96, 255, 255, 255), // transparan penuh
+                                    Color.fromARGB(96, 255, 255, 255), // transparan penuh
                                   ],
                                   stops: [0.0, 0.6, 1.0],
                                 ),
@@ -884,8 +777,7 @@ class DetailCategory extends GetView<PackageController> {
                               children: [
                                 // Header baris atas
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Expanded(
                                       child: Text(
@@ -904,13 +796,9 @@ class DetailCategory extends GetView<PackageController> {
                                         Get.back();
 
                                         if (action == "edit") {
-                                          if (!controller.selectObjectPackage
-                                              .any((e) => e)) {
-                                            controller.resultDataObject
-                                                .removeWhere(
-                                              (element) =>
-                                                  element["pack_id"] ==
-                                                  data.packId,
+                                          if (!controller.selectObjectPackage.any((e) => e)) {
+                                            controller.resultDataObject.removeWhere(
+                                              (element) => element["pack_id"] == data.packId,
                                             );
                                             onClose();
                                           }
@@ -918,8 +806,7 @@ class DetailCategory extends GetView<PackageController> {
                                           onClose();
                                         }
                                       },
-                                      child: const Icon(Icons.close,
-                                          color: Colors.black),
+                                      child: const Icon(Icons.close, color: Colors.black),
                                     ),
                                   ],
                                 ),
@@ -932,44 +819,32 @@ class DetailCategory extends GetView<PackageController> {
                                               Stack(
                                                 children: [
                                                   Container(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 8,
-                                                        vertical: 2),
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 8, vertical: 2),
                                                     decoration: BoxDecoration(
                                                       color: Colors.white,
                                                       border: Border.all(
-                                                          color: Colors
-                                                              .red.shade300,
-                                                          width: 1),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              4),
+                                                          color: Colors.red.shade300, width: 1),
+                                                      borderRadius: BorderRadius.circular(4),
                                                     ),
                                                     child: Row(
-                                                      mainAxisSize:
-                                                          MainAxisSize.min,
+                                                      mainAxisSize: MainAxisSize.min,
                                                       children: [
                                                         Icon(
-                                                          LineIcons
-                                                              .alternateTicket,
+                                                          LineIcons.alternateTicket,
                                                           color: Colors.red,
                                                           size: 35.r,
                                                         ),
-                                                        const SizedBox(
-                                                            width: 4),
+                                                        const SizedBox(width: 4),
                                                         Text(
                                                           "Voucher Member",
                                                           style: TextStyle(
                                                             fontSize: 25.sp,
-                                                            color: Colors
-                                                                .red.shade400,
-                                                            fontWeight:
-                                                                FontWeight.w500,
+                                                            color: Colors.red.shade400,
+                                                            fontWeight: FontWeight.w500,
                                                           ),
                                                         ),
-                                                        const SizedBox(
-                                                            width: 4),
+                                                        const SizedBox(width: 4),
                                                       ],
                                                     ),
                                                   ),
@@ -993,22 +868,16 @@ class DetailCategory extends GetView<PackageController> {
                                         ? Stack(
                                             children: [
                                               Container(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 8,
-                                                        vertical: 2),
+                                                padding: const EdgeInsets.symmetric(
+                                                    horizontal: 8, vertical: 2),
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
                                                   border: Border.all(
-                                                      color:
-                                                          Colors.red.shade300,
-                                                      width: 1),
-                                                  borderRadius:
-                                                      BorderRadius.circular(4),
+                                                      color: Colors.red.shade300, width: 1),
+                                                  borderRadius: BorderRadius.circular(4),
                                                 ),
                                                 child: Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
+                                                  mainAxisSize: MainAxisSize.min,
                                                   children: [
                                                     Icon(
                                                       LineIcons.alternateTicket,
@@ -1020,10 +889,8 @@ class DetailCategory extends GetView<PackageController> {
                                                       "Promo",
                                                       style: TextStyle(
                                                         fontSize: 25.sp,
-                                                        color:
-                                                            Colors.red.shade400,
-                                                        fontWeight:
-                                                            FontWeight.w500,
+                                                        color: Colors.red.shade400,
+                                                        fontWeight: FontWeight.w500,
                                                       ),
                                                     ),
                                                     const SizedBox(width: 4),
@@ -1049,8 +916,7 @@ class DetailCategory extends GetView<PackageController> {
                                 Stack(
                                   children: [
                                     Text(
-                                      truncateWithEllipsis(
-                                          data.packGlobalDescription ?? ""),
+                                      truncateWithEllipsis(data.packGlobalDescription ?? ""),
                                       maxLines: 4,
                                       // overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
@@ -1063,17 +929,13 @@ class DetailCategory extends GetView<PackageController> {
                                       right: 0,
                                       child: GestureDetector(
                                         onTap: () {
-                                          Get.toNamed("/package_description",
-                                              arguments: {
-                                                'packName': data.packName,
-                                                'packImg': data.packBannerPath,
-                                                'globalDesc':
-                                                    data.packGlobalDescription,
-                                                'objectDesc':
-                                                    data.packObjectDescription,
-                                                'jobDesc':
-                                                    data.packJobDescription,
-                                              });
+                                          Get.toNamed("/package_description", arguments: {
+                                            'packName': data.packName,
+                                            'packImg': data.packBannerPath,
+                                            'globalDesc': data.packGlobalDescription,
+                                            'objectDesc': data.packObjectDescription,
+                                            'jobDesc': data.packJobDescription,
+                                          });
                                         },
                                         child: Padding(
                                           padding: EdgeInsets.only(left: 4),
@@ -1101,15 +963,11 @@ class DetailCategory extends GetView<PackageController> {
                       child: Padding(
                         padding: EdgeInsets.fromLTRB(15.r, 15.r, 45.r, 15.r),
                         child: FutureBuilder(
-                            future: controller
-                                .getObjectPackage(data.packId.toString()),
-                            builder: (context,
-                                AsyncSnapshot<ObjectPackageResponse> snapshot) {
-                              if (snapshot.connectionState ==
-                                  ConnectionState.waiting) {
+                            future: controller.getObjectPackage(data.packId.toString()),
+                            builder: (context, AsyncSnapshot<ObjectPackageResponse> snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
                                 return Skeletonizer(
-                                    child: Text(
-                                        "asdkjhkjhhkdajshkdjhsakdjhaskdjhaksjdh"));
+                                    child: Text("asdkjhkjhhkdajshkdjhsakdjhaskdjhaksjdh"));
                               } else if (snapshot.hasError) {
                                 return Text('Error: ${snapshot.error}');
                               } else if (!snapshot.hasData) {
@@ -1125,70 +983,45 @@ class DetailCategory extends GetView<PackageController> {
                                     children: [
                                       GestureDetector(
                                         onTap: () {
-                                          controller
-                                                  .selectObjectPackage[index] =
-                                              !controller
-                                                  .selectObjectPackage[index];
-                                          if (controller
-                                              .selectObjectPackage[index]) {
+                                          controller.selectObjectPackage[index] =
+                                              !controller.selectObjectPackage[index];
+                                          if (controller.selectObjectPackage[index]) {
                                             controller.tempDataObject.add({
-                                              "object_id":
-                                                  options[index].objectId,
-                                              "object_name":
-                                                  options[index].objectName,
-                                              "object_normal_price":
-                                                  options[index].objectPrice,
-                                              "object_price": options[index]
-                                                  .objectPriceDisc,
-                                              "object_amount": controller
-                                                  .amountObjectPackage[index],
+                                              "object_id": options[index].objectId,
+                                              "object_name": options[index].objectName,
+                                              "object_normal_price": options[index].objectPrice,
+                                              "object_price": options[index].objectPriceDisc,
+                                              "object_amount":
+                                                  controller.amountObjectPackage[index],
                                             });
                                           } else {
-                                            controller.tempDataObject
-                                                .removeWhere((item) =>
-                                                    item['object_id'] ==
-                                                    options[index].objectId);
+                                            controller.tempDataObject.removeWhere((item) =>
+                                                item['object_id'] == options[index].objectId);
                                           }
                                         },
                                         child: Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Obx(() {
                                               return Checkbox(
-                                                value: controller
-                                                    .selectObjectPackage[index],
+                                                value: controller.selectObjectPackage[index],
                                                 onChanged: (bool? value) {
-                                                  controller
-                                                          .selectObjectPackage[
-                                                      index] = value!;
-                                                  if (controller
-                                                          .selectObjectPackage[
-                                                      index]) {
-                                                    controller.tempDataObject
-                                                        .add({
-                                                      "object_id":
-                                                          options[index]
-                                                              .objectId,
-                                                      "object_name":
-                                                          options[index]
-                                                              .objectName,
+                                                  controller.selectObjectPackage[index] = value!;
+                                                  if (controller.selectObjectPackage[index]) {
+                                                    controller.tempDataObject.add({
+                                                      "object_id": options[index].objectId,
+                                                      "object_name": options[index].objectName,
                                                       "object_normal_price":
-                                                          options[index]
-                                                              .objectPrice,
+                                                          options[index].objectPrice,
                                                       "object_price":
-                                                          options[index]
-                                                              .objectPriceDisc,
-                                                      "object_amount": controller
-                                                              .amountObjectPackage[
-                                                          index],
+                                                          options[index].objectPriceDisc,
+                                                      "object_amount":
+                                                          controller.amountObjectPackage[index],
                                                     });
                                                   } else {
-                                                    controller.tempDataObject
-                                                        .removeWhere((item) =>
-                                                            item['object_id'] ==
-                                                            options[index]
-                                                                .objectId);
+                                                    controller.tempDataObject.removeWhere((item) =>
+                                                        item['object_id'] ==
+                                                        options[index].objectId);
                                                   }
                                                 },
                                               );
@@ -1196,29 +1029,21 @@ class DetailCategory extends GetView<PackageController> {
                                             SizedBox(width: 8),
                                             Expanded(
                                               child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    options[index].objectName ??
-                                                        "",
+                                                    options[index].objectName ?? "",
                                                     maxLines: 2,
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
+                                                    overflow: TextOverflow.ellipsis,
                                                     style: TextStyle(
                                                         fontSize: 38.sp,
-                                                        fontWeight:
-                                                            FontWeight.bold),
+                                                        fontWeight: FontWeight.bold),
                                                   ),
                                                   Text(
-                                                    options[index]
-                                                            .objectDescription ??
-                                                        "",
+                                                    options[index].objectDescription ?? "",
                                                     maxLines: 2,
-                                                    style: TextStyle(
-                                                        fontSize: 35.sp),
-                                                    overflow:
-                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(fontSize: 35.sp),
+                                                    overflow: TextOverflow.ellipsis,
                                                   )
                                                 ],
                                               ),
@@ -1227,41 +1052,32 @@ class DetailCategory extends GetView<PackageController> {
                                               width: 3,
                                             ),
                                             Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
+                                              crossAxisAlignment: CrossAxisAlignment.end,
                                               children: [
-                                                (options[index]
-                                                            .objectPriceDisc !=
-                                                        options[index]
-                                                            .objectPrice)
+                                                (options[index].objectPriceDisc !=
+                                                        options[index].objectPrice)
                                                     ? Column(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
+                                                        crossAxisAlignment: CrossAxisAlignment.end,
                                                         children: [
                                                           Text(
                                                               Utils.formatCurrency(
-                                                                  options[index]
-                                                                      .objectPriceDisc!),
+                                                                  options[index].objectPriceDisc!),
                                                               style: TextStyle(
                                                                 fontSize: 36.sp,
                                                               )),
                                                           Text(
                                                               Utils.formatCurrency(
-                                                                  options[index]
-                                                                      .objectPrice!),
+                                                                  options[index].objectPrice!),
                                                               style: TextStyle(
                                                                 fontSize: 32.sp,
                                                                 decoration:
-                                                                    TextDecoration
-                                                                        .lineThrough,
+                                                                    TextDecoration.lineThrough,
                                                               )),
                                                         ],
                                                       )
                                                     : Text(
                                                         Utils.formatCurrency(
-                                                            options[index]
-                                                                .objectPrice!),
+                                                            options[index].objectPrice!),
                                                         style: TextStyle(
                                                           fontSize: 36.sp,
                                                         )),
@@ -1269,23 +1085,18 @@ class DetailCategory extends GetView<PackageController> {
                                                   height: 10,
                                                 ),
                                                 Obx(() {
-                                                  return controller
-                                                              .selectObjectPackage[
-                                                          index]
+                                                  return controller.selectObjectPackage[index]
                                                       ? Row(
                                                           mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
+                                                              MainAxisAlignment.center,
                                                           children: [
                                                             InkWell(
                                                               onTap: () {
-                                                                if (controller
-                                                                            .amountObjectPackage[
+                                                                if (controller.amountObjectPackage[
                                                                         index] !=
                                                                     1) {
                                                                   controller
-                                                                          .amountObjectPackage[
-                                                                      index]--;
+                                                                      .amountObjectPackage[index]--;
                                                                   controller.updateObjectAmount(
                                                                       options[index]
                                                                           .objectId!
@@ -1295,59 +1106,40 @@ class DetailCategory extends GetView<PackageController> {
                                                                           index]);
                                                                 }
                                                               },
-                                                              child:
-                                                                  IconPlusMinus(
-                                                                icon: Icons
-                                                                    .remove,
+                                                              child: IconPlusMinus(
+                                                                icon: Icons.remove,
                                                               ),
                                                             ),
-                                                            const SizedBox(
-                                                                width: 10),
+                                                            const SizedBox(width: 10),
                                                             Container(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                      horizontal:
-                                                                          30.r,
-                                                                      vertical:
-                                                                          15.r),
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              decoration:
-                                                                  BoxDecoration(
+                                                              padding: EdgeInsets.symmetric(
+                                                                  horizontal: 30.r, vertical: 15.r),
+                                                              alignment: Alignment.center,
+                                                              decoration: BoxDecoration(
                                                                 borderRadius:
-                                                                    BorderRadius
-                                                                        .circular(
-                                                                            5),
-                                                                color: Colors
-                                                                    .grey[100],
+                                                                    BorderRadius.circular(5),
+                                                                color: Colors.grey[100],
                                                               ),
                                                               child: Text(
                                                                   controller
-                                                                      .amountObjectPackage[
-                                                                          index]
+                                                                      .amountObjectPackage[index]
                                                                       .toString(),
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          34.sp)),
+                                                                  style:
+                                                                      TextStyle(fontSize: 34.sp)),
                                                             ),
-                                                            const SizedBox(
-                                                                width: 10),
+                                                            const SizedBox(width: 10),
                                                             InkWell(
                                                               onTap: () {
                                                                 controller
-                                                                        .amountObjectPackage[
-                                                                    index]++;
+                                                                    .amountObjectPackage[index]++;
                                                                 controller.updateObjectAmount(
                                                                     options[index]
                                                                         .objectId!
                                                                         .toInt(),
-                                                                    controller
-                                                                            .amountObjectPackage[
+                                                                    controller.amountObjectPackage[
                                                                         index]);
                                                               },
-                                                              child:
-                                                                  IconPlusMinus(
+                                                              child: IconPlusMinus(
                                                                 icon: Icons.add,
                                                               ),
                                                             ),
@@ -1378,27 +1170,22 @@ class DetailCategory extends GetView<PackageController> {
                                 return Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
                                         Text(
                                           "Total Item",
                                           style: TextStyle(fontSize: 38.sp),
                                         ),
                                         Text(
-                                          controller
-                                              .amountObjectQty()
-                                              .toString(),
+                                          controller.amountObjectQty().toString(),
                                           style: TextStyle(fontSize: 38.sp),
                                         ),
                                       ],
                                     ),
                                     Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text("Total Harga",
-                                            style: TextStyle(fontSize: 38.sp)),
+                                        Text("Total Harga", style: TextStyle(fontSize: 38.sp)),
                                         Text(controller.amountObjectPrice(),
                                             style: TextStyle(fontSize: 38.sp)),
                                       ],
@@ -1417,11 +1204,8 @@ class DetailCategory extends GetView<PackageController> {
                                               data.packId!.toInt(),
                                               data.packName ?? "",
                                               data.packBannerPath ?? "",
-                                              (data.discPercentage as num?)
-                                                      ?.toDouble() ??
-                                                  0.0,
-                                              controller.tempDataObject
-                                                  .toList(),
+                                              (data.discPercentage as num?)?.toDouble() ?? 0.0,
+                                              controller.tempDataObject.toList(),
                                             );
                                             controller.tempDataObject.clear();
 

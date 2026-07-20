@@ -53,9 +53,10 @@ class _SplashScreenState extends State<SplashScreen> {
     Get.offAllNamed(
       isFirstOpen
           ? '/intro'
-          : isLoggedIn
-              ? '/menu'
-              : '/login',
+          : '/menu'
+          // isLoggedIn
+          //     ? '/menu'
+          //     : '/login',
     );
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 class GlassmorphicTextField extends StatelessWidget {
   final String hintText;
@@ -9,6 +10,8 @@ class GlassmorphicTextField extends StatelessWidget {
   final bool obscureText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final FocusNode? focusNode;        // ← tambahan
+  final FocusNode? nextFocusNode;
 
   const GlassmorphicTextField({
     Key? key,
@@ -18,7 +21,10 @@ class GlassmorphicTextField extends StatelessWidget {
     this.prefixIcon,
     this.suffixIcon,
     this.inputType,
+    this.focusNode,                  // ← tambahan
+    this.nextFocusNode,
   }) : super(key: key);
+
 
   @override
   Widget build(BuildContext context) {
@@ -44,16 +50,25 @@ class GlassmorphicTextField extends StatelessWidget {
           controller: controller,
           obscureText: obscureText,
           keyboardType: inputType,
+          focusNode: focusNode,
+          textInputAction: nextFocusNode != null
+              ? TextInputAction.next
+              : TextInputAction.done,
+          onEditingComplete: () {
+            if (nextFocusNode != null) {
+              FocusScope.of(context).requestFocus(nextFocusNode);
+            } else {
+              FocusScope.of(context).unfocus();
+            }
+          },
           style: TextStyle(
             color: Colors.black87,
             fontSize: 43.sp,
           ),
           inputFormatters: suffixIcon == null
-              ? [
-                  FilteringTextInputFormatter.digitsOnly,
-                ]
+              ? [FilteringTextInputFormatter.digitsOnly]
               : null,
-          textAlignVertical: TextAlignVertical.center, // ✅ ini yang penting
+          textAlignVertical: TextAlignVertical.center,
           decoration: InputDecoration(
             prefixIcon: prefixIcon != null
                 ? Padding(
@@ -61,12 +76,12 @@ class GlassmorphicTextField extends StatelessWidget {
                     child: prefixIcon,
                   )
                 : null,
-            prefixIconConstraints: BoxConstraints(
+            prefixIconConstraints: const BoxConstraints(
               minWidth: 0,
               minHeight: 0,
             ),
             suffixIcon: suffixIcon,
-            suffixIconConstraints: BoxConstraints(
+            suffixIconConstraints: const BoxConstraints(
               minWidth: 0,
               minHeight: 0,
             ),
@@ -76,7 +91,7 @@ class GlassmorphicTextField extends StatelessWidget {
               fontSize: 36.sp,
             ),
             border: InputBorder.none,
-            isCollapsed: true, // ✅ hilangkan padding default TextField
+            isCollapsed: true,
           ),
         ),
       ),
@@ -105,4 +120,87 @@ class RemoveLeadingZeroFormatter extends TextInputFormatter {
       selection: TextSelection.collapsed(offset: newText.length),
     );
   }
+}
+
+KeyboardActionsConfig buildKeyboardActionsConfig(
+  BuildContext context, {
+  required List<({FocusNode focusNode, FocusNode? nextFocusNode})> fields,
+}) {
+  return KeyboardActionsConfig(
+    keyboardActionsPlatform: KeyboardActionsPlatform.IOS,
+    keyboardBarColor: const Color(0xFFD1D5DB),
+    nextFocus: false,
+    actions: fields
+        .map(
+          (f) => KeyboardActionsItem(
+            focusNode: f.focusNode,
+            toolbarButtons: [
+              // ── Tombol Kembali (kiri) ──────────────────────────────
+              (node) => GestureDetector(
+                    onTap: () {
+                     node.unfocus(); 
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.chevron_left,
+                            color: Color(0xFF007AFF),
+                            size: 20,
+                          ),
+                          Text(
+                            'Tutup',
+                            style: const TextStyle(
+                              color: Color(0xFF007AFF),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+              // ── Spacer ─────────────────────────────────────────────
+              (_) => const Spacer(),
+
+              // ── Tombol Lanjut / Selesai (kanan) ───────────────────
+              (node) => GestureDetector(
+                    onTap: () {
+                      if (f.nextFocusNode != null) {
+                        FocusScope.of(context).requestFocus(f.nextFocusNode);
+                      } else {
+                        node.unfocus();
+                      }
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            f.nextFocusNode != null ? 'Lanjut' : 'Selesai',
+                            style: const TextStyle(
+                              color: Color(0xFF007AFF),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          if (f.nextFocusNode != null)
+                            const Icon(
+                              Icons.chevron_right,
+                              color: Color(0xFF007AFF),
+                              size: 20,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+            ],
+          ),
+        )
+        .toList(),
+  );
 }

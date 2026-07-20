@@ -1,4 +1,5 @@
 import 'package:cleaning_app/controller/home.dart';
+import 'package:cleaning_app/controller/menu_middleware.dart';
 import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/view/booking_success.dart';
 import 'package:cleaning_app/view/info_saldo.dart';
@@ -28,6 +29,7 @@ import 'package:cleaning_app/view/register.dart';
 import 'package:cleaning_app/view/register_verify.dart';
 import 'package:cleaning_app/view/splash_screen.dart';
 import 'package:cleaning_app/view/syarat_ketentuan.dart';
+import 'package:cleaning_app/view/menu/area_coverage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -46,6 +48,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Upgrader.clearSavedSettings();
   await ScreenUtil.ensureScreenSize();
   // await Upgrader().initialize();
 
@@ -62,7 +65,6 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-
   const MyApp({super.key});
 
   @override
@@ -77,8 +79,7 @@ class MyApp extends StatelessWidget {
             initialBinding: InitialBindings(),
             builder: EasyLoading.init(),
             title: 'Cleaning App',
-            locale:
-                const Locale('id', 'ID'), // Set default locale to Indonesian
+            locale: const Locale('id', 'ID'), // Set default locale to Indonesian
             supportedLocales: const [
               Locale('en', 'US'),
               Locale('id', 'ID'),
@@ -120,22 +121,14 @@ class MyApp extends StatelessWidget {
             getPages: [
               GetPage(name: '/splash', page: () => SplashScreen()),
               GetPage(name: '/intro', page: () => IntroductionPage()),
+              GetPage(name: '/login', page: () => LoginPage(), binding: InitialBindings()),
               GetPage(
-                  name: '/login',
-                  page: () => LoginPage(),
-                  binding: InitialBindings()),
-              GetPage(
-                  name: '/register',
-                  page: () => const RegisterPage(),
-                  binding: RegisterBindings()),
+                  name: '/register', page: () => const RegisterPage(), binding: RegisterBindings()),
               GetPage(
                 name: '/register-verify',
                 page: () => RegisterVerify.fromArguments(),
               ),
-              GetPage(
-                  name: '/profile',
-                  page: () => ProfilePage(),
-                  binding: ProfileBindings()),
+              GetPage(name: '/profile', page: () => ProfilePage(), binding: ProfileBindings()),
               GetPage(name: '/edit-profile', page: () => EditProfile()),
               GetPage(
                 name: '/menu',
@@ -144,13 +137,15 @@ class MyApp extends StatelessWidget {
                     showIgnore: false,
                     showLater: true,
                     upgrader: Upgrader(
-                      languageCode: 'id',
-                      storeController: UpgraderStoreController(
-                       onAndroid: () => UpgraderPlayStore(),
-                      )
-                      // debugDisplayAlways: true, 
-                      // debugDisplayOnce: false,
-                    ),
+                        languageCode: 'id',
+                        debugLogging: true,
+                        // debugDisplayAlways: true,
+                        storeController: UpgraderStoreController(
+                          onAndroid: () => UpgraderPlayStore(),
+                        )
+                        // debugDisplayAlways: true,
+                        // debugDisplayOnce: false,
+                        ),
                     child: Menu()),
                 binding: MenuBindings(),
               ),
@@ -158,6 +153,7 @@ class MyApp extends StatelessWidget {
                 name: '/detail-category-daily',
                 page: () => DetailCategory.fromArguments(),
                 binding: DetailPackageBindings(),
+                middlewares: [MenuMiddleware()]
               ),
               // GetPage(
               //   name: '/detail-category-deep',
@@ -169,10 +165,7 @@ class MyApp extends StatelessWidget {
                 page: () => DetailDailyCleaning.fromArguments(),
                 binding: DetailDailyBindings(),
               ),
-              GetPage(
-                  name: '/pemesanan',
-                  page: () => Pemesanan(),
-                  binding: PemesananBindings()),
+              GetPage(name: '/pemesanan', page: () => Pemesanan(), binding: PemesananBindings()),
               GetPage(
                 name: '/tagihan',
                 page: () => TagihanPage.fromArguments(),
@@ -185,10 +178,7 @@ class MyApp extends StatelessWidget {
                 name: '/booking-success',
                 page: () => BookingSuccess(),
               ),
-              GetPage(
-                  name: '/invoice',
-                  page: () => InvoicePage(),
-                  binding: InvoiceBindings()),
+              GetPage(name: '/invoice', page: () => InvoicePage(), binding: InvoiceBindings()),
               GetPage(
                 name: '/isi-saldo',
                 page: () => IsiSaldo(),
@@ -207,14 +197,9 @@ class MyApp extends StatelessWidget {
                 name: '/info-saldo',
                 page: () => InfoSaldo(),
               ),
+              GetPage(name: '/alamat', page: () => DaftarAlamat(), binding: AlamatBindings()),
               GetPage(
-                  name: '/alamat',
-                  page: () => DaftarAlamat(),
-                  binding: AlamatBindings()),
-              GetPage(
-                  name: '/tambah-alamat',
-                  page: () => TambahAlamat(),
-                  binding: AlamatBindings()),
+                  name: '/tambah-alamat', page: () => TambahAlamat(), binding: AlamatBindings()),
               GetPage(
                 name: '/detail-order',
                 page: () => OrderDetail(),
@@ -250,6 +235,10 @@ class MyApp extends StatelessWidget {
               GetPage(
                 name: '/level-member',
                 page: () => LevelMemberPage.fromArguments(),
+              ),
+              GetPage(
+                name: '/area-coverage',
+                page: () => CoverageMapPage(),
               ),
             ],
           );

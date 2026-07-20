@@ -7,6 +7,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 import '../controller/register.dart';
 import '../widget/glassmorphic_textfield.dart';
@@ -18,193 +19,238 @@ class RegisterPage extends GetView<RegisterController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Daftar",
+          style: TextStyle(fontSize: 58.sp, fontWeight: FontWeight.bold),
+        ),
+      ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              // mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                  "Sign Up",
-                  style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  "Untuk memulai, kamu perlu membuat akun.",
-                  style: TextStyle(fontWeight: FontWeight.w500),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                RegisterTextField(
-                  controller: controller.referalCodeController,
-                  hintText: 'Masukan Kode Referal',
-                  inputType: TextInputType.text,
-                  isOptional: true,
-                ),
-                RegisterTextField(
-                  controller: controller.firstNameController,
-                  hintText: 'Masukan Nama Depan',
-                  inputType: TextInputType.text,
-                ),
-                RegisterTextField(
-                  controller: controller.lastNameController,
-                  hintText: 'Masukan Nama Belakang',
-                  inputType: TextInputType.text,
-                ),
-                RegisterTextField(
-                  controller: controller.phoneNumberController,
-                  hintText: 'Masukan Nomor Hp',
-                  inputType: TextInputType.number,
-                ),
-                RegisterTextField(
-                  controller: controller.emailController,
-                  hintText: 'Masukan Email',
-                  inputType: TextInputType.emailAddress,
-                ),
-                Obx(() {
-                  return RegisterTextField(
-                    controller: controller.passwordController,
-                    hintText: 'Masukan Password',
-                    obscureText: !controller.isPasswordVisible.value,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        controller.isPasswordVisible.value
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Colors.black54,
+        child: Padding(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            children: [
+              Expanded(
+                child: KeyboardActions(
+                  config: buildKeyboardActionsConfig(
+                    context,
+                    fields: [
+                      (
+                        focusNode: controller.referalFocus,
+                        nextFocusNode: controller.firstNameFocus
                       ),
-                      onPressed: () => controller.isPasswordVisible.toggle(),
-                    ),
-                  );
-                }),
-                Obx(() {
-                  return RegisterTextField(
-                    controller: controller.confirmPasswordController,
-                    hintText: 'Konfirmasi Password',
-                    obscureText: !controller.isConfirmPasswordVisible.value,
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        controller.isConfirmPasswordVisible.value
-                            ? Icons.visibility
-                            : Icons.visibility_off,
-                        color: Colors.black54,
+                      (
+                        focusNode: controller.firstNameFocus,
+                        nextFocusNode: controller.lastNameFocus
                       ),
-                      onPressed: () =>
-                          controller.isConfirmPasswordVisible.toggle(),
-                    ),
-                  );
-                }),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  children: [
-                    Obx(() {
-                      return Checkbox(
-                        value: controller.isAgree.value,
-                        onChanged: (value) {
-                          controller.isAgree.value = value ?? false;
-                        },
-                      );
-                    }),
-                    Expanded(
-                      child: RichText(
-                        text: TextSpan(
-                          style:
-                              TextStyle(fontSize: 11, color: Colors.grey[700]),
-                          children: [
-                            const TextSpan(text: "Saya menyetujui "),
-                            TextSpan(
-                              text: "Syarat & Ketentuan",
-                              style: const TextStyle(
-                                  color: Colors.blue,
-                                  decoration: TextDecoration.underline),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                   Get.toNamed("/syarat_ketentuan");
-                                },
-                            ),
-                            const TextSpan(text: " dan "),
-                            TextSpan(
-                              text: "Kebijakan Privasi",
-                              style: const TextStyle(
-                                  color: Colors.blue,
-                                  decoration: TextDecoration.underline),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                   Get.toNamed("/privacy_policy");
-                                },
-                            ),
-                          ],
+                      (
+                        focusNode: controller.lastNameFocus,
+                        nextFocusNode: controller.phoneNumberFocus
+                      ),
+                      (
+                        focusNode: controller.phoneNumberFocus,
+                        nextFocusNode: controller.emailFocus
+                      ),
+                      (focusNode: controller.emailFocus, nextFocusNode: controller.passwordFocus),
+                      (
+                        focusNode: controller.passwordFocus,
+                        nextFocusNode: controller.passwordConfirmFocus
+                      ),
+                      (focusNode: controller.passwordConfirmFocus, nextFocusNode: null),
+                    ],
+                  ),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      // mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        // Text(
+                        //   "Sign Up",
+                        //   style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                        // ),
+                        // Text(
+                        //   "Untuk memulai, kamu perlu membuat akun.",
+                        //   style: TextStyle(fontWeight: FontWeight.w500),
+                        // ),
+                        // SizedBox(
+                        //   height: 30,
+                        // ),
+                        RegisterTextField(
+                          focusNode: controller.referalFocus,
+                          nextFocusNode: controller.firstNameFocus,
+                          controller: controller.referalCodeController,
+                          hintText: 'Masukan Kode Referal',
+                          inputType: TextInputType.text,
+                          isOptional: true,
                         ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Obx(() {
-                  return SizedBox(
-                    width: double.infinity,
-                    height: 45,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        controller.isAgree.value
-                            ? controller.verifyRegister()
-                            : null;
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: controller.isAgree.value
-                            ? Colors.blue
-                            : Colors.grey,
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.circular(50), // Rounded corners
-                        ), // Shadow color
-                      ),
-                      child: controller.isLoading.value
-                          ? CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              'Daftar',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold, // Bold text
+                        RegisterTextField(
+                          focusNode: controller.firstNameFocus,
+                          nextFocusNode: controller.lastNameFocus,
+                          controller: controller.firstNameController,
+                          hintText: 'Masukan Nama Depan',
+                          inputType: TextInputType.text,
+                        ),
+                        RegisterTextField(
+                          focusNode: controller.lastNameFocus,
+                          nextFocusNode: controller.phoneNumberFocus,
+                          controller: controller.lastNameController,
+                          hintText: 'Masukan Nama Belakang',
+                          inputType: TextInputType.text,
+                        ),
+                        RegisterTextField(
+                          focusNode: controller.phoneNumberFocus,
+                          nextFocusNode: controller.emailFocus,
+                          controller: controller.phoneNumberController,
+                          hintText: 'Masukan Nomor Hp',
+                          inputType: TextInputType.number,
+                        ),
+                        RegisterTextField(
+                          focusNode: controller.emailFocus,
+                          nextFocusNode: controller.passwordFocus,
+                          controller: controller.emailController,
+                          hintText: 'Masukan Email',
+                          inputType: TextInputType.emailAddress,
+                        ),
+                        Obx(() {
+                          return RegisterTextField(
+                            focusNode: controller.passwordFocus,
+                          nextFocusNode: controller.passwordConfirmFocus,
+                            controller: controller.passwordController,
+                            hintText: 'Masukan Password',
+                            obscureText: !controller.isPasswordVisible.value,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                controller.isPasswordVisible.value
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.black54,
                               ),
+                              onPressed: () => controller.isPasswordVisible.toggle(),
                             ),
-                    ),
-                  );
-                }),
-                SizedBox(
-                  height: 20,
-                ),
-                Center(
-                  child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      style: TextStyle(
-                        color: Colors.black, // Default text color
-                        fontSize: 12, // Set font size as per your design
-                      ),
-                      children: <TextSpan>[
-                        TextSpan(text: 'Sudah Punya Akun? '),
-                        TextSpan(
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () {
-                              Get.back();
-                            },
-                          text: 'Masuk ',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: Colors.blue),
+                          );
+                        }),
+                        Obx(() {
+                          return RegisterTextField(
+                            focusNode: controller.passwordConfirmFocus,
+                          nextFocusNode: null,
+                            controller: controller.confirmPasswordController,
+                            hintText: 'Konfirmasi Password',
+                            obscureText: !controller.isConfirmPasswordVisible.value,
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                controller.isConfirmPasswordVisible.value
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                                color: Colors.black54,
+                              ),
+                              onPressed: () => controller.isConfirmPasswordVisible.toggle(),
+                            ),
+                          );
+                        }),
+                        SizedBox(
+                          height: 5,
                         ),
                       ],
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+              Row(
+                children: [
+                  Obx(() {
+                    return Checkbox(
+                      value: controller.isAgree.value,
+                      onChanged: (value) {
+                        controller.isAgree.value = value ?? false;
+                      },
+                    );
+                  }),
+                  Expanded(
+                    child: RichText(
+                      text: TextSpan(
+                        style: TextStyle(fontSize: 11, color: Colors.grey[700]),
+                        children: [
+                          const TextSpan(text: "Saya menyetujui "),
+                          TextSpan(
+                            text: "Syarat & Ketentuan",
+                            style: const TextStyle(
+                                color: Colors.blue, decoration: TextDecoration.underline),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Get.toNamed("/syarat_ketentuan");
+                              },
+                          ),
+                          const TextSpan(text: " dan "),
+                          TextSpan(
+                            text: "Kebijakan Privasi",
+                            style: const TextStyle(
+                                color: Colors.blue, decoration: TextDecoration.underline),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Get.toNamed("/privacy_policy");
+                              },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Obx(() {
+                return SizedBox(
+                  width: double.infinity,
+                  height: 45,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      controller.isAgree.value ? controller.verifyRegister() : null;
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: controller.isAgree.value ? Colors.blue : Colors.grey,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(50), // Rounded corners
+                      ), // Shadow color
+                    ),
+                    child: controller.isLoading.value
+                        ? CircularProgressIndicator(color: Colors.white)
+                        : Text(
+                            'Daftar',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold, // Bold text
+                            ),
+                          ),
+                  ),
+                );
+              }),
+              SizedBox(
+                height: 20,
+              ),
+              Center(
+                child: RichText(
+                  textAlign: TextAlign.center,
+                  text: TextSpan(
+                    style: TextStyle(
+                      color: Colors.black, // Default text color
+                      fontSize: 12, // Set font size as per your design
+                    ),
+                    children: <TextSpan>[
+                      TextSpan(text: 'Sudah Punya Akun? '),
+                      TextSpan(
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            Get.offNamed("/login");
+                          },
+                        text: 'Masuk ',
+                        style: TextStyle(fontWeight: FontWeight.bold, color: Colors.blue),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -220,6 +266,8 @@ class RegisterTextField extends StatelessWidget {
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final bool? isOptional;
+  final FocusNode? focusNode;        // ← tambahan
+  final FocusNode? nextFocusNode;
 
   const RegisterTextField({
     Key? key,
@@ -230,6 +278,8 @@ class RegisterTextField extends StatelessWidget {
     this.suffixIcon,
     this.inputType,
     this.isOptional = false,
+    this.focusNode,                  // ← tambahan
+    this.nextFocusNode,
   }) : super(key: key);
 
   @override
@@ -240,10 +290,18 @@ class RegisterTextField extends StatelessWidget {
         Row(
           children: [
             Text(hintText.replaceFirst("Masukan ", "")),
-            SizedBox(width: 5,),
+            SizedBox(
+              width: 5,
+            ),
             (isOptional == true)
-            ?Text("(opsional)",style: TextStyle(fontSize: 12,color: Colors.grey),)
-            : Text("*",style: TextStyle(fontSize: 12,color: Colors.red),)
+                ? Text(
+                    "(opsional)",
+                    style: TextStyle(fontSize: 12, color: Colors.grey),
+                  )
+                : Text(
+                    "*",
+                    style: TextStyle(fontSize: 12, color: Colors.red),
+                  )
           ],
         ),
         SizedBox(height: 5),
@@ -254,6 +312,17 @@ class RegisterTextField extends StatelessWidget {
             border: Border.all(color: Colors.grey, width: 1),
           ),
           child: TextField(
+            focusNode: focusNode,
+          textInputAction: nextFocusNode != null
+              ? TextInputAction.next
+              : TextInputAction.done,
+          onEditingComplete: () {
+            if (nextFocusNode != null) {
+              FocusScope.of(context).requestFocus(nextFocusNode);
+            } else {
+              FocusScope.of(context).unfocus();
+            }
+          },
             controller: controller,
             obscureText: obscureText,
             keyboardType: inputType,
@@ -263,18 +332,17 @@ class RegisterTextField extends StatelessWidget {
             //   FilteringTextInputFormatter.digitsOnly,
             // ] : null ,
             decoration: InputDecoration(
-              prefixIcon:
-                  prefixIcon != null
-                      ? Padding(
-                        padding: EdgeInsets.only(
-                          left: 15,
-                          right: 10,
-                          top: 10,
-                          bottom: 10,
-                        ),
-                        child: prefixIcon,
-                      )
-                      : null,
+              prefixIcon: prefixIcon != null
+                  ? Padding(
+                      padding: EdgeInsets.only(
+                        left: 15,
+                        right: 10,
+                        top: 10,
+                        bottom: 10,
+                      ),
+                      child: prefixIcon,
+                    )
+                  : null,
               suffixIcon: suffixIcon,
               hintText: hintText,
               hintStyle: TextStyle(color: Colors.black54, fontSize: 36.sp),

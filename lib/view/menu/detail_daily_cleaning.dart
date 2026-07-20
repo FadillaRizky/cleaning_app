@@ -33,7 +33,7 @@ class DetailDailyCleaning extends GetView<PackageController> {
 
   @override
   Widget build(BuildContext context) {
-    print("id : $id");
+    print("ids : $id");
     return WillPopScope(
       onWillPop: () async {
         controller.resetSelection();
@@ -462,12 +462,17 @@ class DetailDailyCleaning extends GetView<PackageController> {
                       ),
                       onPressed: controller.selectedRealPrice.value != ""
                           ? () {
-                              controller.selectedPackageName.value =
+                            if(profileController.checkToken){
+controller.selectedPackageName.value =
                                   detail.data!.pack!.packName!;
                               controller.selectedPackageImg.value =
                                   detail.data!.pack!.packBannerPath ?? "";
                               print("img ${detail.data!.pack!.packBannerPath}");
                               Get.toNamed("/pemesanan");
+                            }else{
+                               Get.toNamed("/login");
+                            }
+                              
                             }
                           : null,
                       child: Text(

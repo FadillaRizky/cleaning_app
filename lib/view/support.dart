@@ -127,7 +127,9 @@ class SupportPage extends StatelessWidget {
                       title: "Cakupan Area",
                       subtitle: "Jakarta, Bogor, Depok, Tangerang",
                       icon: LineIcons.mapMarker,
-                      ontap: () {},
+                      ontap: () {
+                        Get.toNamed('area-coverage');
+                      },
                     ),
                   ],
                 ),

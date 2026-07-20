@@ -12,6 +12,7 @@ import 'package:cleaning_app/model/GetListOrderResponse.dart';
 import 'package:cleaning_app/model/GetSaldoResponse.dart';
 import 'package:cleaning_app/model/HistoryTransaksiResponse.dart';
 import 'package:cleaning_app/model/ListCategoryPackageResponse.dart';
+import 'package:cleaning_app/model/ListTestimonialResponse.dart';
 import 'package:cleaning_app/model/LogoutResponse.dart';
 import 'package:cleaning_app/model/ObjectPackageResponse.dart';
 import 'package:cleaning_app/model/OrderPackageResponse.dart';
@@ -23,6 +24,8 @@ import 'package:cleaning_app/model/StoreAddressResponse.dart';
 import 'package:cleaning_app/model/UpdateAddressResponse.dart';
 import 'package:cleaning_app/model/UpdatePhotoProfileResponse.dart';
 import 'package:cleaning_app/model/UploadBuktiTopupResponse.dart';
+import 'package:cleaning_app/widget/popup.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -79,18 +82,47 @@ class ApiWrapper {
   //   }
   // }
 }
+class ApiException implements Exception {
+  final String message;
+  final int? statusCode;
+
+  ApiException(this.message, {this.statusCode});
+
+  @override
+  String toString() => message;
+}
+
+class AuthService {
+  static final storage = GetStorage();
+
+  static Future<void> forceLogout({String? message}) async {
+    await storage.remove('token');
+    await storage.remove('refresh_token');
+    await storage.remove('user');
+
+    if (Get.currentRoute != '/login') {
+      Get.offAllNamed('/login');
+    }
+
+    if (message != null) {
+      SnackbarUtil.error(message);
+    }
+  }
+}
 
 class Api {
   static GetStorage storage = GetStorage();
-  static const String baseUrl = 'https://client.utilize-go.com/api';
+  // static const String baseUrl = 'https://client.utilize-go.com/api';
+  static const String baseUrl = 'https://dev-client.utilize-go.com/api';
 
   static Future<LoginResponse> login(Map<String, String> dataUser) async {
     try {
       var url = "$baseUrl/user/login";
       var response = await http.post(Uri.parse(url), body: dataUser).timeout(
           const Duration(
-              seconds: 5)); // Increased timeout for better reliability
-
+              seconds: 15)); // Increased timeout for better reliability
+// final json = jsonDecode(response.body);
+print(response.body);
       final result = LoginResponse.fromJson(jsonDecode(response.body));
 
       if (response.statusCode == 200 || response.statusCode == 400) {
@@ -198,6 +230,7 @@ class Api {
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },
         ).timeout(const Duration(seconds: 20));
@@ -229,6 +262,7 @@ class Api {
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },
         ).timeout(const Duration(seconds: 20));
@@ -253,16 +287,13 @@ class Api {
     try {
       final url = "$baseUrl/packages/objects?pack_id=$pack_id";
 
-      final response = await safeApiCall(() async {
-        final token = await storage.read('token');
-        return await http.get(
+      final response = await http.get(
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
           },
         ).timeout(const Duration(seconds: 20));
-      });
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -289,6 +320,7 @@ class Api {
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },
         ).timeout(const Duration(seconds: 20));
@@ -313,20 +345,16 @@ class Api {
     try {
       final url = "$baseUrl/packages/hours/$id";
 
-      final response = await safeApiCall(() async {
-        final token = await storage.read('token');
-        return await http.get(
+      final response = await http.get(
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
           },
         ).timeout(const Duration(seconds: 20));
-      });
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        print("Duration package response: $data");
         return DurationPackageResponse.fromJson(data);
       } else {
         final errorData = jsonDecode(response.body);
@@ -350,6 +378,7 @@ class Api {
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },
         ).timeout(const Duration(seconds: 20));
@@ -381,6 +410,7 @@ class Api {
             .post(Uri.parse(url),
                 headers: {
                   'Content-Type': 'application/json',
+                  'Accept': 'application/json',
                   'Authorization': 'Bearer $token',
                 },
                 body: jsonEncode(data))
@@ -413,6 +443,7 @@ class Api {
             .put(Uri.parse(url),
                 headers: {
                   'Content-Type': 'application/json',
+                  'Accept': 'application/json',
                   'Authorization': 'Bearer $token',
                 },
                 body: jsonEncode(data))
@@ -445,6 +476,7 @@ class Api {
             .post(Uri.parse(url),
                 headers: {
                   'Content-Type': 'application/json',
+                  'Accept': 'application/json',
                   'Authorization': 'Bearer $token',
                 },
                 body: jsonEncode(data))
@@ -473,6 +505,7 @@ class Api {
       var url = "$baseUrl/user/update/avatar";
       var request = await http.MultipartRequest('post', Uri.parse(url));
       request.headers["Content-type"] = 'application/json';
+      request.headers["Accept"] = 'application/json';
       request.headers["Authorization"] = 'Bearer $token';
 
       request.files.add(await http.MultipartFile.fromPath(
@@ -508,6 +541,7 @@ class Api {
             .put(Uri.parse(url),
                 headers: {
                   // 'Content-Type': 'application/json',
+                  'Accept': 'application/json',
                   'Authorization': 'Bearer $token',
                 },
                 body: dataUser)
@@ -541,6 +575,7 @@ class Api {
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
+             'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },
         ).timeout(const Duration(seconds: 20));
@@ -568,6 +603,7 @@ class Api {
       var url = "$baseUrl/client/topup";
       var request = await http.MultipartRequest('post', Uri.parse(url));
       request.headers["Content-type"] = 'application/json';
+      request.headers["Accept"] = 'application/json';
       request.headers["Authorization"] = 'Bearer $token';
 
       request.fields['topup_date'] = date;
@@ -604,6 +640,7 @@ class Api {
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },
         ).timeout(const Duration(seconds: 20));
@@ -633,16 +670,14 @@ class Api {
       final response = await safeApiCall(() async {
         final token = await storage.read('token');
 
-        var request = http.MultipartRequest('POST', Uri.parse(url))
-          ..headers['Authorization'] = 'Bearer $token';
+        var request = await http.MultipartRequest('POST', Uri.parse(url));
+        request.headers["Accept"] = 'application/json';
+        request.headers['Authorization'] = 'Bearer $token';
 
         data.forEach((key, value) {
-          // if (value != null && value.toString().isNotEmpty) {
-          //   request.fields[key] = value.toString();
-          // }
           request.fields[key] = value.toString();
         });
-
+       
         if (images != null) {
           request.files.add(
             await http.MultipartFile.fromPath('receipt_document', images.path),
@@ -656,19 +691,6 @@ class Api {
         return await http.Response.fromStream(streamedResponse);
       });
 
-      // final response = await safeApiCall(() async {
-      //   final token = await storage.read('token');
-      //   print(token);
-      //   return await http
-      //       .post(Uri.parse(url),
-      //           headers: {
-      //             'Content-Type': 'application/json',
-      //             'Authorization': 'Bearer $token',
-      //           },
-      //           body: jsonEncode(data))
-      //       .timeout(const Duration(seconds: 20));
-      // });
-      print(response.statusCode);
       if (response.statusCode == 200 || response.statusCode == 201) {
         final data = jsonDecode(response.body);
         return OrderPackageResponse.fromJson(data);
@@ -694,6 +716,7 @@ class Api {
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },
         ).timeout(const Duration(seconds: 20));
@@ -709,7 +732,7 @@ class Api {
     } on TimeoutException {
       throw 'Request Time Out. Silakan periksa koneksi Anda.';
     } catch (e) {
-      print('Error Get Saldo: $e');
+      print('Error List Order: $e');
       throw 'Terjadi kesalahan saat mengambil data Get List Order.';
     }
   }
@@ -725,6 +748,7 @@ class Api {
             .post(Uri.parse(url),
                 headers: {
                   'Content-Type': 'application/json',
+                  'Accept': 'application/json',
                   'Authorization': 'Bearer $token',
                 },
                 body: jsonEncode(data))
@@ -756,6 +780,7 @@ class Api {
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },
         ).timeout(const Duration(seconds: 20));
@@ -787,6 +812,7 @@ class Api {
             .post(Uri.parse(url),
                 headers: {
                   'Content-Type': 'application/json',
+                  'Accept': 'application/json',
                   'Authorization': 'Bearer $token',
                 },
                 body: jsonEncode(data))
@@ -818,6 +844,7 @@ class Api {
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },
         ).timeout(const Duration(seconds: 20));
@@ -833,7 +860,7 @@ class Api {
     } on TimeoutException {
       throw 'Request Time Out. Silakan periksa koneksi Anda.';
     } catch (e) {
-      print('Error Get Saldo: $e');
+      print('Error Get History Transaksi: $e');
       throw 'Terjadi kesalahan saat mengambil History Transaksi.';
     }
   }
@@ -848,6 +875,7 @@ class Api {
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },
         ).timeout(const Duration(seconds: 20));
@@ -863,7 +891,7 @@ class Api {
     } on TimeoutException {
       throw 'Request Time Out. Silakan periksa koneksi Anda.';
     } catch (e) {
-      print('Error Get Saldo: $e');
+      print('Error Get Notif: $e');
       throw 'Terjadi kesalahan saat mengambil data Get Notification.';
     }
   }
@@ -879,6 +907,7 @@ class Api {
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
+            'Accept': 'application/json',
             'Authorization': 'Bearer $token',
           },
         ).timeout(const Duration(seconds: 20));
@@ -903,16 +932,13 @@ class Api {
     try {
       final url = "$baseUrl/packages/banners";
 
-      final response = await safeApiCall(() async {
-        final token = await storage.read('token');
-        return await http.get(
+      final response = await http.get(
           Uri.parse(url),
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer $token',
+            'Accept': 'application/json',
           },
         ).timeout(const Duration(seconds: 20));
-      });
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
@@ -926,6 +952,40 @@ class Api {
     } catch (e) {
       print('Error Get Banner: $e');
       throw 'Terjadi kesalahan saat mengambil data Get Banner.';
+    }
+  }
+
+  static Future<ListTestimonialResponse> getTestimonial() async {
+    try {
+      final url = "$baseUrl/client/testimonial";
+
+      final response = await http.get(
+          Uri.parse(url),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ).timeout(const Duration(seconds: 20));
+print(response.body);
+      if (response.statusCode == 200) {
+
+        final data = jsonDecode(response.body);
+
+print(data.runtimeType);
+print(data['data'].runtimeType);
+print(data['data'][0].runtimeType);
+
+
+return ListTestimonialResponse.fromJson(data);
+      } else {
+        final errorData = jsonDecode(response.body);
+        throw 'Gagal Get Testimonial: ${errorData['message'] ?? 'Unknown error'}';
+      }
+    } on TimeoutException {
+      throw 'Request Time Out. Silakan periksa koneksi Anda.';
+    } catch (e) {
+      print('Error Get Testimonial: $e');
+      throw 'Terjadi kesalahan saat mengambil data Get Testimonial.';
     }
   }
 }

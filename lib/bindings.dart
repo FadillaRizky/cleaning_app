@@ -18,6 +18,7 @@ import 'controller/profile.dart';
 class InitialBindings extends Bindings {
   @override
   void dependencies() {
+    Get.put(ProfileController(), permanent: true);
     Get.put(LoginController(), permanent: true);
     Get.lazyPut(() => HomeController(), fenix: true);
     Get.lazyPut(() => ControllerMenu(), fenix: true);
@@ -36,11 +37,11 @@ class RegisterBindings extends Bindings {
 class MenuBindings extends Bindings {
   @override
   void dependencies() {
-    
+    // Get.lazyPut(() => ProfileController(), fenix: true);
     Get.lazyPut(() => ControllerMenu(), fenix: true);
     Get.lazyPut(() => HomeController(), fenix: true);
     Get.lazyPut(() => BookingController(), fenix: true);
-    Get.lazyPut(() => ProfileController(), fenix: true);
+    
     Get.lazyPut(() => NotificationController(), fenix: true);
   }
 }

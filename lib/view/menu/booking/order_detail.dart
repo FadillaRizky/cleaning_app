@@ -76,112 +76,94 @@ class OrderDetail extends GetView<BookingController> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                result.orderStatus == "new"
-                                    ? Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          RichText(
-                                            text: TextSpan(
-                                              style: const TextStyle(
-                                                fontSize: 16,
-                                                color: Colors.black,
-                                              ),
-                                              children: [
-                                                TextSpan(
-                                                  text: "Menunggu Verifikasi",
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.green,
-                                                      fontSize: 46.sp),
-                                                ),
-                                                TextSpan(
-                                                  text:
-                                                      ' · Pesananmu\nsedang diverifikasi oleh admin',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      color: Colors.black,
-                                                      fontSize: 42.sp),
-                                                ),
-                                              ],
+                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                            result.orderStatus == "new"
+                                ? Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: "Menunggu Verifikasi",
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.green,
+                                                  fontSize: 46.sp),
                                             ),
-                                          )
-                                        ],
+                                            TextSpan(
+                                              text: ' · Pesananmu\nsedang diverifikasi oleh admin',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.normal,
+                                                  color: Colors.black,
+                                                  fontSize: 42.sp),
+                                            ),
+                                          ],
+                                        ),
                                       )
-                                    : Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          RichText(
-                                            text: TextSpan(
-                                              style: const TextStyle(
-                                                fontSize: 16,
+                                    ],
+                                  )
+                                : Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      RichText(
+                                        text: TextSpan(
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                          children: [
+                                            TextSpan(
+                                              text: controller.getStatusOrder(),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.green,
+                                                  fontSize: 46.sp),
+                                            ),
+                                            TextSpan(
+                                              text: ' · ${controller.getDescriptionOrder()}',
+                                              style: TextStyle(
+                                                fontSize: 42.sp,
+                                                fontWeight: FontWeight.normal,
                                                 color: Colors.black,
                                               ),
-                                              children: [
-                                                TextSpan(
-                                                  text: controller
-                                                      .getStatusOrder(),
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.green,
-                                                      fontSize: 46.sp),
-                                                ),
-                                                TextSpan(
-                                                  text:
-                                                      ' · ${controller.getDescriptionOrder()}',
-                                                  style: TextStyle(
-                                                    fontSize: 42.sp,
-                                                    fontWeight:
-                                                        FontWeight.normal,
-                                                    color: Colors.black,
-                                                  ),
-                                                ),
-                                              ],
                                             ),
-                                          )
-                                        ],
-                                      ),
-                                Image.asset(
-                                  "assets/smartphone_icon.png",
-                                  height: 190.h,
-                                )
-                              ]),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                            Image.asset(
+                              "assets/smartphone_icon.png",
+                              height: 190.h,
+                            )
+                          ]),
                           result.orderStatus != "new"
                               ? SizedBox(
                                   // width: double.infinity,
                                   height: 190.h,
                                   child: Obx(() {
                                     return Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: List.generate(
-                                          controller.steps.length, (index) {
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: List.generate(controller.steps.length, (index) {
                                         return Expanded(
                                           child: TimelineTile(
                                             axis: TimelineAxis.horizontal,
                                             alignment: TimelineAlign.center,
                                             isFirst: index == 0,
-                                            isLast: index ==
-                                                controller.steps.length - 1,
+                                            isLast: index == controller.steps.length - 1,
                                             beforeLineStyle: LineStyle(
-                                              color: index <=
-                                                      controller
-                                                          .currentStep.value
+                                              color: index <= controller.currentStep.value
                                                   ? Colors.blue
                                                   : Colors.grey.shade300,
                                               thickness: 4,
                                             ),
                                             afterLineStyle: LineStyle(
-                                              color: index <
-                                                      controller
-                                                          .currentStep.value
+                                              color: index < controller.currentStep.value
                                                   ? Colors.blue
                                                   : Colors.grey.shade300,
                                               thickness: 4,
@@ -193,21 +175,14 @@ class OrderDetail extends GetView<BookingController> {
                                               indicatorXY: 0.5,
                                               indicator: index == 0
                                                   ? Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 17.r),
-                                                      child: Image.asset(
-                                                          "assets/icon/icons.png"),
+                                                      padding: EdgeInsets.symmetric(vertical: 17.r),
+                                                      child: Image.asset("assets/icon/icons.png"),
                                                     )
                                                   : Icon(
                                                       controller.steps[index],
-                                                      color: index <=
-                                                              controller
-                                                                  .currentStep
-                                                                  .value
+                                                      color: index <= controller.currentStep.value
                                                           ? Colors.blue
-                                                          : Colors
-                                                              .grey.shade400,
+                                                          : Colors.grey.shade400,
                                                       size: 20,
                                                     ),
                                             ),
@@ -237,8 +212,7 @@ class OrderDetail extends GetView<BookingController> {
                                           backgroundColor: Colors.grey,
                                           child: result.partnerPhoto == null
                                               ? Text(
-                                                  result.partnerName![0]
-                                                      .toUpperCase(),
+                                                  result.partnerName![0].toUpperCase(),
                                                   style: TextStyle(
                                                     color: Colors.white,
                                                     fontSize: 50.sp,
@@ -258,35 +232,29 @@ class OrderDetail extends GetView<BookingController> {
                                           width: 30.w,
                                         ),
                                         Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               result.partnerName!,
                                               style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 45.sp),
+                                                  fontWeight: FontWeight.bold, fontSize: 45.sp),
                                             ),
                                             Row(
                                               children: [
                                                 Text(result.partnerPhone!,
-                                                    style: TextStyle(
-                                                        fontSize: 35.sp)),
+                                                    style: TextStyle(fontSize: 35.sp)),
                                                 SizedBox(width: 5),
                                                 GestureDetector(
                                                   onTap: () {
                                                     Clipboard.setData(
                                                       ClipboardData(
-                                                        text: result
-                                                            .partnerPhone!,
+                                                        text: result.partnerPhone!,
                                                       ),
                                                     );
                                                     IconSnackBar.show(
                                                       context,
-                                                      snackBarType:
-                                                          SnackBarType.alert,
-                                                      label:
-                                                          'Text berhasil di salin.',
+                                                      snackBarType: SnackBarType.alert,
+                                                      label: 'Text berhasil di salin.',
                                                     );
                                                   },
                                                   child: Icon(
@@ -302,15 +270,12 @@ class OrderDetail extends GetView<BookingController> {
                                         Spacer(),
                                         GestureDetector(
                                           onTap: () async {
-                                            final phone =
-                                                result.partnerPhone.toString();
+                                            final phone = result.partnerPhone.toString();
                                             final url = 'https://wa.me/$phone';
 
-                                            if (await canLaunchUrl(
-                                                Uri.parse(url))) {
+                                            if (await canLaunchUrl(Uri.parse(url))) {
                                               await launchUrl(Uri.parse(url),
-                                                  mode: LaunchMode
-                                                      .externalApplication);
+                                                  mode: LaunchMode.externalApplication);
                                             } else {
                                               print('Could not launch $url');
                                             }
@@ -326,7 +291,7 @@ class OrderDetail extends GetView<BookingController> {
                           SizedBox(
                             height: 20.h,
                           ),
-                           Divider(),
+                          Divider(),
                           result.orderStatus == "finish"
                               ? Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -361,8 +326,7 @@ class OrderDetail extends GetView<BookingController> {
                                     padding: EdgeInsets.all(35.sp),
                                     color: Colors.grey[100],
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         result.clientUpdate != 0
                                             ? Text(
@@ -373,35 +337,26 @@ class OrderDetail extends GetView<BookingController> {
                                                 ),
                                               )
                                             : Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                 children: [
                                                   Text(
                                                     "Beri Penilaian",
                                                     style: const TextStyle(
                                                       fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.w600,
+                                                      fontWeight: FontWeight.w600,
                                                     ),
                                                   ),
                                                   ElevatedButton(
-                                                      style: ElevatedButton
-                                                          .styleFrom(
-                                                        backgroundColor:
-                                                            Colors.blue,
-                                                        foregroundColor:
-                                                            Colors.white,
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius: BorderRadius
-                                                              .circular(20
-                                                                  .r), // <- Change radius here
+                                                      style: ElevatedButton.styleFrom(
+                                                        backgroundColor: Colors.blue,
+                                                        foregroundColor: Colors.white,
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(
+                                                              20.r), // <- Change radius here
                                                         ),
                                                       ),
                                                       onPressed: () {
-                                                        controller.storeRating(
-                                                            result.orderid!);
+                                                        controller.storeRating(result.orderid!);
                                                       },
                                                       child: Text("Kirim")),
                                                 ],
@@ -413,16 +368,13 @@ class OrderDetail extends GetView<BookingController> {
                                           child: result.clientUpdate != 0
                                               ? RatingBar.builder(
                                                   itemSize: 28,
-                                                  initialRating: double.parse(
-                                                      result.clientRating
-                                                          .toString()),
+                                                  initialRating:
+                                                      double.parse(result.clientRating.toString()),
                                                   minRating: 1,
                                                   itemCount: 5,
-                                                  unratedColor:
-                                                      Colors.grey[300],
+                                                  unratedColor: Colors.grey[300],
                                                   itemBuilder: (context, _) =>
-                                                      const Icon(Icons.star,
-                                                          color: Colors.amber),
+                                                      const Icon(Icons.star, color: Colors.amber),
                                                   onRatingUpdate: (value) {},
                                                   ignoreGestures: true,
                                                 )
@@ -431,16 +383,12 @@ class OrderDetail extends GetView<BookingController> {
                                                   initialRating: 0,
                                                   minRating: 1,
                                                   itemCount: 5,
-                                                  unratedColor:
-                                                      Colors.grey[300],
+                                                  unratedColor: Colors.grey[300],
                                                   itemBuilder: (context, _) =>
-                                                      const Icon(Icons.star,
-                                                          color: Colors.amber),
+                                                      const Icon(Icons.star, color: Colors.amber),
                                                   onRatingUpdate: (value) {
-                                                    print(
-                                                        "User memberi rating: $value");
-                                                    controller.rating.value =
-                                                        value;
+                                                    print("User memberi rating: $value");
+                                                    controller.rating.value = value;
                                                   },
                                                 ),
                                         ),
@@ -448,44 +396,28 @@ class OrderDetail extends GetView<BookingController> {
                                           height: 30.h,
                                         ),
                                         result.clientUpdate != 0
-                                            ? Text(
-                                                "Review : ${result.clientReview}")
+                                            ? Text("Review : ${result.clientReview}")
                                             : TextField(
                                                 maxLines: 3,
-                                                controller:
-                                                    controller.reviewController,
-                                                style:
-                                                    TextStyle(fontSize: 38.sp),
+                                                controller: controller.reviewController,
+                                                style: TextStyle(fontSize: 38.sp),
                                                 decoration: InputDecoration(
                                                   hintText: "Review (Opsional)",
-                                                  hintStyle: TextStyle(
-                                                      color: Colors.grey),
-                                                  focusedBorder:
-                                                      OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors.grey,
-                                                        width: 1),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30.r),
+                                                  hintStyle: TextStyle(color: Colors.grey),
+                                                  focusedBorder: OutlineInputBorder(
+                                                    borderSide:
+                                                        BorderSide(color: Colors.grey, width: 1),
+                                                    borderRadius: BorderRadius.circular(30.r),
                                                   ),
-                                                  enabledBorder:
-                                                      OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors
-                                                            .grey.shade300),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30.r),
+                                                  enabledBorder: OutlineInputBorder(
+                                                    borderSide:
+                                                        BorderSide(color: Colors.grey.shade300),
+                                                    borderRadius: BorderRadius.circular(30.r),
                                                   ),
-                                                  disabledBorder:
-                                                      OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color: Colors
-                                                            .grey.shade300),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            30.r),
+                                                  disabledBorder: OutlineInputBorder(
+                                                    borderSide:
+                                                        BorderSide(color: Colors.grey.shade300),
+                                                    borderRadius: BorderRadius.circular(30.r),
                                                   ),
                                                   filled: true,
                                                   fillColor: Color(0xfff7f9fc),
@@ -504,57 +436,40 @@ class OrderDetail extends GetView<BookingController> {
                                                     height: 15.h,
                                                   ),
                                                   Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
+                                                    mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
                                                       ElevatedButton(
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                            backgroundColor: controller
-                                                                        .hasAttribute
-                                                                        .value ==
-                                                                    "ya"
-                                                                ? Colors.blue
-                                                                : Colors
-                                                                    .grey[200],
-                                                            foregroundColor:
-                                                                controller.hasAttribute
-                                                                            .value ==
+                                                          style: ElevatedButton.styleFrom(
+                                                            backgroundColor:
+                                                                controller.hasAttribute.value ==
                                                                         "ya"
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
+                                                                    ? Colors.blue
+                                                                    : Colors.grey[200],
+                                                            foregroundColor:
+                                                                controller.hasAttribute.value ==
+                                                                        "ya"
+                                                                    ? Colors.white
+                                                                    : Colors.black,
                                                           ),
                                                           onPressed: () =>
-                                                              controller
-                                                                  .selectAnswer(
-                                                                      "ya"),
+                                                              controller.selectAnswer("ya"),
                                                           child: Text("Ya")),
                                                       SizedBox(width: 30.w),
                                                       ElevatedButton(
-                                                          style: ElevatedButton
-                                                              .styleFrom(
-                                                            backgroundColor: controller
-                                                                        .hasAttribute
-                                                                        .value ==
-                                                                    "tidak"
-                                                                ? Colors.red
-                                                                : Colors
-                                                                    .grey[200],
-                                                            foregroundColor:
-                                                                controller.hasAttribute
-                                                                            .value ==
+                                                          style: ElevatedButton.styleFrom(
+                                                            backgroundColor:
+                                                                controller.hasAttribute.value ==
                                                                         "tidak"
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
+                                                                    ? Colors.red
+                                                                    : Colors.grey[200],
+                                                            foregroundColor:
+                                                                controller.hasAttribute.value ==
+                                                                        "tidak"
+                                                                    ? Colors.white
+                                                                    : Colors.black,
                                                           ),
                                                           onPressed: () =>
-                                                              controller
-                                                                  .selectAnswer(
-                                                                      "tidak"),
+                                                              controller.selectAnswer("tidak"),
                                                           child: Text("Tidak")),
                                                     ],
                                                   ),
@@ -565,7 +480,6 @@ class OrderDetail extends GetView<BookingController> {
                                   ),
                                 )
                               : SizedBox.shrink(),
-                         
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10),
                             child: Column(
@@ -573,59 +487,47 @@ class OrderDetail extends GetView<BookingController> {
                               children: [
                                 Text(
                                   "LAYANAN",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 38.sp),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 38.sp),
                                 ),
                                 SizedBox(
                                   height: 20.h,
                                 ),
                                 Text(
                                   result.category!,
-                                  style: TextStyle(
-                                      fontSize: 38.sp,
-                                      fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontSize: 38.sp, fontWeight: FontWeight.bold),
                                 ),
                                 SizedBox(
                                   height: 10.h,
                                 ),
-                                (result.category != "Daily Cleaning" && result.category != "InCarely")
+                                (result.category != "Daily Cleaning" &&
+                                        result.category != "InCarely")
                                     ? Column(
                                         children: result.dataPack!.map((item) {
                                           return Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
                                               Text(
                                                 item.packName!,
                                                 style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 38.sp),
+                                                    fontWeight: FontWeight.bold, fontSize: 38.sp),
                                               ),
                                               Column(
-                                                  children: item.dataObject!
-                                                      .map((items) {
+                                                  children: item.dataObject!.map((items) {
                                                 return Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                   children: [
                                                     Expanded(
                                                       child: Text(
                                                         " • ${items.objectName} x ${items.qty}",
                                                         maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        style: TextStyle(
-                                                            fontSize: 37.sp),
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: TextStyle(fontSize: 37.sp),
                                                       ),
                                                     ),
                                                     Text(
                                                       Utils.formatCurrency(
-                                                          num.parse(items
-                                                              .objectPrice!)),
-                                                      style: TextStyle(
-                                                          fontSize: 37.sp),
+                                                          num.parse(items.objectPrice!)),
+                                                      style: TextStyle(fontSize: 37.sp),
                                                     ),
                                                   ],
                                                 );
@@ -635,30 +537,25 @@ class OrderDetail extends GetView<BookingController> {
                                         }).toList(),
                                       )
                                     : Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                         children: [
                                           Expanded(
                                             child: Text(
                                                 " • ${result.dataPack!.first.packName} (${result.dataPack!.first.packHour} Jam)",
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
-                                                style:
-                                                    TextStyle(fontSize: 37.sp)),
+                                                style: TextStyle(fontSize: 37.sp)),
                                           ),
                                           Text(
-                                              Utils.formatCurrency(result
-                                                  .dataPack!.first.packPrice!),
-                                              style:
-                                                  TextStyle(fontSize: 37.sp)),
+                                              Utils.formatCurrency(
+                                                  result.dataPack!.first.packPrice!),
+                                              style: TextStyle(fontSize: 37.sp)),
                                         ],
                                       ),
                                 Divider(),
                                 Text(
                                   "LOKASI",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 38.sp),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 38.sp),
                                 ),
                                 Text(
                                   result.propertyAddress!,
@@ -668,9 +565,7 @@ class OrderDetail extends GetView<BookingController> {
                                 Divider(),
                                 Text(
                                   "TIPE PROPERTY",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 38.sp),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 38.sp),
                                 ),
                                 Text(
                                   result.propertyType!,
@@ -682,9 +577,7 @@ class OrderDetail extends GetView<BookingController> {
                                 ),
                                 Text(
                                   "JADWAL PESANAN",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 38.sp),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 38.sp),
                                 ),
                                 Text(
                                   Utils.formatTanggal(result.dueDate!),
@@ -697,9 +590,7 @@ class OrderDetail extends GetView<BookingController> {
                                 Divider(),
                                 Text(
                                   "CATATAN",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 38.sp),
+                                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 38.sp),
                                 ),
                                 Text(
                                   result.orderNotes ?? "-",
@@ -720,8 +611,7 @@ class OrderDetail extends GetView<BookingController> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         "Metode Pembayaran",
@@ -735,24 +625,21 @@ class OrderDetail extends GetView<BookingController> {
                                   ),
                                   Divider(),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         "Subtotal",
                                         style: TextStyle(fontSize: 38.sp),
                                       ),
                                       Text(
-                                        Utils.formatCurrency(
-                                            result.ttlBasicPrice!),
+                                        Utils.formatCurrency(result.ttlBasicPrice!),
                                         style: TextStyle(fontSize: 38.sp),
                                       ),
                                     ],
                                   ),
                                   (result.ttlDiscPercent != 0)
                                       ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "Discount",
@@ -760,57 +647,49 @@ class OrderDetail extends GetView<BookingController> {
                                             ),
                                             Text(
                                               "- ${Utils.formatCurrency(result.ttlDiscNominal!)}",
-                                              style: TextStyle(
-                                                  color: Colors.red,
-                                                  fontSize: 38.sp),
+                                              style: TextStyle(color: Colors.red, fontSize: 38.sp),
                                             ),
                                           ],
                                         )
                                       : SizedBox.shrink(),
                                   (result.propertyType == "Apartement")
                                       ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "Apartement Fee",
                                               style: TextStyle(fontSize: 38.sp),
                                             ),
                                             Text(
-                                              Utils.formatCurrency(
-                                                  result.propertyCharge!),
+                                              Utils.formatCurrency(result.propertyCharge!),
                                               style: TextStyle(fontSize: 38.sp),
                                             ),
                                           ],
                                         )
                                       : SizedBox.shrink(),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         "Biaya Platform",
                                         style: TextStyle(fontSize: 38.sp),
                                       ),
                                       Text(
-                                        Utils.formatCurrency(
-                                            result.platformCharge!),
+                                        Utils.formatCurrency(result.platformCharge!),
                                         style: TextStyle(fontSize: 38.sp),
                                       ),
                                     ],
                                   ),
                                   (result.tax != 0)
                                       ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
                                               "PPN ${result.tax}%",
                                               style: TextStyle(fontSize: 38.sp),
                                             ),
                                             Text(
-                                              Utils.formatCurrency(
-                                                  result.nominalTax!),
+                                              Utils.formatCurrency(result.nominalTax!),
                                               style: TextStyle(fontSize: 38.sp),
                                             ),
                                           ],
@@ -818,18 +697,15 @@ class OrderDetail extends GetView<BookingController> {
                                       : SizedBox.shrink(),
                                   Divider(),
                                   Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         "TOTAL PEMBAYARAN",
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 38.sp),
+                                        style:
+                                            TextStyle(fontWeight: FontWeight.bold, fontSize: 38.sp),
                                       ),
                                       Text(
-                                        Utils.formatCurrency(
-                                            result.ttlSellingNominal!),
+                                        Utils.formatCurrency(result.ttlSellingNominal!),
                                         style: TextStyle(fontSize: 38.sp),
                                       ),
                                     ],
@@ -843,8 +719,7 @@ class OrderDetail extends GetView<BookingController> {
                     ),
                   ),
                 ),
-                result.orderStatus == "finish" ||
-                        result.orderStatus == "progress"
+                result.orderStatus == "finish" || result.orderStatus == "progress"
                     ? SizedBox.shrink()
                     : SizedBox(
                         width: double.infinity,
@@ -855,8 +730,7 @@ class OrderDetail extends GetView<BookingController> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20))),
                             onPressed: () {
-                              showCancelDialog(
-                                  context, result.orderid!.toInt());
+                              showCancelDialog(context, result.orderid!.toInt());
                             },
                             child: Text("Batalkan Pesanan")),
                       )
@@ -892,8 +766,7 @@ class OrderDetail extends GetView<BookingController> {
                     child: Column(mainAxisSize: MainAxisSize.min, children: [
                       Text(
                         'Konfirmasi Pembatalan',
-                        style: TextStyle(
-                            fontSize: 55.sp, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 55.sp, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 30.h),
                       Text("Silakan isi alasan pembatalan:",
@@ -909,8 +782,7 @@ class OrderDetail extends GetView<BookingController> {
                           hintText: "Tulis alasan...",
                           hintStyle: TextStyle(fontSize: 37.sp),
                           border: OutlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.grey, width: 1),
+                            borderSide: BorderSide(color: Colors.grey, width: 1),
                           ),
                           focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.grey),
@@ -940,8 +812,7 @@ class OrderDetail extends GetView<BookingController> {
                                   child: Center(
                                     child: Text(
                                       optionReason[index],
-                                      style: TextStyle(
-                                          color: Colors.black, fontSize: 34.sp),
+                                      style: TextStyle(color: Colors.black, fontSize: 34.sp),
                                     ),
                                   ),
                                 ),
@@ -959,8 +830,7 @@ class OrderDetail extends GetView<BookingController> {
                                   foregroundColor: Colors.black,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10))),
-                              onPressed: () =>
-                                  Navigator.of(context).pop(), // Close dialog
+                              onPressed: () => Navigator.of(context).pop(), // Close dialog
                               child: const Text('Batal'),
                             ),
                           ),
@@ -968,26 +838,33 @@ class OrderDetail extends GetView<BookingController> {
                             width: 10,
                           ),
                           Expanded(
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.red,
-                                  foregroundColor: Colors.white,
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10))),
-                              onPressed: () {
-                                final reason = reasonController.text.trim();
-                                if (reason.isEmpty) {
-                                  SnackbarUtil.show("Field Kosong",
-                                      "Alasan tidak boleh kosong");
-                                } else {
-                                  var data = {
-                                    "orderid": id,
-                                    "cancel_reason": reason
-                                  };
-                                  controller.cancelOrder(data);
-                                }
-                              },
-                              child: const Text('Submit'),
+                            child: Obx(
+                               () {
+                                return ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(10))),
+                                  onPressed: controller.isProcessing.value
+                                      ? null
+                                      : () {
+                                          final reason = reasonController.text.trim();
+                                          if (reason.isEmpty) {
+                                            SnackbarUtil.show(
+                                                "Field Kosong", "Alasan tidak boleh kosong");
+                                            return;
+                                          }
+                                          controller.cancelOrder({
+                                            "orderid": id,
+                                            "cancel_reason": reason,
+                                          });
+                                        },
+                                  child: controller.isProcessing.value
+                                      ? CircularProgressIndicator()
+                                      : Text('Submit'),
+                                );
+                              }
                             ),
                           ),
                         ],

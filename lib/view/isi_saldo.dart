@@ -1,6 +1,8 @@
 
 import 'package:cleaning_app/controller/menu.dart';
+import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/controller/top_up.dart';
+import 'package:cleaning_app/widget/glassmorphic_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_icon_snackbar/flutter_icon_snackbar.dart';
@@ -8,10 +10,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 
 import '../widget/utils.dart';
 
 class IsiSaldo extends GetView<TopUpController> {
+    final ProfileController profileController = Get.find<ProfileController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,124 +26,134 @@ class IsiSaldo extends GetView<TopUpController> {
       body: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(20, 5, 20, 0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Nominal Isi Saldo",
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    TextFormField(
-                      // key: controller.textFieldKey,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.grey.shade600,
+            child: KeyboardActions(
+              config: buildKeyboardActionsConfig(
+          context,
+          fields: [
+            (focusNode: controller.nominalFocus,    nextFocusNode: null),
+           
+          ],
+        ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(20, 5, 20, 0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Nominal Isi Saldo",
+                        style:
+                            TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      keyboardType: TextInputType.number,
-                      inputFormatters: [CurrencyInputFormatter()],
-                      decoration: InputDecoration(
-                        hintText: '0',
-                        hintStyle: TextStyle(
+                      SizedBox(
+                        height: 5,
+                      ),
+                      TextFormField(
+                        // key: controller.textFieldKey,
+                        focusNode: controller.nominalFocus,
+                        style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.grey,
+                          color: Colors.grey.shade600,
                         ),
-                        prefixIcon: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 15, right: 10, top: 12, bottom: 12),
-                          child: Text(
-                            'Rp',
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.grey),
+                        keyboardType: TextInputType.number,
+                        inputFormatters: [CurrencyInputFormatter()],
+                        decoration: InputDecoration(
+                          hintText: '0',
+                          hintStyle: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.grey,
                           ),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(
-                            color: Colors.grey.shade300,
-                            width: 1.5,
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 15, right: 10, top: 12, bottom: 12),
+                            child: Text(
+                              'Rp',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey),
+                            ),
                           ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                          borderSide: BorderSide(
-                            color: Colors.grey.shade400,
-                            width: 1.5,
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade300,
+                              width: 1.5,
+                            ),
                           ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                            borderSide: BorderSide(
+                              color: Colors.grey.shade400,
+                              width: 1.5,
+                            ),
+                          ),
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 10,
+                          ),
+                          isDense: true,
+                          fillColor: Colors.white,
+                          filled: true,
                         ),
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 10,
+                        onChanged: controller.onChanged,
+                      ),
+                      const SizedBox(height: 8),
+                      Obx(() => controller.showError.value
+                              ? Text(
+                                  'Saldo minimal 20.000',
+                                  style:
+                                      TextStyle(color: Colors.red, fontSize: 14),
+                                )
+                              : SizedBox
+                                  .shrink() // or Container() to render nothing
+                          ),
+                      Divider(),
+                      Text(
+                        "Pilih Bank",
+                        style:
+                            TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      ),
+                      ListTile(
+                        contentPadding: EdgeInsets.zero,
+                        leading: Image.asset(
+                          "assets/icon/bca.png",
+                          height: 20,
                         ),
-                        isDense: true,
-                        fillColor: Colors.white,
-                        filled: true,
-                      ),
-                      onChanged: controller.onChanged,
-                    ),
-                    const SizedBox(height: 8),
-                    Obx(() => controller.showError.value
-                            ? Text(
-                                'Saldo minimal 20.000',
-                                style:
-                                    TextStyle(color: Colors.red, fontSize: 14),
-                              )
-                            : SizedBox
-                                .shrink() // or Container() to render nothing
+                        title: Text("BCA"),
+                        trailing: Radio(
+                          value: true,
+                          groupValue: true,
+                          onChanged: (value) {},
                         ),
-                    Divider(),
-                    Text(
-                      "Pilih Bank",
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
-                    ),
-                    ListTile(
-                      contentPadding: EdgeInsets.zero,
-                      leading: Image.asset(
-                        "assets/icon/bca.png",
-                        height: 20,
-                      ),
-                      title: Text("BCA"),
-                      trailing: Radio(
-                        value: true,
-                        groupValue: true,
-                        onChanged: (value) {},
-                      ),
-                    )
-
-                    ///JIKA BANK LEBIH DARI 1
-                    // Obx(() {
-                    //   return Column(
-                    //     children: controller.listBank.map<Widget>((item) {
-                    //       final bankName = item['bank_name'] ?? '';
-
-                    //       return ListTile(
-                    //         contentPadding: EdgeInsets.zero,
-                    //         leading: Image.asset(
-                    //           "assets/icon/${bankName.toLowerCase()}.png", // pastikan nama file lowercase
-                    //           height: 20,
-                    //         ),
-                    //         title: Text(bankName),
-                    //         trailing: Radio(
-                    //           value: item,
-                    //           groupValue: controller.selectBank.value,
-                    //           onChanged: (value) {
-                    //             controller.selectBank.value = value;
-                    //           },
-                    //         ),
-                    //       );
-                    //     }).toList(),
-                    //   );
-                    // })
-                  ],
+                      )
+              
+                      ///JIKA BANK LEBIH DARI 1
+                      // Obx(() {
+                      //   return Column(
+                      //     children: controller.listBank.map<Widget>((item) {
+                      //       final bankName = item['bank_name'] ?? '';
+              
+                      //       return ListTile(
+                      //         contentPadding: EdgeInsets.zero,
+                      //         leading: Image.asset(
+                      //           "assets/icon/${bankName.toLowerCase()}.png", // pastikan nama file lowercase
+                      //           height: 20,
+                      //         ),
+                      //         title: Text(bankName),
+                      //         trailing: Radio(
+                      //           value: item,
+                      //           groupValue: controller.selectBank.value,
+                      //           onChanged: (value) {
+                      //             controller.selectBank.value = value;
+                      //           },
+                      //         ),
+                      //       );
+                      //     }).toList(),
+                      //   );
+                      // })
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -156,7 +171,12 @@ class IsiSaldo extends GetView<TopUpController> {
                       foregroundColor: Colors.white),
                   onPressed: enable
                       ? () {
+                        if(profileController.checkToken){
                           Get.toNamed("/upload-bukti-topup");
+                        }else{
+                          Get.toNamed("/login");
+
+                        }
                         }
                       : null,
                   child: Text("Lanjutkan")),

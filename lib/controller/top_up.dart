@@ -11,6 +11,8 @@ import 'package:intl/intl.dart';
 class TopUpController extends GetxController {
   var topupText = ''.obs;
   var isLoading = false.obs;
+  final FocusNode nominalFocus = FocusNode();
+ 
   // var listBank = ["bca", "mandiri"].obs;
   var listBank = <Map<String, String>>[
     {
@@ -92,5 +94,11 @@ class TopUpController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    nominalFocus.dispose();
   }
 }

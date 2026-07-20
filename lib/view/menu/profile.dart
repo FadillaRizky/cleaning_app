@@ -1,12 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleaning_app/controller/login.dart';
 import 'package:cleaning_app/view/menu/editprofile.dart';
+import 'package:cleaning_app/widget/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../controller/profile.dart';
 
@@ -87,90 +89,128 @@ class ProfilePage extends GetView<ProfileController> {
                                   children: [
                                     Obx(() {
                                       return Text(
-                                        controller.username.value,
+                                        "Halo ${controller.displayUsername}",
                                         style: TextStyle(
                                             fontSize: 55.sp,
                                             color: Colors.white,
                                             fontWeight: FontWeight.w500),
                                       );
                                     }),
-                                    Text(
-                                      controller.email.value,
-                                      style: TextStyle(
-                                          fontSize: 34.sp,
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.w500),
-                                    ),
+                                    !controller.checkToken
+                                        ? Text(
+                                            "Masuk untuk pengalaman lebih lengkap",
+                                            style: TextStyle(
+                                                fontSize: 34.sp,
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.w500),
+                                          )
+                                        : SizedBox.shrink(),
+                                    Obx(() {
+                                      return Text(
+                                        controller.email.value,
+                                        style: TextStyle(
+                                            fontSize: 34.sp,
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.w500),
+                                      );
+                                    }),
                                   ],
                                 ),
-                                IconButton(
-                                    onPressed: () async {
-                                      var result =
-                                          await Get.toNamed("/edit-profile");
-                                      if (result == 'refresh') {
-                                        controller.getDetailUser();
-                                      }
-                                    },
-                                    icon: Icon(
-                                      Icons.edit,
-                                      color: Colors.white,
-                                      size: 60.r,
-                                    ))
+                                controller.checkToken
+                                    ? IconButton(
+                                        onPressed: () async {
+                                          var result = await Get.toNamed("/edit-profile");
+                                          if (result == 'refresh') {
+                                            controller.getDetailUser();
+                                          }
+                                        },
+                                        icon: Icon(
+                                          Icons.edit,
+                                          color: Colors.white,
+                                          size: 60.r,
+                                        ))
+                                    : SizedBox.shrink()
                               ],
                             ),
                             SizedBox(
                               height: 5,
                             ),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(
-                                        5), // Rounded corners
-                                    child: Obx(() {
-                                      return LinearProgressIndicator(
-                                        value: controller.percentageData.value /
-                                            100,
-                                        minHeight: 10.h,
-                                        backgroundColor: Colors.grey[300],
-                                        // Background track color
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(Colors
-                                                .black54), // Progress color
-                                      );
-                                    }),
+                            controller.checkToken
+                                ? Row(
+                                    children: [
+                                      Expanded(
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(5), // Rounded corners
+                                          child: Obx(() {
+                                            return LinearProgressIndicator(
+                                              value: controller.percentageData.value / 100,
+                                              minHeight: 10.h,
+                                              backgroundColor: Colors.grey[300],
+                                              // Background track color
+                                              valueColor: AlwaysStoppedAnimation<Color>(
+                                                  Colors.black54), // Progress color
+                                            );
+                                          }),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 45.w,
+                                      ),
+                                      Container(
+                                        padding: EdgeInsets.all(5),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.white, width: 1), // Border styling
+                                          borderRadius:
+                                              BorderRadius.circular(24.r), // Rounded corners
+                                        ),
+                                        child: Obx(() {
+                                          return Text(
+                                            "${controller.percentageData.value.toStringAsFixed(0)}%",
+                                            // Display percentage
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white,
+                                                fontSize: 33.sp),
+                                          );
+                                        }),
+                                      ),
+                                    ],
+                                  )
+                                : Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () {
+                                            Get.toNamed('/login');
+                                          },
+                                          child: const Text("Login"),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 10),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            foregroundColor: Colors.white,
+                                            backgroundColor: Colors.blue,
+                                          ),
+                                          onPressed: () {
+                                            Get.toNamed('/register');
+                                          },
+                                          child: const Text(
+                                            "Register",
+                                            style: TextStyle(color: Colors.white),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                SizedBox(
-                                  width: 45.w,
-                                ),
-                                Container(
-                                  padding: EdgeInsets.all(5),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.white,
-                                        width: 1), // Border styling
-                                    borderRadius: BorderRadius.circular(
-                                        24.r), // Rounded corners
-                                  ),
-                                  child: Obx(() {
-                                    return Text(
-                                      "${controller.percentageData.value.toStringAsFixed(0)}%",
-                                      // Display percentage
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                          fontSize: 33.sp),
-                                    );
-                                  }),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              "Yuk lengkapi data diri kamu!",
-                              style: TextStyle(
-                                  fontSize: 28.sp, color: Colors.white),
-                            )
+                            controller.checkToken
+                                ? Text(
+                                    "Yuk lengkapi data diri kamu!",
+                                    style: TextStyle(fontSize: 28.sp, color: Colors.white),
+                                  )
+                                : SizedBox.shrink()
                           ],
                         ),
                       )
@@ -180,15 +220,14 @@ class ProfilePage extends GetView<ProfileController> {
                 // buildTileMenu(Icon(LineIcons.checkSquare, color: Colors.black,),
                 //     "Berlangganan Prepaid Lebih Hemat Hingga 20%"),
                 Padding(
-                  padding: EdgeInsets.only(
-                      bottom: 45.r, left: 45.r, right: 45.r, top: 0),
+                  padding: EdgeInsets.only(bottom: 45.r, left: 45.r, right: 45.r, top: 0),
                   child: Column(
                     children: [
                       buildTileMenu(() {
-                        Get.toNamed('/level-member',arguments: {
-                                  "current_level": controller.levelMember.value,
-                                  "current_discount": controller.valueVoucher.value,
-                                });
+                        Get.toNamed('/level-member', arguments: {
+                          "current_level": controller.levelMember.value,
+                          "current_discount": controller.valueVoucher.value,
+                        });
                       }, "Member ${controller.levelMember.value}",
                           subtitle:
                               "Yuk, tingkatkan transaksi kamu untuk menikmati diskon yang lebih besar!"),
@@ -212,7 +251,7 @@ class ProfilePage extends GetView<ProfileController> {
                               width: 10,
                             ),
                             buildCardTile(() {
-                              controller.shareApp();
+                              controller.shareApp(context);
                             },
                                 Icon(
                                   Icons.share,
@@ -233,9 +272,7 @@ class ProfilePage extends GetView<ProfileController> {
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(color: Colors.black12, blurRadius: 5)
-                          ],
+                          boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 5)],
                         ),
                         child: Column(
                           children: [
@@ -243,16 +280,22 @@ class ProfilePage extends GetView<ProfileController> {
                               title: 'Alamat',
                               icon: LineIcons.mapMarker,
                               ontap: () {
-                                Get.toNamed("/alamat");
+                                if (controller.checkToken) {
+                                  Get.toNamed("/alamat");
+                                } else {
+                                  Get.toNamed("/login");
+                                }
                               },
                             ),
-                            buildListTile(
-                              title: 'Saldo',
-                              icon: LineIcons.wallet,
-                              ontap: () {
-                                Get.toNamed("/info-saldo");
-                              },
-                            ),
+                            controller.checkToken
+                                ? buildListTile(
+                                    title: 'Saldo',
+                                    icon: LineIcons.wallet,
+                                    ontap: () {
+                                      Get.toNamed("/info-saldo");
+                                    },
+                                  )
+                                : SizedBox.shrink(),
                             buildListTile(
                               title: 'Ketentuan Layanan',
                               icon: LineIcons.clipboardList,
@@ -267,13 +310,52 @@ class ProfilePage extends GetView<ProfileController> {
                                 Get.toNamed("/privacy_policy");
                               },
                             ),
-                            buildListTile(
-                              title: 'Keluar',
-                              icon: LineIcons.doorOpen,
+                            controller.checkToken
+                            ? buildListTile(
+                              title: 'Hapus Akun',
+                              icon: LineIcons.removeUser,
                               ontap: () {
-                                Get.find<LoginController>().logout();
+                                AppDialog.confirm(
+                                  title: "Hapus akun?",
+                                  message: "Akun yang dihapus tidak dapat dipulihkan kembali.",
+                                  confirmText: "Hapus",
+                                  icon: Icons.remove_from_queue,
+                                  iconColor: Colors.red,
+                                  confirmButtonColor: Colors.red,
+                                  onConfirm: () async {
+                                    final email = Uri.encodeComponent(controller.email.value);
+                                    final name = Uri.encodeComponent("${controller.firstNameController.text} ${controller.lastNameController.text}");
+                                    final url = Uri.parse(
+                                      "https://docs.google.com/forms/d/e/1FAIpQLScasUvQ7D77Slitf53IQ48Y1fIhy5UoUeh-c8kp_BHc4XVnew/viewform?usp=pp_url&entry.1230294411=$email&entry.1913461269=$name",
+                                    );
+
+                                    try {
+                                      final canLaunchIt = await canLaunchUrl(url);
+                                      if (canLaunchIt) {
+                                        await launchUrl(url, mode: LaunchMode.externalApplication);
+                                      } else {
+                                        Get.snackbar(
+                                          'Gagal',
+                                          'Forms tidak dapat diakses',
+                                        );
+                                      }
+                                    } catch (e) {
+                                      print('Error launching Forms: $e');
+                                      Get.snackbar('Error', 'Gagal membuka Google Forms');
+                                    }
+                                  },
+                                );
                               },
-                            ),
+                            ) : SizedBox.shrink(),
+                            controller.checkToken
+                                ? buildListTile(
+                                    title: 'Keluar',
+                                    icon: LineIcons.doorOpen,
+                                    ontap: () {
+                                      Get.find<LoginController>().logout();
+                                    },
+                                  )
+                                : SizedBox.shrink(),
                           ],
                         ),
                       ),
@@ -291,8 +373,7 @@ class ProfilePage extends GetView<ProfileController> {
     );
   }
 
-  Widget buildCardTile(
-      VoidCallback ontap, Icon icon, String title, String value) {
+  Widget buildCardTile(VoidCallback ontap, Icon icon, String title, String value) {
     return Expanded(
       child: GestureDetector(
         onTap: ontap,
@@ -301,17 +382,13 @@ class ProfilePage extends GetView<ProfileController> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(45.r),
-            boxShadow: [
-              BoxShadow(color: Colors.black12, blurRadius: 8)
-            ], // Rounded border
+            boxShadow: [BoxShadow(color: Colors.black12, blurRadius: 8)], // Rounded border
             // border: Border.all(color: Colors.grey[300]!), // Light border color
           ),
           child: Column(
             children: [
               icon,
-              Text(title,
-                  style:
-                      TextStyle(fontWeight: FontWeight.w500, fontSize: 34.sp)),
+              Text(title, style: TextStyle(fontWeight: FontWeight.w500, fontSize: 34.sp)),
               Text(value, style: TextStyle(fontSize: 28.sp)),
             ],
           ),
@@ -368,15 +445,12 @@ class ProfilePage extends GetView<ProfileController> {
                     Text(
                       title,
                       style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 38.sp,
-                          color: Colors.white),
+                          fontWeight: FontWeight.w500, fontSize: 38.sp, color: Colors.white),
                     ),
                     subtitle != null
                         ? Text(
                             subtitle,
-                            style: GoogleFonts.poppins(
-                                fontSize: 25.sp, color: Colors.white),
+                            style: GoogleFonts.poppins(fontSize: 25.sp, color: Colors.white),
                           )
                         : SizedBox()
                   ],
@@ -389,9 +463,7 @@ class ProfilePage extends GetView<ProfileController> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               SizedBox(
-                  height: 265.w,
-                  width: 265.w,
-                  child: Image.asset("assets/icon/icon_member.png")),
+                  height: 265.w, width: 265.w, child: Image.asset("assets/icon/icon_member.png")),
             ],
           ),
         ],
@@ -436,18 +508,22 @@ class AvatarCircle extends StatelessWidget {
   final String imageUrl;
   final double size;
   final Color? color;
+  final double? avatarSize;
+
 
   const AvatarCircle({
     Key? key,
     required this.imageUrl,
     this.size = 80,
+    this.avatarSize,
     this.color = Colors.white,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return ClipOval(
-      child: SizedBox(
+      child: Container(
+        color: Colors.black12,
         width: size,
         height: size,
         child: CachedNetworkImage(
@@ -456,7 +532,7 @@ class AvatarCircle extends StatelessWidget {
           placeholder: (context, url) => const CircularProgressIndicator(),
           errorWidget: (context, url, error) => Icon(
             Icons.person,
-            size: 140.r,
+            size: avatarSize ?? 140.r,
             color: color,
           ),
         ),

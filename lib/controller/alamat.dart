@@ -34,11 +34,18 @@ class AlamatController extends GetxController {
     'depok',
   };
 
+    final FocusNode nameFocus = FocusNode();
+    final FocusNode phoneNumberFocus = FocusNode();
+    final FocusNode detailAddressFocus = FocusNode();
+
+
   var isAreaCovered = false.obs;
 
   var isDefaultAddress = false.obs;
 
   var isLoading = false.obs;
+ final RxBool isSaving = false.obs;
+
   final mapController = MapController();
   var pickedLocation = Rxn<LatLng>(
     LatLng(-6.1754, 106.8272), // Pusat Jakarta
@@ -129,28 +136,32 @@ class AlamatController extends GetxController {
   }
 
   Future<void> fetchAddress(Map<String, dynamic> data, bool isDetail) async {
-    try {
-      EasyLoading.show();
-      final response = isDetail
-          ? await Api.updateAddress(data)
-          : await Api.storeAddress(data);
+  if (isSaving.value) return; // guard pertama (jaga-jaga race condition)
+  isSaving.value = true;
 
-      if (response.status == true) {
-        EasyLoading.showSuccess(
-            "Berhasil ${isDetail ? "Mengubah" : "Menambahkan"} Alamat");
-        resetForm();
-        Get.back(result: 'refresh');
-      } else {
-        EasyLoading.showError("Gagal ${isDetail ? "update" : "kirim"} data");
-      }
-    } catch (e, stackTrace) {
-      print("Error: $e");
-      print("StackTrace: $stackTrace");
-      EasyLoading.showError("Gagal ${isDetail ? "update" : "kirim"} data: $e");
-    } finally {
-      EasyLoading.dismiss();
+  try {
+    EasyLoading.show();
+    final response = isDetail
+        ? await Api.updateAddress(data)
+        : await Api.storeAddress(data);
+
+    if (response.status == true) {
+      EasyLoading.showSuccess(
+          "Berhasil ${isDetail ? "Mengubah" : "Menambahkan"} Alamat");
+      resetForm();
+      Get.back(result: 'refresh');
+    } else {
+      EasyLoading.showError("Gagal ${isDetail ? "update" : "kirim"} data");
     }
+  } catch (e, stackTrace) {
+    print("Error: $e");
+    print("StackTrace: $stackTrace");
+    EasyLoading.showError("Gagal ${isDetail ? "update" : "kirim"} data: $e");
+  } finally {
+    EasyLoading.dismiss();
+    isSaving.value = false; // reset guard, apapun hasilnya
   }
+}
 
   Future<void> deleteAddress(Map<String, dynamic> data) async {
     try {

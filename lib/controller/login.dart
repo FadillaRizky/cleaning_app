@@ -1,5 +1,7 @@
 import 'package:cleaning_app/bindings.dart';
+import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/widget/popup.dart';
+import 'package:cleaning_app/widget/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,14 +18,15 @@ class LoginController extends GetxController {
   final RxBool isPasswordVisible = false.obs;
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
+  final FocusNode phoneNumberFocus = FocusNode();
+  final FocusNode passwordFocus = FocusNode();
 
   final _storage = GetStorage();
 
   late TextEditingController controllerphoneNumber;
   late TextEditingController controllerPassword;
 
-  final Rx<LoginModel.LoginResponse?> loginResponse =
-      Rx<LoginModel.LoginResponse?>(null);
+  final Rx<LoginModel.LoginResponse?> loginResponse = Rx<LoginModel.LoginResponse?>(null);
 
   @override
   void onInit() {
@@ -38,6 +41,8 @@ class LoginController extends GetxController {
     print("LOGIN CONTROLLER onClose CALLED");
     controllerphoneNumber.dispose();
     controllerPassword.dispose();
+    phoneNumberFocus.dispose();
+    passwordFocus.dispose();
     super.onClose();
   }
 
@@ -60,17 +65,16 @@ class LoginController extends GetxController {
 
       final response = await Api.login(data);
       // loginResponse.value = response;
-      print(
-          'Login Response: ${response.toJson()}'); // Log the entire response for debugging
+      print('Login Response: ${response.toJson()}'); // Log the entire response for debugging
 
       if (response.status == "success" && response.data != null) {
         print(response.refreshToken);
         await _saveInitialLoginData(response); // Assuming this method exists
-
+        controllerphoneNumber.clear();
+        controllerPassword.clear();
         Get.offAllNamed('/menu');
       } else {
-        errorMessage.value =
-            response.message ?? 'Terjadi kesalahan saat login.';
+        errorMessage.value = 'Nomor HP atau kata sandi yang Anda masukkan salah.';
       }
     } catch (e) {
       errorMessage.value = e.toString();
@@ -88,6 +92,14 @@ class LoginController extends GetxController {
   }
 
   Future<void> _removeInitialLoginData() async {
+    final profileC = Get.find<ProfileController>();
+    profileC.username.value = '';
+    profileC.email.value = '';
+    profileC.urlAvatar.value = '';
+    profileC.hasVoucher.value = false;
+    profileC.valueVoucher.value = 0;
+    profileC.levelMember.value = '';
+
     await _storage.remove('name');
     await _storage.remove('email');
     await _storage.remove('token');
@@ -117,110 +129,145 @@ class LoginController extends GetxController {
     //   ),
     // );
 
-     Get.dialog(
-      Center(
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 24),
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(25),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.1),
-                blurRadius: 20,
-                offset: const Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Icon dengan animasi
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.red[50],
-                  shape: BoxShape.circle,
-                ),
-                padding: EdgeInsets.all(42.r),
-                child: Icon(
-                  Icons.logout_rounded,
-                  color: Colors.red,
-                  size: 100.r,
-                ),
-              ),
-              SizedBox(height: 25.h),
-              Text(
-                "Keluar dari akun?",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40.sp),
-              ),
-              SizedBox(height: 24.h),
-              Text(
-                "Apakah kamu yakin ?",
-                textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey, fontSize: 38.sp),
-              ),
-              SizedBox(height: 35.h),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () => Get.back(),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[300],
-                        foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 33.h),
-                      ),
-                      child: Text("Batal", style: TextStyle(fontSize: 38.sp)),
-                    ),
-                  ),
-                  SizedBox(width: 36.w),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () async {
-                        Get.back();
-                        try {
-                          EasyLoading.show(status: 'Keluar...');
+    // Get.dialog(
+    //   Center(
+    //     child: Container(
+    //       margin: const EdgeInsets.symmetric(horizontal: 24),
+    //       padding: const EdgeInsets.all(24),
+    //       decoration: BoxDecoration(
+    //         color: Colors.white,
+    //         borderRadius: BorderRadius.circular(25),
+    //         boxShadow: [
+    //           BoxShadow(
+    //             color: Colors.black.withOpacity(0.1),
+    //             blurRadius: 20,
+    //             offset: const Offset(0, 10),
+    //           ),
+    //         ],
+    //       ),
+    //       child: Column(
+    //         mainAxisSize: MainAxisSize.min,
+    //         children: [
+    //           // Icon dengan animasi
+    //           Container(
+    //             decoration: BoxDecoration(
+    //               color: Colors.red[50],
+    //               shape: BoxShape.circle,
+    //             ),
+    //             padding: EdgeInsets.all(42.r),
+    //             child: Icon(
+    //               Icons.logout_rounded,
+    //               color: Colors.red,
+    //               size: 100.r,
+    //             ),
+    //           ),
+    //           SizedBox(height: 25.h),
+    //           Text(
+    //             "Keluar dari akun?",
+    //             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40.sp),
+    //           ),
+    //           SizedBox(height: 24.h),
+    //           Text(
+    //             "Apakah kamu yakin ?",
+    //             textAlign: TextAlign.center,
+    //             style: TextStyle(color: Colors.grey, fontSize: 38.sp),
+    //           ),
+    //           SizedBox(height: 35.h),
+    //           Row(
+    //             children: [
+    //               Expanded(
+    //                 child: ElevatedButton(
+    //                   onPressed: () => Get.back(),
+    //                   style: ElevatedButton.styleFrom(
+    //                     backgroundColor: Colors.grey[300],
+    //                     foregroundColor: Colors.black,
+    //                     shape: RoundedRectangleBorder(
+    //                       borderRadius: BorderRadius.circular(15),
+    //                     ),
+    //                     padding: EdgeInsets.symmetric(vertical: 33.h),
+    //                   ),
+    //                   child: Text("Batal", style: TextStyle(fontSize: 38.sp)),
+    //                 ),
+    //               ),
+    //               SizedBox(width: 36.w),
+    //               Expanded(
+    //                 child: ElevatedButton(
+    //                   onPressed: () async {
+    //                     Get.back();
+    //                     try {
+    //                       EasyLoading.show(status: 'Keluar...');
 
-                          final response = await Api.logout();
+    //                       final response = await Api.logout();
 
-                          if (response.status == true) {
-                            await _removeInitialLoginData();
-                            EasyLoading.dismiss();
-                            Get.offAllNamed('/login');
-                          } else {
-                            EasyLoading.dismiss();
-                            SnackbarUtil.error(
-                              "Terjadi kesalahan, coba lagi..",
-                            );
-                          }
-                        } catch (e) {
-                          EasyLoading.dismiss();
-                          SnackbarUtil.error("Logout gagal: ${e.toString()}");
-                        }
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 33.h),
-                      ),
-                      child: Text("Keluar", style: TextStyle(fontSize: 38.sp)),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-      barrierColor: Colors.black.withOpacity(0.4),
-      barrierDismissible: true,
+    //                       if (response.status == true) {
+    //                         await _removeInitialLoginData();
+    //                         EasyLoading.dismiss();
+    //                         Get.offAllNamed('/splash');
+    //                       } else {
+    //                         EasyLoading.dismiss();
+    //                         SnackbarUtil.error(
+    //                           "Terjadi kesalahan, coba lagi..",
+    //                         );
+    //                       }
+    //                     } catch (e) {
+    //                       EasyLoading.dismiss();
+    //                       SnackbarUtil.error("Logout gagal: ${e.toString()}");
+    //                     }
+    //                   },
+    //                   style: ElevatedButton.styleFrom(
+    //                     backgroundColor: Colors.red,
+    //                     foregroundColor: Colors.white,
+    //                     shape: RoundedRectangleBorder(
+    //                       borderRadius: BorderRadius.circular(15),
+    //                     ),
+    //                     padding: EdgeInsets.symmetric(vertical: 33.h),
+    //                   ),
+    //                   child: Text("Keluar", style: TextStyle(fontSize: 38.sp)),
+    //                 ),
+    //               ),
+    //             ],
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    //   barrierColor: Colors.black.withOpacity(0.4),
+    //   barrierDismissible: true,
+    // );
+    AppDialog.confirm(
+      title: "Keluar dari akun?",
+      message: "Apakah kamu yakin?",
+      confirmText: "Keluar",
+      icon: Icons.logout_rounded,
+      iconColor: Colors.red,
+      confirmButtonColor: Colors.red,
+      onConfirm: () async {
+        try {
+          EasyLoading.show(status: 'Keluar...');
+
+          final response = await Api.logout();
+
+          if (response.status == true) {
+            await _removeInitialLoginData();
+
+            EasyLoading.dismiss();
+
+            Get.offAllNamed('/splash');
+          } else {
+            EasyLoading.dismiss();
+
+            SnackbarUtil.error(
+              "Terjadi kesalahan, coba lagi..",
+            );
+          }
+        } catch (e) {
+          EasyLoading.dismiss();
+
+          SnackbarUtil.error(
+            "Logout gagal: ${e.toString()}",
+          );
+        }
+      },
     );
   }
 }

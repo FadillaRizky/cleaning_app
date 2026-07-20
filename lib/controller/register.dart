@@ -16,8 +16,7 @@ class RegisterController extends GetxController {
 
   final RxBool isLoadingVerify = false.obs;
   final GetStorage _storage = GetStorage();
-  final Rx<LoginModel.LoginResponse?> loginResponse =
-      Rx<LoginModel.LoginResponse?>(null);
+  final Rx<LoginModel.LoginResponse?> loginResponse = Rx<LoginModel.LoginResponse?>(null);
 
   final TextEditingController referalCodeController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
@@ -25,8 +24,16 @@ class RegisterController extends GetxController {
   final TextEditingController phoneNumberController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController =
-      TextEditingController();
+  final TextEditingController confirmPasswordController = TextEditingController();
+
+  final FocusNode referalFocus = FocusNode();
+  final FocusNode firstNameFocus = FocusNode();
+  final FocusNode lastNameFocus = FocusNode();
+  final FocusNode phoneNumberFocus = FocusNode();
+  final FocusNode emailFocus = FocusNode();
+  final FocusNode passwordFocus = FocusNode();
+  final FocusNode passwordConfirmFocus = FocusNode();
+
 
   final otpControllers = List.generate(6, (index) => TextEditingController());
   final focusNodes = List.generate(6, (index) => FocusNode());
@@ -87,7 +94,7 @@ class RegisterController extends GetxController {
         "email": emailController.text.trim(),
         "password": passwordController.text.trim(),
       };
-      
+
       if (referalCodeController.text.trim().isNotEmpty) {
         data["partner_referal_code"] = referalCodeController.text.trim();
       }
@@ -130,20 +137,18 @@ class RegisterController extends GetxController {
     isLoading.value = true;
 
     try {
-      if (!otpControllers
-          .every((controller) => controller.text.trim().isNotEmpty)) {
+      if (!otpControllers.every((controller) => controller.text.trim().isNotEmpty)) {
         throw "Otp Belum Terisi";
       }
 
       String otp = otpControllers.map((controller) => controller.text).join();
-      final cred = PhoneAuthProvider.credential(
-          verificationId: verificationId, smsCode: otp);
+      final cred = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: otp);
       await FirebaseAuth.instance.signInWithCredential(cred);
 
-      var firstName = firstNameController.text
-          .trim(); // Added trim() to remove leading/trailing whitespace
-      var lastName = lastNameController.text
-          .trim(); // Added trim() to remove leading/trailing whitespace
+      var firstName =
+          firstNameController.text.trim(); // Added trim() to remove leading/trailing whitespace
+      var lastName =
+          lastNameController.text.trim(); // Added trim() to remove leading/trailing whitespace
       var phoneNumber = phoneNumberController.text.trim();
       var email = emailController.text.trim();
       var password = passwordController.text.trim();
@@ -193,6 +198,19 @@ class RegisterController extends GetxController {
 
   Future<void> _saveInitialLoginData(LoginModel.LoginResponse userData) async {
     await _storage.write('token', userData.token);
+  }
+
+  @override
+  void dispose() {
+    
+    super.dispose();
+    referalFocus.dispose();
+    firstNameFocus.dispose();
+    lastNameFocus.dispose();
+    phoneNumberFocus.dispose();
+    emailFocus.dispose();
+    passwordFocus.dispose();
+    passwordConfirmFocus.dispose();
   }
 }
 

@@ -34,26 +34,6 @@ class Menu extends StatelessWidget {
        screen: ProfilePage(),
        item: ItemConfig(icon: Icon(Icons.person), title: "Profile"),
      ),
-    //  PersistentTabConfig(
-    //    screen: Home(key: PageStorageKey("HomeTab")),
-    //    item: ItemConfig(icon: Icon(Icons.home), title: "Home"),
-    //  ),
-    //  PersistentTabConfig(
-    //    screen: Booking(key: PageStorageKey("BookingTab")),
-    //    item: ItemConfig(icon: Icon(Icons.calendar_month_rounded), title: "Booking"),
-    //  ),
-    //  PersistentTabConfig(
-    //    screen: NotificationPage(key: PageStorageKey("NotificationTab")),
-    //    item: ItemConfig(icon: Icon(Icons.notifications), title: "Notification"),
-    //  ),
-    //  PersistentTabConfig(
-    //    screen: SupportPage(key: PageStorageKey("SupportTab")),
-    //    item: ItemConfig(icon: Icon(Icons.headset_mic_rounded), title: "Support"),
-    //  ),
-    //  PersistentTabConfig(
-    //    screen: ProfilePage(key: PageStorageKey("ProfileTab")),
-    //    item: ItemConfig(icon: Icon(Icons.person), title: "Profile"),
-    //  ),
    ];
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,8 @@
 
-  import 'package:intl/intl.dart';
+  import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
   import 'package:flutter/services.dart';
 
 class Utils{
@@ -75,3 +78,143 @@ class Utils{
     }
   }
 
+class AppDialog {
+  static Future<void> confirm({
+    required String title,
+    required String message,
+    required String confirmText,
+    required VoidCallback onConfirm,
+
+    String cancelText = "Batal",
+
+    IconData icon = Icons.warning_rounded,
+
+    Color iconColor = Colors.orange,
+    Color confirmButtonColor = Colors.red,
+
+    bool barrierDismissible = true,
+  }) async {
+    Get.dialog(
+      Center(
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.all(24),
+
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(25),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
+              ),
+            ],
+          ),
+
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /// ICON
+              Container(
+                decoration: BoxDecoration(
+                  color: iconColor.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                padding: EdgeInsets.all(42.r),
+                child: Icon(
+                  icon,
+                  color: iconColor,
+                  size: 100.r,
+                ),
+              ),
+
+              SizedBox(height: 25.h),
+
+              /// TITLE
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 40.sp,
+                ),
+              ),
+
+              SizedBox(height: 24.h),
+
+              /// MESSAGE
+              Text(
+                message,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 38.sp,
+                ),
+              ),
+
+              SizedBox(height: 35.h),
+
+              /// BUTTONS
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Get.back(),
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[300],
+                        foregroundColor: Colors.black,
+
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+
+                        padding: EdgeInsets.symmetric(vertical: 33.h),
+                      ),
+
+                      child: Text(
+                        cancelText,
+                        style: TextStyle(fontSize: 38.sp),
+                      ),
+                    ),
+                  ),
+
+                  SizedBox(width: 36.w),
+
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Get.back();
+                        onConfirm();
+                      },
+
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: confirmButtonColor,
+                        foregroundColor: Colors.white,
+
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+
+                        padding: EdgeInsets.symmetric(vertical: 33.h),
+                      ),
+
+                      child: Text(
+                        confirmText,
+                        style: TextStyle(fontSize: 38.sp),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+
+      barrierColor: Colors.black.withOpacity(0.4),
+      barrierDismissible: barrierDismissible,
+    );
+  }
+}

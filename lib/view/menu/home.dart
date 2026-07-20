@@ -2,16 +2,20 @@ import 'package:badges/badges.dart' as badges;
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cleaning_app/controller/home.dart';
 import 'package:cleaning_app/controller/profile.dart';
+import 'package:cleaning_app/model/ListTestimonialResponse.dart';
 import 'package:cleaning_app/view/menu/profile.dart';
 import 'package:cleaning_app/view/menu/tambah_alamat.dart';
 import 'package:cleaning_app/widget/cached_image.dart';
+import 'package:cleaning_app/widget/glassmorphic_textfield.dart';
 import 'package:cleaning_app/widget/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -23,7 +27,7 @@ class Home extends GetView<HomeController> {
   Home({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext ctx) {
     final ProfileController profileController = Get.find<ProfileController>();
     return Scaffold(
       // key: const PageStorageKey('HomeScaffold'),
@@ -38,23 +42,45 @@ class Home extends GetView<HomeController> {
                   Container(
                     padding: EdgeInsets.all(45.r),
                     decoration: BoxDecoration(
-                        color: Colors.white,),
+                      color: Colors.white,
+                    ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        GestureDetector(onTap: () async {
-                          var result = await Get.toNamed("/edit-profile");
-                          if (result == 'refresh') {
-                            profileController.getDetailUser();
-                          }
-                        }, child: Obx(() {
-                          return AvatarCircle(
-                            imageUrl: profileController.urlAvatar.value,
-                            size: 220.r,
-                            color: Colors.grey,
-                          );
-                        })),
+                        GestureDetector(
+                          onTap: () async {
+                            if (profileController.checkToken) {
+                              var result = await Get.toNamed("/edit-profile");
+                              if (result == 'refresh') {
+                                profileController.getDetailUser();
+                              }
+                            } else {
+                              showDialog(
+                                context: ctx,
+                                barrierColor: Colors.black12,
+                                builder: (_) => Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  elevation: 10,
+                                  child: CircleAvatar(
+                                    radius: 200.r,
+                                    child: AvatarCircle(
+                                      imageUrl: profileController.urlAvatar.value,
+                                      size: 400.r,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                          child: Obx(() {
+                            return AvatarCircle(
+                              imageUrl: profileController.urlAvatar.value,
+                              size: 220.r,
+                              color: Colors.grey,
+                            );
+                          }),
+                        ),
                         SizedBox(
                           width: 30.w,
                         ),
@@ -63,30 +89,28 @@ class Home extends GetView<HomeController> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        Obx(() {
-                                          return Text(
-                                            "Selamat ${controller.getGreetingByTime()} ‘${profileController.username}’ !",
-                                            overflow: TextOverflow.ellipsis,
+                                        GetBuilder<ProfileController>(
+                                          init: profileController,
+                                          builder: (profileC) {
+                                            return Text(
+                                              "Selamat ${controller.getGreetingByTime()} '${profileC.displayUsername}'!",
+                                              overflow: TextOverflow.ellipsis,
+                                              style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 47.sp,
+                                                  fontWeight: FontWeight.w600),
+                                            );
+                                          },
+                                        ),
+                                        Text("“Buat hidup anda jadi lebih mudah.”",
                                             style: TextStyle(
-                                                color: Colors.blue,
-                                                fontSize: 47.sp,
-                                          
-                                                fontWeight: FontWeight.w600),
-                                          );
-                                        }),
-                                         Text(
-                                            "“Buat hidup anda jadi lebih mudah.”",
-                                            style: TextStyle(
-                                                fontSize: 35.sp,
-                                                fontWeight: FontWeight.w500)),
+                                                fontSize: 35.sp, fontWeight: FontWeight.w500)),
                                       ],
                                     ),
                                   ),
@@ -94,10 +118,9 @@ class Home extends GetView<HomeController> {
                                     return badges.Badge(
                                       badgeContent: Text(
                                         controller.notifLength.value.toString(),
-                                        style: TextStyle(color: Colors.white,fontSize: 25.sp),
+                                        style: TextStyle(color: Colors.white, fontSize: 25.sp),
                                       ),
-                                      showBadge:
-                                          controller.notifLength.value != 0,
+                                      showBadge: controller.notifLength.value != 0,
                                       child: GestureDetector(
                                         onTap: () {
                                           Get.find<ControllerMenu>().goToTab(2);
@@ -126,16 +149,14 @@ class Home extends GetView<HomeController> {
                     ),
                   ),
                   Padding(
-                    padding:  EdgeInsets.all(45.r),
+                    padding: EdgeInsets.all(45.r),
                     child: Column(
                       children: [
                         SizedBox(
                             height: 120.h,
                             child: Autocomplete<String>(
-                              optionsBuilder:
-                                  (TextEditingValue textEditingValue) {
-                                if (textEditingValue.text.isEmpty ||
-                                    textEditingValue.text == "") {
+                              optionsBuilder: (TextEditingValue textEditingValue) {
+                                if (textEditingValue.text.isEmpty || textEditingValue.text == "") {
                                   return const Iterable<String>.empty();
                                 }
                                 return controller.options
@@ -155,41 +176,48 @@ class Home extends GetView<HomeController> {
                                   orElse: () => {},
                                 );
                                 print(selected);
-                                print(
-                                    'Selected ID: ${selected['category_id']}');
+                                print('Selected ID: ${selected['category_id']}');
                                 Get.toNamed(
                                   '/detail-category-daily',
                                   arguments: {
                                     'id': selected['category_id'].toString(),
                                     'title': selected['category_name'] ?? "",
-                                    'img_url':
-                                        selected['img_url'] ?? ["", "", ""],
-                                    'description':
-                                        selected['description'] ?? "",
+                                    'img_url': selected['img_url'] ?? ["", "", ""],
+                                    'description': selected['description'] ?? "",
                                   },
                                 );
                               },
-                              fieldViewBuilder: (context, textEditingController,
-                                  focusNode, onFieldSubmitted) {
-                                return TextField(
-                                  controller: textEditingController,
-                                  focusNode: focusNode,
-                                  decoration: InputDecoration(
-                                    hintText: 'Cari layanan...',
-                                    hintStyle: TextStyle(fontSize: 40.sp),
-                                    filled: true,
-                                    fillColor: Colors.white,
-                                    enabledBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide:
-                                            BorderSide(color: Colors.black12)),
-                                    focusedBorder: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                        borderSide:
-                                            BorderSide(color: Colors.black12)),
-                                    prefixIcon: Icon(Icons.search),
-                                    contentPadding:
-                                        EdgeInsets.symmetric(vertical: 0),
+                              fieldViewBuilder:
+                                  (context, textEditingController, focusNode, onFieldSubmitted) {
+                                controller.searchFocus = focusNode;
+                                return KeyboardActions(
+                                  config: buildKeyboardActionsConfig(
+                                    ctx,
+                                    fields: [
+                                      (focusNode: focusNode, nextFocusNode: null),
+                                    ],
+                                  ),
+                                  child: TextField(
+                                    controller: textEditingController,
+                                    focusNode: focusNode,
+                                    textInputAction: TextInputAction.done,
+                                    onEditingComplete: () {
+                                      FocusScope.of(context).unfocus();
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: 'Cari layanan...',
+                                      hintStyle: TextStyle(fontSize: 40.sp),
+                                      filled: true,
+                                      fillColor: Colors.white,
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          borderSide: BorderSide(color: Colors.black12)),
+                                      focusedBorder: OutlineInputBorder(
+                                          borderRadius: BorderRadius.circular(10),
+                                          borderSide: BorderSide(color: Colors.black12)),
+                                      prefixIcon: Icon(Icons.search),
+                                      contentPadding: EdgeInsets.symmetric(vertical: 0),
+                                    ),
                                   ),
                                 );
                               },
@@ -200,8 +228,7 @@ class Home extends GetView<HomeController> {
                         Obx(() {
                           return CarouselSlider.builder(
                             carouselController: controller.carouselController,
-                            itemCount: controller.isBannerLoading.value ||
-                                    controller.banner.isEmpty
+                            itemCount: controller.isBannerLoading.value || controller.banner.isEmpty
                                 ? 1
                                 : controller.banner.length,
                             itemBuilder: (context, index, realIndex) {
@@ -217,23 +244,18 @@ class Home extends GetView<HomeController> {
                                 // Data tersedia
                                 final imageUrl = controller.banner[index];
                                 return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 5),
+                                  padding: const EdgeInsets.symmetric(horizontal: 5),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(12),
                                     child: Image.network(
                                       imageUrl,
                                       fit: BoxFit.cover,
                                       width: double.infinity,
-                                      loadingBuilder:
-                                          (context, child, loadingProgress) {
-                                        if (loadingProgress == null)
-                                          return child;
-                                        return const Center(
-                                            child: CircularProgressIndicator());
+                                      loadingBuilder: (context, child, loadingProgress) {
+                                        if (loadingProgress == null) return child;
+                                        return const Center(child: CircularProgressIndicator());
                                       },
-                                      errorBuilder:
-                                          (context, error, stackTrace) {
+                                      errorBuilder: (context, error, stackTrace) {
                                         return Placeholder();
                                       },
                                     ),
@@ -261,11 +283,9 @@ class Home extends GetView<HomeController> {
                               : Container(
                                   child: Center(
                                     child: AnimatedSmoothIndicator(
-                                      activeIndex:
-                                          controller.currentIndex.value,
+                                      activeIndex: controller.currentIndex.value,
                                       count: controller.banner.length,
-                                      effect: const WormEffect(
-                                          dotHeight: 10, dotWidth: 10),
+                                      effect: const WormEffect(dotHeight: 10, dotWidth: 10),
                                     ),
                                   ),
                                 );
@@ -276,48 +296,47 @@ class Home extends GetView<HomeController> {
                         Container(
                           padding: EdgeInsets.all(30.r),
                           decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10)),
+                              color: Colors.white, borderRadius: BorderRadius.circular(10)),
                           child: Column(
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                   Text(
+                                  Text(
                                     "  DISCOVER SERVICES",
                                     style: TextStyle(fontSize: 43.sp),
                                   ),
-                                  // TextButton(
-                                  //     onPressed: () {},
-                                  //     child: const Text(
-                                  //       "Hide All",
-                                  //       style: TextStyle(
-                                  //         decoration: TextDecoration.underline,
-                                  //         decorationColor: Colors.blue,
-                                  //         color: Colors.blue, // Text color
-                                  //       ),
-                                  //     ))
+                                  Spacer(),
+                                  TextButton(onPressed: () {
+                                    controller.isExpanded.value = !controller.isExpanded.value;
+                                  }, child: Obx(() {
+                                    return Text(
+                                      controller.isExpanded.value ? "Hide All" : "Show All",
+                                      style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Colors.blue,
+                                        color: Colors.blue, // Text color
+                                      ),
+                                    );
+                                  }))
                                 ],
                               ),
-                              SizedBox(height: 8,),
+                              SizedBox(
+                                height: 8,
+                              ),
                               FutureBuilder(
                                   future: controller.futurePackageList,
                                   builder: (context,
-                                      AsyncSnapshot<ListCategoryPackageResponse>
-                                          snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
+                                      AsyncSnapshot<ListCategoryPackageResponse> snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
                                       return Skeletonizer(
                                         child: GridView.builder(
                                           shrinkWrap: true,
-                                          physics:
-                                              const NeverScrollableScrollPhysics(),
+                                          physics: const NeverScrollableScrollPhysics(),
                                           gridDelegate:
                                               const SliverGridDelegateWithFixedCrossAxisCount(
                                             crossAxisCount: 4, // 3 columns
-                                            childAspectRatio:
-                                                1, // Adjust item height
+                                            childAspectRatio: 1, // Adjust item height
                                             crossAxisSpacing: 15,
                                             mainAxisSpacing: 15,
                                           ),
@@ -326,10 +345,9 @@ class Home extends GetView<HomeController> {
                                             return Column(
                                               children: [
                                                 Container(
-                                                  width: 42,
-                                                  height: 42,
-                                                  decoration:
-                                                      const BoxDecoration(
+                                                  width: 50.w,
+                                                  height: 50.w,
+                                                  decoration: const BoxDecoration(
                                                     color: Colors.black12,
                                                     shape: BoxShape.circle,
                                                   ),
@@ -341,10 +359,8 @@ class Home extends GetView<HomeController> {
                                                   maxLines: 2,
                                                   style: TextStyle(
                                                       fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      overflow: TextOverflow
-                                                          .ellipsis),
+                                                      fontWeight: FontWeight.w500,
+                                                      overflow: TextOverflow.ellipsis),
                                                 ),
                                               ],
                                             );
@@ -353,67 +369,52 @@ class Home extends GetView<HomeController> {
                                       ); // loading state
                                     } else if (snapshot.hasError) {
                                       return Text('Error: ${snapshot.error}');
-                                    } else if (!snapshot.hasData ||
-                                        snapshot.data!.data!.isEmpty) {
+                                    } else if (!snapshot.hasData || snapshot.data!.data!.isEmpty) {
                                       return const Text('No packages found.');
                                     }
-                                    controller.options.value = snapshot
-                                        .data!.data!
+                                    controller.options.value = snapshot.data!.data!
                                         .map((e) => {
                                               'category_id': e.id ?? 0,
-                                              'category_name':
-                                                  e.categoryName ?? "",
+                                              'category_name': e.categoryName ?? "",
                                               'img_url': [
                                                 e.bannerImg1 ?? "",
                                                 e.bannerImg2 ?? "",
                                                 e.bannerImg3 ?? ""
                                               ],
-                                              'description':
-                                                  e.categoryDescription ?? "",
+                                              'description': e.categoryDescription ?? "",
                                             })
                                         .toList();
+
                                     return gridPackageList(snapshot);
                                   }),
                             ],
                           ),
                         ),
-                         SizedBox(
+                        SizedBox(
                           height: 45.h,
                         ),
                         Container(
                           padding: EdgeInsets.all(30.r),
                           decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10)),
+                              color: Colors.white, borderRadius: BorderRadius.circular(10)),
                           child: Column(
                             children: [
                               Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
-                                   Text(
+                                  Text(
                                     "BEST SELLER SERVICES",
                                     style: TextStyle(fontSize: 43.sp),
                                   ),
-                                  
-                                  // TextButton(
-                                  //     onPressed: () {},
-                                  //     child: const Text(
-                                  //       "Hide All",
-                                  //       style: TextStyle(
-                                  //         decoration: TextDecoration.underline,
-                                  //         decorationColor: Colors.blue,
-                                  //         color: Colors.blue, // Text color
-                                  //       ),
-                                  //     ))
                                 ],
                               ),
-                              SizedBox(height: 8,),
+                              SizedBox(
+                                height: 8,
+                              ),
                               GridView.builder(
                                 shrinkWrap: true,
                                 physics: const NeverScrollableScrollPhysics(),
-                                gridDelegate:
-                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                                   crossAxisCount: 2, // 3 columns
                                   childAspectRatio: 1.5, // Adjust item height
                                   crossAxisSpacing: 10,
@@ -430,6 +431,199 @@ class Home extends GetView<HomeController> {
                             ],
                           ),
                         ),
+                        SizedBox(
+                          height: 45.h,
+                        ),
+                        Container(
+                          padding: EdgeInsets.all(30.r),
+                          decoration: BoxDecoration(
+                              color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "  TESTIMONIAL",
+                                    style: TextStyle(fontSize: 43.sp),
+                                  ),
+                                  Spacer(),
+                                  TextButton(onPressed: () {
+                                    controller.isExpandedTestimonial.value =
+                                        !controller.isExpandedTestimonial.value;
+                                  }, child: Obx(() {
+                                    return Text(
+                                      controller.isExpandedTestimonial.value
+                                          ? "Hide All"
+                                          : "Show All",
+                                      style: TextStyle(
+                                        decoration: TextDecoration.underline,
+                                        decorationColor: Colors.blue,
+                                        color: Colors.blue, // Text color
+                                      ),
+                                    );
+                                  }))
+                                ],
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              FutureBuilder<ListTestimonialResponse>(
+                                  future: controller.futureTestimonialList,
+                                  builder:
+                                      (context, AsyncSnapshot<ListTestimonialResponse> snapshot) {
+                                    if (snapshot.connectionState == ConnectionState.waiting) {
+                                      return Skeletonizer(
+                                        child: Card(
+                                          child: Padding(
+                                            padding: EdgeInsets.all(15.r),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    CircleAvatar(),
+                                                    SizedBox(
+                                                      width: 15.w,
+                                                    ),
+                                                    Column(
+                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                      children: [
+                                                        Text(
+                                                          "Nuraini",
+                                                          style: TextStyle(fontSize: 33.sp),
+                                                        ),
+                                                        Row(
+                                                          children: [
+                                                            RatingBar.builder(
+                                                              onRatingUpdate: (value) {},
+                                                              initialRating: 5,
+                                                              itemBuilder: (context, index) =>
+                                                                  const Icon(
+                                                                Icons.star,
+                                                                color: Colors.amber,
+                                                              ),
+                                                              itemCount: 5,
+                                                              itemSize: 40.h,
+                                                              direction: Axis.horizontal,
+                                                            ),
+                                                            Text(" - "),
+                                                            Text(
+                                                              "Deep Cleaning",
+                                                              style: TextStyle(fontSize: 28.sp),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    )
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 15.h,
+                                                ),
+                                                Text(
+                                                  "Wah, luar biasa banget hasilnya! Tim kebersihan benar-benar detail, bahkan sela-sela jendela dan kolong tempat tidur yang biasanya berdebu jadi bersih total. Wangi rumahnya juga segar, nggak menyengat. Sangat recommended buat yang nggak sempat bebersih sendiri!",
+                                                  style: TextStyle(fontSize: 32.sp),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ); // loading state
+                                    } else if (snapshot.hasError) {
+                                      return Text('Error: ${snapshot.error}');
+                                    } else if (!snapshot.hasData || snapshot.data!.data!.isEmpty) {
+                                      return const Text('No packages found.');
+                                    }
+                                    final result = snapshot.data?.data ?? [];
+                                    print("length :${result.length}");
+
+                                    return Obx(() {
+                                      int visibleItemCount = controller.isExpandedTestimonial.value
+                                          ? result.length
+                                          : 1;
+                                      return AnimatedSize(
+                                        duration: const Duration(milliseconds: 350),
+                                        curve: Curves.easeInOutCubic,
+                                        alignment: Alignment.topCenter,
+                                        child: ListView.builder(
+                                          shrinkWrap: true,
+                                          physics: NeverScrollableScrollPhysics(),
+                                          itemCount: visibleItemCount,
+                                          itemBuilder: (context, index) {
+                                            return Card(
+                                              color: Colors.white,
+                                              child: Padding(
+                                                padding: EdgeInsets.all(20.r),
+                                                child: Column(
+                                                  children: [
+                                                    Row(
+                                                      children: [
+                                                        AvatarCircle(
+                                                          imageUrl: result[index].avatarPath ?? "",
+                                                          size: 130.r,
+                                                          color: Colors.grey,
+                                                          avatarSize: 70.r,
+                                                        ),
+                                                        SizedBox(
+                                                          width: 15.w,
+                                                        ),
+                                                        Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment.start,
+                                                          children: [
+                                                            Text(
+                                                              result[index].clientName!,
+                                                              style: TextStyle(fontSize: 33.sp),
+                                                            ),
+                                                            Row(
+                                                              children: [
+                                                                RatingBar.builder(
+                                                                  onRatingUpdate: (value) {},
+                                                                  ignoreGestures: true,
+                                                                  initialRating: 5,
+                                                                  itemBuilder: (context, index) =>
+                                                                      const Icon(
+                                                                    Icons.star,
+                                                                    color: Colors.amber,
+                                                                  ),
+                                                                  itemCount:
+                                                                      result[index].clientRating!,
+                                                                  itemSize: 40.h,
+                                                                  direction: Axis.horizontal,
+                                                                ),
+                                                                Text(" - "),
+                                                                Text(
+                                                                  result[index].category!,
+                                                                  style: TextStyle(fontSize: 28.sp),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        )
+                                                      ],
+                                                    ),
+                                                    SizedBox(
+                                                      height: 15.h,
+                                                    ),
+                                                    Text(
+                                                      result[index].clientReview!,
+                                                      style: TextStyle(fontSize: 32.sp),
+                                                      maxLines: 3,
+                                                      overflow: TextOverflow.ellipsis,
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      );
+                                    });
+                                  }),
+                            ],
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -443,57 +637,66 @@ class Home extends GetView<HomeController> {
   }
 
   Widget gridPackageList(AsyncSnapshot<ListCategoryPackageResponse> snapshot) {
-    return GridView.builder(
-     shrinkWrap: true,
+    return Obx(() {
+      int totalItem = snapshot.data!.data!.length;
+      int itemPerRow = 4;
+
+      int visibleItemCount = controller.isExpanded.value
+          ? totalItem
+          : (totalItem >= itemPerRow ? itemPerRow : totalItem);
+      return AnimatedSize(
+        duration: const Duration(milliseconds: 350),
+        curve: Curves.easeInOutCubic,
+        alignment: Alignment.topCenter,
+        child: GridView.builder(
+          shrinkWrap: true,
           physics: const BouncingScrollPhysics(),
-          gridDelegate:  SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 4,
             mainAxisSpacing: 5,
             crossAxisSpacing: 10,
             childAspectRatio: 0.8,
           ),
-      itemCount: snapshot.data!.data!.length,
-      itemBuilder: (context, index) {
-        final service = snapshot.data!.data![index];
-        return GestureDetector(
-          onTap: () {
-            print(service.categoryName);
-            if (service.status == "active") {
-              Get.toNamed(
-                '/detail-category-daily',
-                arguments: {
-                  'id': service.id.toString(),
-                  'title': service.categoryName ?? "",
-                  'img_url': [
-                    service.bannerImg1 ?? "",
-                    service.bannerImg2 ?? "",
-                    service.bannerImg3 ?? ""
-                  ],
-                  'description':
-                      service.categoryDescription ?? "",
-                },
-              );
-            } else {
-              EasyLoading.showInfo("Coming Soon");
-            }
+          itemCount: visibleItemCount,
+          itemBuilder: (context, index) {
+            final service = snapshot.data!.data![index];
+            return GestureDetector(
+              onTap: () {
+                print(service.categoryName);
+                if (service.status == "active") {
+                  Get.toNamed(
+                    '/detail-category-daily',
+                    arguments: {
+                      'id': service.id.toString(),
+                      'title': service.categoryName ?? "",
+                      'img_url': [
+                        service.bannerImg1 ?? "",
+                        service.bannerImg2 ?? "",
+                        service.bannerImg3 ?? ""
+                      ],
+                      'description': service.categoryDescription ?? "",
+                    },
+                  );
+                } else {
+                  EasyLoading.showInfo("Coming Soon");
+                }
+              },
+              child: ServiceItem(
+                name: service.categoryName!,
+                imagePath: service.categoryImage!,
+              ),
+            );
           },
-          child: ServiceItem(
-            name: service.categoryName!,
-            imagePath: service.categoryImage!,
-          ),
-        );
-      },
-    );
+        ),
+      );
+    });
   }
 }
 
 class saldoSection extends StatelessWidget {
   final HomeController controller;
 
-  const saldoSection({
-    super.key,
-    required this.controller,
-  });
+  const saldoSection({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -510,11 +713,13 @@ class saldoSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               GestureDetector(
-                onTap: () {
-                  Get.toNamed("/info-saldo");
-                },
-                child: Icon(LineIcons.wallet,size: 60.r,)
-              ),
+                  onTap: () {
+                    Get.toNamed("/info-saldo");
+                  },
+                  child: Icon(
+                    LineIcons.wallet,
+                    size: 60.r,
+                  )),
               SizedBox(
                 width: 30.w,
               ),
@@ -523,8 +728,7 @@ class saldoSection extends StatelessWidget {
                   return SizedBox(
                     height: 40.w,
                     width: 40.w,
-                    child: CircularProgressIndicator(
-                        color: Colors.white, strokeWidth: 1),
+                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 1),
                   );
                 }
 
@@ -535,7 +739,7 @@ class saldoSection extends StatelessWidget {
                   saldoInt != 0 ? Utils.formatCurrency(saldoInt) : "Rp. 0",
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: Colors.white,fontSize: 36.sp),
+                  style: TextStyle(color: Colors.white, fontSize: 36.sp),
                 );
               }),
               SizedBox(
@@ -595,10 +799,8 @@ class ServiceItem extends StatelessWidget {
             name,
             textAlign: TextAlign.center,
             maxLines: 2,
-            style:  TextStyle(
-                fontSize: 32.sp,
-                fontWeight: FontWeight.w500,
-                overflow: TextOverflow.ellipsis),
+            style: TextStyle(
+                fontSize: 32.sp, fontWeight: FontWeight.w500, overflow: TextOverflow.ellipsis),
           ),
         ),
       ],

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:carousel_slider/carousel_controller.dart';
 import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/model/ListCategoryPackageResponse.dart';
+import 'package:cleaning_app/model/ListTestimonialResponse.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:get/get.dart';
@@ -22,11 +23,12 @@ class HomeController extends GetxController {
   RxString userName = ''.obs;
 
   late Future<ListCategoryPackageResponse> futurePackageList;
+  late Future<ListTestimonialResponse> futureTestimonialList;
+
   var options = <Map<String, dynamic>>[].obs;
 
   ///Banner
-  final CarouselSliderController carouselController =
-      CarouselSliderController();
+  final CarouselSliderController carouselController = CarouselSliderController();
   var isBannerLoading = false.obs;
   var banner = <String>[].obs;
 
@@ -36,12 +38,19 @@ class HomeController extends GetxController {
   /// Keterangan Jumlah Saldo
   var amountSaldo = "0".obs;
 
+  var isExpanded = false.obs;
+  var isExpandedTestimonial = false.obs;
+
+  var searchFocus = FocusNode();
+
+
   final isLoading = false.obs;
   final RxList<Data.Data> historyList = <Data.Data>[].obs;
 
   Future<void> refreshPackage() async {
     // await Future.delayed(Duration(seconds: 2));
     futurePackageList = Api.getCategoryPackageList();
+    futureTestimonialList = Api.getTestimonial();
     userController.getDetailUser();
     fetchSaldo();
     fetchNotif();
@@ -49,20 +58,21 @@ class HomeController extends GetxController {
   }
 
   Future<void> fetchSaldo() async {
-    try {
-      isLoading.value = true;
+    if (userController.checkToken) {
+      try {
+        isLoading.value = true;
 
-      final response = await Api.getSaldo();
-      print(response.data!.totalBalance);
-      if (response.status == true) {
-        amountSaldo.value = response.data!.totalBalance == null
-            ? "0"
-            : response.data!.totalBalance.toString();
+        final response = await Api.getSaldo();
+        print(response.data!.totalBalance);
+        if (response.status == true) {
+          amountSaldo.value =
+              response.data!.totalBalance == null ? "0" : response.data!.totalBalance.toString();
+        }
+      } catch (e) {
+        print("gagal get saldo : $e");
+      } finally {
+        isLoading.value = false;
       }
-    } catch (e) {
-      print("gagal get saldo : $e");
-    } finally {
-      isLoading.value = false;
     }
   }
 
@@ -71,7 +81,8 @@ class HomeController extends GetxController {
   }
 
   Future<void> fetchHistory() async {
-    try {
+    if(userController.checkToken){
+try {
       isLoading.value = true;
       final response = await fetchHistoryTransaksi();
       historyList.value = response.data ?? [];
@@ -80,6 +91,8 @@ class HomeController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+    }
+    
   }
 
   Future<void> refreshHistory() async {
@@ -107,21 +120,7 @@ class HomeController extends GetxController {
     }
   }
 
-  Future<void> fetchNotif() async {
-    try {
-      isLoading.value = true;
-
-      final response = await Api.getNotification();
-      if (response.status == true) {
-        notifLength.value =
-            response.data!.where((item) => item.status == "0").length;
-      }
-    } catch (e) {
-      print("gagal get notif : $e");
-    } finally {
-      isLoading.value = false;
-    }
-  }
+  Future<void> fetchNotif() async {}
 
   Future<void> getBanner() async {
     try {
@@ -145,10 +144,12 @@ class HomeController extends GetxController {
   void onInit() {
     super.onInit();
     futurePackageList = Api.getCategoryPackageList();
+    futureTestimonialList = Api.getTestimonial();
     fetchHistory();
     fetchSaldo();
     userName.value = _storage.read('name') ?? 'Anonymous';
     fetchNotif();
     getBanner();
+    userController.getDetailUser();
   }
 }

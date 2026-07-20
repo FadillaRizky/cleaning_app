@@ -1,3 +1,4 @@
+import 'package:cleaning_app/controller/profile.dart';
 import 'package:cleaning_app/widget/auto_marquee.dart';
 import 'package:cleaning_app/widget/cached_image.dart';
 import 'package:cleaning_app/widget/utils.dart';
@@ -11,7 +12,8 @@ import 'package:cleaning_app/model/GetListOrderResponse.dart' as Data;
 import '../../../controller/booking.dart';
 
 class Booking extends GetView<BookingController> {
-  const Booking({super.key});
+  final ProfileController profileController = Get.find<ProfileController>();
+  Booking({super.key});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,61 +23,106 @@ class Booking extends GetView<BookingController> {
       ),
       body: SafeArea(
           child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 15),
-        child: RefreshIndicator(
-          onRefresh: controller.getListOrder,
-          child: Column(
-            children: [
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 25.h),
-                child: Obx(() {
-                  return Row(
-                    children: List.generate(
-                      controller.status.length,
-                      (index) {
-                        return Expanded(
-                          child: GestureDetector(
-                              onTap: () {
-                                controller.selectedIndex.value = index;
-                                controller.selectedStatus.value =
-                                    controller.status[index].toLowerCase();
-                              },
-                              child: Container(
-                                padding: EdgeInsets.all(15.w),
-                                margin: EdgeInsets.symmetric(horizontal: 10.w),
-                                decoration: BoxDecoration(
-                                  color: index == controller.selectedIndex.value
-                                      ? Colors.blue
-                                      : Colors.white,
-                                  borderRadius: BorderRadius.circular(8),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: profileController.checkToken
+                  ? RefreshIndicator(
+                      onRefresh: controller.getListOrder,
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.symmetric(vertical: 25.h),
+                            child: Obx(() {
+                              return Row(
+                                children: List.generate(
+                                  controller.status.length,
+                                  (index) {
+                                    return Expanded(
+                                      child: GestureDetector(
+                                          onTap: () {
+                                            controller.selectedIndex.value = index;
+                                            controller.selectedStatus.value =
+                                                controller.status[index].toLowerCase();
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(15.w),
+                                            margin: EdgeInsets.symmetric(horizontal: 10.w),
+                                            decoration: BoxDecoration(
+                                              color: index == controller.selectedIndex.value
+                                                  ? Colors.blue
+                                                  : Colors.white,
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: Center(
+                                              child: SafeMarqueeText(
+                                                text: controller.status[index],
+                                                maxWidth: 350.w,
+                                                style: TextStyle(
+                                                  fontSize: 38.sp,
+                                                  color: index == controller.selectedIndex.value
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                                velocity: 20,
+                                                pauseDuration: Duration(seconds: 3),
+                                              ),
+                                            ),
+                                          )),
+                                    );
+                                  },
                                 ),
-                                child: Center(
-                                  child: SafeMarqueeText(
-                                    text: controller.status[index],
-                                    maxWidth: 350.w,
-                                    style: TextStyle(
-                                      fontSize: 38.sp,
-                                      color: index ==
-                                              controller.selectedIndex.value
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                    velocity: 20,
-                                    pauseDuration: Duration(seconds: 3),
+                              );
+                            }),
+                          ),
+                          buildOrderList(),
+                        ],
+                      ),
+                    )
+                  : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Belum ada pesanan",
+                          style: TextStyle(fontSize: 50.sp),
+                        ),
+                        Text(
+                          "Login untuk melihat dan mengelola pesananmu",
+                          style: TextStyle(fontSize: 38.sp),
+                        ),
+                        SizedBox(height: 30.h,),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton(
+                                 style: ElevatedButton.styleFrom(
+                                    foregroundColor: Colors.black,
                                   ),
+                                onPressed: () {
+                                   Get.toNamed('/login');
+                                },
+                                child: const Text("Login"),
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  foregroundColor: Colors.white,
+                                  backgroundColor: Colors.blue,
                                 ),
-                              )),
-                        );
-                      },
-                    ),
-                  );
-                }),
-              ),
-              buildOrderList(),
-            ],
-          ),
-        ),
-      )),
+                                onPressed: () {
+                                   Get.toNamed('/register');
+                                },
+                                child: const Text(
+                                  "Register",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ))),
     );
   }
 
@@ -84,8 +131,7 @@ class Booking extends GetView<BookingController> {
       child: Obx(() {
         List<Data.Data> dataByStatus = controller.listOrder.where((item) {
           if (controller.selectedStatus.value == "aktif") {
-            return ["open", "picked", "arrived", "progress"]
-                .contains(item.orderStatus);
+            return ["open", "picked", "arrived", "progress"].contains(item.orderStatus);
           } else if (controller.selectedStatus.value == "menunggu verifikasi") {
             return ["new"].contains(item.orderStatus);
           } else if (controller.selectedStatus.value == "selesai") {
@@ -150,8 +196,7 @@ class Booking extends GetView<BookingController> {
                           ),
                           Row(
                             children: [
-                              Icon(Icons.date_range,
-                                  color: Colors.black54, size: 17),
+                              Icon(Icons.date_range, color: Colors.black54, size: 17),
                               SizedBox(width: 5),
                               Text(
                                 "asdasdasd",
@@ -161,8 +206,7 @@ class Booking extends GetView<BookingController> {
                           ),
                           Row(
                             children: [
-                              Icon(Icons.access_time,
-                                  color: Colors.black54, size: 17),
+                              Icon(Icons.access_time, color: Colors.black54, size: 17),
                               SizedBox(width: 5),
                               Text(
                                 "asdasdasdasdasdsad",
@@ -189,8 +233,7 @@ class Booking extends GetView<BookingController> {
             final item = dataByStatus[index];
             return GestureDetector(
               onTap: () {
-                Get.toNamed("/detail-order", arguments: item.orderid)
-                    ?.then((result) {
+                Get.toNamed("/detail-order", arguments: item.orderid)?.then((result) {
                   if (result == true) {
                     controller.getListOrder();
                   }
@@ -198,9 +241,8 @@ class Booking extends GetView<BookingController> {
                 print(item.orderid);
               },
               child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30.r)),
+                decoration:
+                    BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(30.r)),
                 padding: EdgeInsets.all(30.r),
                 margin: EdgeInsets.symmetric(vertical: 10.h),
                 child: Row(
@@ -231,8 +273,7 @@ class Booking extends GetView<BookingController> {
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                              Icon(Icons.date_range,
-                                  color: Colors.black54, size: 50.r),
+                              Icon(Icons.date_range, color: Colors.black54, size: 50.r),
                               const SizedBox(width: 5),
                               Expanded(
                                 child: Text(
@@ -247,8 +288,7 @@ class Booking extends GetView<BookingController> {
                           const SizedBox(height: 4),
                           Row(
                             children: [
-                              Icon(Icons.access_time,
-                                  color: Colors.black54, size: 50.r),
+                              Icon(Icons.access_time, color: Colors.black54, size: 50.r),
                               const SizedBox(width: 5),
                               Text(
                                 "${item.dueTime!.substring(0, 5)}",
@@ -264,15 +304,13 @@ class Booking extends GetView<BookingController> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30.w, vertical: 12.h),
+                          padding: EdgeInsets.symmetric(horizontal: 30.w, vertical: 12.h),
                           decoration: BoxDecoration(
                             color: statusColor[item.orderStatus] ?? Colors.grey,
                             borderRadius: BorderRadius.circular(60.r),
                           ),
                           child: Text(
-                            statusLabel[item.orderStatus] ??
-                                "Status Tidak Diketahui",
+                            statusLabel[item.orderStatus] ?? "Status Tidak Diketahui",
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 33.sp,
@@ -283,8 +321,7 @@ class Booking extends GetView<BookingController> {
                           height: 30,
                         ),
                         Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 30.r, vertical: 12.r),
+                          padding: EdgeInsets.symmetric(horizontal: 30.r, vertical: 12.r),
                           decoration: BoxDecoration(
                             color: Colors.blue[300],
                             borderRadius: BorderRadius.circular(20),

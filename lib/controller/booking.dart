@@ -21,6 +21,7 @@ class BookingController extends GetxController {
   var currentStep = 0.obs;
   var selectedIndex = 1.obs;
   var selectedStatus = "aktif".obs;
+  var isProcessing = false.obs;
   var isLoading = false.obs;
   var listOrder = <Data.Data>[].obs;
 
@@ -145,23 +146,30 @@ class BookingController extends GetxController {
   }
 
   Future<void> cancelOrder(Map<String, dynamic> data) async {
+    if (isProcessing.value) return;
+    EasyLoading.show(status: "Membatalkan...");
     try {
-      EasyLoading.show();
+      isProcessing.value = true;
+
       var response = await Api.cancelOrder(data);
       if (response.status == true) {
         Get.back();
         Get.back(result: true);
-        EasyLoading.showSuccess(
-            "Berhasil Cancel Order ${response.data!.category}");
+        EasyLoading.showSuccess("Berhasil Cancel Order ${response.data!.category}");
       } else {
-        EasyLoading.showError("Gagal Cancel Order");
+        EasyLoading.showError("Gagal Cancel Order : ${response.message}");
       }
     } catch (e, stackTrace) {
       print("Error: $e");
       print("StackTrace: $stackTrace");
-      EasyLoading.showError("Gagal : $e");
+      EasyLoading.showError(
+        "Terjadi kesalahan",
+      );
     } finally {
-      EasyLoading.dismiss();
+      if (EasyLoading.isShow) {
+        EasyLoading.dismiss();
+      }
+      isProcessing.value = false;
     }
   }
 }
